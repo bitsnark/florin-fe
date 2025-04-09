@@ -28,7 +28,7 @@ import { InputWithButton } from '@/components/input-with-button';
 import { Hero } from '@/components/hero';
 import heroImageGlobal from '@/assets/hero-image-global.png';
 import { AmountInput } from '@/components/amount-input';
-import { CominityLink } from '@/components/cominity-link';
+import { CominityLink } from '@/components/comunity-link';
 import { Faq } from '@/components/faq';
 import { TabExample } from '@/components/tab-example';
 
