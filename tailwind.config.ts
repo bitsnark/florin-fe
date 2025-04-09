@@ -56,9 +56,24 @@ const config: Config = {
         black: {
           DEFAULT: 'var(--black)',
         },
+        // Crypto colors
+        bitcoin: {
+          bg: 'var(--bitcoin-bg)',
+          card: 'var(--card-bitcoin-bg)',
+        },
+        ethereum: {
+          bg: 'var(--ethereum-bg)',
+          card: 'var(--card-ethereum-bg)',
+        },
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          label: 'var(--text-label)',
+        },
       },
       borderRadius: {
         lg: '8px',
+        xl: '16px',
       },
       transitionTimingFunction: {
         florin: 'cubic-bezier(0.77,0,0.14,1)',

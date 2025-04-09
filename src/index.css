@@ -13,7 +13,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -68,6 +68,13 @@
   --input-bg: #2a2730;
   --input-border: #27292c;
   --label-text: #82868f;
+  --bitcoin-bg: #f7931a;
+  --ethereum-bg: #627eea;
+  --card-bitcoin-bg: #2b2730;
+  --card-ethereum-bg: #27292c;
+  --text-primary: #ffffff;
+  --text-secondary: #939097;
+  --text-label: #82868f;
 }
 
 a {
@@ -124,10 +131,6 @@ button:not([data-slot='button']) {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-
-button:not([data-slot='button']):hover {
-  border-color: #646cff;
 }
 
 button:focus,
@@ -193,6 +196,12 @@ button:focus-visible {
   --color-input-bg: var(--input-bg);
   --color-input-border: var(--input-border);
   --color-label-text: var(--label-text);
+  --color-bitcoin-bg: var(--bitcoin-bg);
+  --color-ethereum-bg: var(--ethereum-bg);
+  --color-card-bitcoin-bg: var(--card-bitcoin-bg);
+  --color-card-ethereum-bg: var(--card-ethereum-bg);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
 }
 
 .dark {
@@ -236,6 +245,12 @@ button:focus-visible {
   --color-input-bg: var(--input-bg);
   --color-input-border: var(--input-border);
   --color-label-text: var(--label-text);
+  --color-bitcoin-bg: var(--bitcoin-bg);
+  --color-ethereum-bg: var(--ethereum-bg);
+  --color-card-bitcoin-bg: var(--card-bitcoin-bg);
+  --color-card-ethereum-bg: var(--card-ethereum-bg);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
 }
 
 @layer base {

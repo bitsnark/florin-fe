@@ -27,6 +27,10 @@ import { ComponentExample } from '@/components/component-example';
 import { InputWithButton } from '@/components/input-with-button';
 import { Hero } from '@/components/hero';
 import heroImageGlobal from '@/assets/hero-image-global.png';
+import { AmountInput } from '@/components/amount-input';
+import { CominityLink } from '@/components/cominity-link';
+import { Faq } from '@/components/faq';
+import { TabExample } from '@/components/tab-example';
 
 export function DesignSystem() {
   return (
@@ -158,6 +162,25 @@ export function DesignSystem() {
                 Custom Size Button
               </Button>
             </div>
+          </ComponentExample>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Tab Switcher</h2>
+        <div className="space-y-6">
+          <ComponentExample
+            title="Default Tab Switcher"
+            description="A tab switcher component for navigation between related content sections"
+            code={`<TabSwitcher
+  tabs={['All', 'Transactions', 'Deposits']}
+  activeTab={0}
+  onTabChange={(index) => setActiveTab(index)}
+  variant="default"
+  size="default"
+/>`}
+          >
+            <TabExample variant="default" size="default" />
           </ComponentExample>
         </div>
       </section>
@@ -355,6 +378,160 @@ export function DesignSystem() {
               imageSrc={heroImageGlobal}
               imageAlt="Hero Image"
             />
+          </ComponentExample>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Amount Input</h2>
+        <div className="space-y-6">
+          <ComponentExample
+            title="Amount Input Variants"
+            description="Input fields for different cryptocurrency amounts, fully responsive for all screen sizes. Componente optimizado con useMemo."
+            code={`// Uso de useMemo para memorizar valores derivados
+const currencySymbol = useMemo(() => 
+  currency === 'btc' ? 'BTC' : currency === 'eth' ? 'ETH' : 'xBTC'
+, [currency]);
+
+// Clases de Tailwind predefinidas para evitar cálculos repetitivos
+const TAILWIND_CLASSES = {
+  BG_BITCOIN: 'bg-[#F7931A]',
+  BG_ETHEREUM: 'bg-[#627EEA]'
+};
+
+<AmountInput network="bitcoin" currency="btc" amount="0.012" />
+<AmountInput network="ethereum" currency="xbtc" amount="0.012" />`}
+          >
+            <div className="w-full space-y-6 flex flex-col gap-6 items-center md:items-start">
+              <div className="w-full max-w-sm md:max-w-md">
+                <AmountInput network="bitcoin" currency="btc" amount="0.012" />
+              </div>
+              <div className="w-full max-w-sm md:max-w-md">
+                <AmountInput
+                  network="ethereum"
+                  currency="xbtc"
+                  amount="0.012"
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="text-sm">
+                  This component has been optimized through:
+                </p>
+                <ul className="text-xs space-y-2 list-disc pl-5">
+                  <li>
+                    Memoization of derived values with{' '}
+                    <span className="font-mono text-[11px] bg-gray-800 px-1 rounded">
+                      useMemo
+                    </span>
+                  </li>
+                  <li>
+                    Predefined constants for asset paths and style classes
+                  </li>
+                  <li>Dynamic and memoized calculation of USD value</li>
+                  <li>Responsive design with conditional classes</li>
+                </ul>
+              </div>
+            </div>
+          </ComponentExample>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Community Links</h2>
+        <div className="space-y-6">
+          <ComponentExample
+            title="Social Media Links"
+            description="Interactive community links that open in a new tab when clicked"
+            code={`<CominityLink
+  href="https://discord.com/invite/grail"
+  label="Discord"
+  comunity="discord"
+/>
+<CominityLink
+  href="https://t.me/grailbridge"
+  label="Telegram"
+  comunity="telegram"
+/>
+<CominityLink
+  href="https://x.com/grailbridge"
+  label="X"
+  comunity="x"
+/>
+<CominityLink
+  href="https://github.com/grailbridge"
+  label="GitHub"
+  comunity="github"
+/>`}
+          >
+            <div className="flex flex-col gap-4">
+              <CominityLink
+                href="https://discord.com/invite/grail"
+                label="Discord"
+                comunity="discord"
+              />
+              <CominityLink
+                href="https://t.me/grailbridge"
+                label="Telegram"
+                comunity="telegram"
+              />
+              <CominityLink
+                href="https://x.com/grailbridge"
+                label="X"
+                comunity="x"
+              />
+              <CominityLink
+                href="https://github.com/grailbridge"
+                label="GitHub"
+                comunity="github"
+              />
+            </div>
+          </ComponentExample>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">FAQ</h2>
+        <div className="space-y-6">
+          <ComponentExample
+            title="Accordion FAQ"
+            description="Expandable FAQ component with customizable questions and answers"
+            code={`<Faq
+  faq={[
+    {
+      question: 'Is it accessible?',
+      answer: 'Yes. It adheres to the WAI-ARIA design pattern.',
+    },
+    {
+      question: 'Is it styled?',
+      answer: 'Yes. It comes with default styles that matches the other components aesthetic.',
+    },
+    {
+      question: 'Is it animated?',
+      answer: 'Yes. It's animated by default, but you can disable it if you prefer.',
+    },
+  ]}
+/>`}
+          >
+            <div className="bg-primary rounded-xl p-6 max-w-[440px]">
+              <Faq
+                faq={[
+                  {
+                    question: 'Is it accessible?',
+                    answer: 'Yes. It adheres to the WAI-ARIA design pattern.',
+                  },
+                  {
+                    question: 'Is it styled?',
+                    answer:
+                      'Yes. It comes with default styles that matches the other components&apos; aesthetic.',
+                  },
+                  {
+                    question: 'Is it animated?',
+                    answer:
+                      'Yes. It&apos;s animated by default, but you can disable it if you prefer.',
+                  },
+                ]}
+              />
+            </div>
           </ComponentExample>
         </div>
       </section>
