@@ -39,8 +39,15 @@ export function Hero({
   }, []);
 
   return (
-    <div className={cn('w-full py-16 md:py-24', 'bg-transparent', className)}>
-      <div className="container mx-auto px-4">
+    <div
+      className={cn(
+        'w-full py-16 md:py-10 md:px-[120px]',
+        'bg-transparent',
+        'flex justify-center',
+        className
+      )}
+    >
+      <div className="container md:w-[1024px]">
         {variant === 'center' && (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-16">
             <div
@@ -72,7 +79,7 @@ export function Hero({
             {imageSrc && (
               <div
                 ref={imageContainerRef}
-                className="w-full md:max-w-[500px] lg:max-w-[600px] md:flex md:items-center md:justify-center"
+                className="w-full md:max-w-[528px] lg:max-w-[528px] md:max-h-[281px] lg:max-h-[281px] md:flex md:items-center md:justify-center"
                 style={{
                   height:
                     imageHeight && window.innerWidth >= 768
