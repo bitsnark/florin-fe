@@ -2,22 +2,36 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
   component: () => (
-    <div className="min-h-screen w-full">
-      <div className="container mx-auto p-4">
-        <div className="p-2 flex gap-2">
-          <Link to="/" className="[&.active]:font-bold">
+    <div className="w-full h-screen">
+      <div
+        className="w-full flex justify-center"
+        style={{
+          border: '1px solid red',
+        }}
+      >
+        <div
+          className="p-2 flex gap-2 w-[1024px] h-[120px] justify-between pt-8"
+          style={{ border: 'solid 1px yellow' }}
+        >
+          {/* <Link to="/" className="[&.active]:font-bold">
             Home
-          </Link>{' '}
+          </Link>
           <Link to="/history" className="[&.active]:font-bold">
             History
-          </Link>{' '}
+          </Link>
           <Link to="/design-system" className="[&.active]:font-bold">
             Design System
-          </Link>
+          </Link> */}
+          <div className="flex gap-2" style={{ border: 'solid 1px blue' }}>
+            <span>imagen</span>
+            <span>Grail Bridge</span>
+          </div>
+          <div>menu</div>
+          <div>connect wallet</div>
         </div>
-        <hr />
-        <Outlet />
       </div>
+      <hr />
+      <Outlet />
     </div>
   ),
 });
