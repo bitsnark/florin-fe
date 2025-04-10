@@ -9,11 +9,7 @@ export function Footer() {
             <img
               src="/src/assets/bos-bridge-logo.png"
               alt="Grail Bridge Logo"
-              className="hidden md:block"
-              style={{
-                width: 72,
-                height: 72,
-              }}
+              className="hidden md:block w-[72px] h-[72px]"
             />
             <span className="text-white font-bold text-sm">Grail Bridge</span>
           </div>

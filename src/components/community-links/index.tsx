@@ -4,12 +4,9 @@ export function CommunityLinks() {
   return (
     <div className="flex flex-col items-center justify-center py-10 px-4 md:px-0">
       <span
-        className="text-[#939097] text-[16px]"
+        className="text-[#939097] text-[16px] font-bold leading-[120%] tracking-[1%]"
         style={{
           fontFamily: 'Druk, sans-setif',
-          fontWeight: 'bold',
-          lineHeight: '120%',
-          letterSpacing: '1%',
         }}
       >
         COMMUNITY LINKS

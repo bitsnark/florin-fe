@@ -56,14 +56,9 @@ export function Hero({
             >
               {topTitle && (
                 <h2
-                  className="text-[#939097] mb-4 uppercase text-center md:text-left"
+                  className="text-[#939097] mb-4 uppercase text-center md:text-left text-[24px] font-bold leading-[120%] tracking-[1%]"
                   style={{
                     fontFamily: 'Druk, sans-serif',
-                    fontWeight: 'bold',
-                    fontSize: '24px',
-                    lineHeight: '120%',
-                    letterSpacing: '1%',
-                    textTransform: 'uppercase',
                   }}
                 >
                   {topTitle}
@@ -80,12 +75,11 @@ export function Hero({
               <div
                 ref={imageContainerRef}
                 className="w-full md:max-w-[528px] lg:max-w-[528px] md:max-h-[281px] lg:max-h-[281px] md:flex md:items-center md:justify-center"
-                style={{
-                  height:
-                    imageHeight && window.innerWidth >= 768
-                      ? `${imageHeight}px`
-                      : 'auto',
-                }}
+                style={
+                  imageHeight && window.innerWidth >= 768
+                    ? { height: `${imageHeight}px` }
+                    : { height: 'auto' }
+                }
               >
                 <img
                   src={imageSrc}

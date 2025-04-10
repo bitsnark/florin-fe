@@ -49,10 +49,7 @@ export function Header() {
             <img
               src="/src/assets/bos-bridge-logo.png"
               alt="Grail Bridge Logo"
-              style={{
-                width: 72,
-                height: 72,
-              }}
+              className="w-[72px] h-[72px]"
             />
             <span className="text-white font-bold">Grail Bridge</span>
           </div>
@@ -61,8 +58,7 @@ export function Header() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={linkClasses.desktop}
-                style={{ color: 'white' }}
+                className={`${linkClasses.desktop} text-white`}
               >
                 {item.label}
               </Link>
@@ -74,7 +70,7 @@ export function Header() {
               <Button
                 variant="orange"
                 size="icon"
-                style={{ fontSize: '25px', height: '72px', width: '72px' }}
+                className="text-[25px] h-[72px] w-[72px]"
               >
                 {'->'}
               </Button>
@@ -90,10 +86,7 @@ export function Header() {
             <img
               src="/src/assets/bos-bridge-logo.png"
               alt="Grail Bridge Logo"
-              style={{
-                width: 40,
-                height: 40,
-              }}
+              className="w-[40px] h-[40px]"
             />
             <span className="text-white font-bold text-sm">Grail Bridge</span>
           </div>
@@ -130,13 +123,10 @@ export function Header() {
             <Link
               key={item.to}
               to={item.to}
-              style={{
-                color: 'white',
-                ...getAnimationDelay(index),
-              }}
-              className={
+              className={`text-white ${
                 isMenuOpen ? linkClasses.mobileActive : linkClasses.mobile
-              }
+              }`}
+              style={getAnimationDelay(index)}
               onClick={() => setIsMenuOpen(false)}
             >
               {item.label}

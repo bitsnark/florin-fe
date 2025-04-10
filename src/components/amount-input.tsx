@@ -94,10 +94,7 @@ export const AmountInput = ({
 
   return (
     <Card
-      style={{
-        padding: '10px 16px 16px 16px',
-      }}
-      className={`w-full max-w-[408px] h-auto min-h-[116px] 
+      className={`w-full max-w-[408px] h-auto min-h-[116px] p-[10px_16px_16px_16px]
       ${cardBgClass} rounded-2xl shadow-sm mb-0 ${cardBorderClass}`}
     >
       <div className="flex flex-col justify-between h-full gap-2.5">
