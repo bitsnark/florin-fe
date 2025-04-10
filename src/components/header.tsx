@@ -1,10 +1,44 @@
 import { Link } from '@tanstack/react-router';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Icon } from './ui/icon';
+import { ICON_PATHS } from './ui/icons';
+
+// Define the navigation items
+const navigationItems = [
+  { to: '/', label: 'About BitcoinOS' },
+  { to: '/history', label: 'Grail Bridge' },
+  { to: '/design-system', label: 'Whitepaper' },
+];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Use effect to handle mounting state - this avoids animation on initial render
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Reusable classes
+  const linkClasses = {
+    desktop: 'text-white [&.active]:font-bold',
+    mobile:
+      'text-white py-3 border-b border-grey opacity-0 transform translate-x-4 transition-all duration-300 ease-in-out',
+    mobileActive:
+      'text-white py-3 border-b border-grey opacity-100 transform translate-x-0 transition-all duration-300 ease-in-out',
+  };
+
+  // Handle menu toggle with animation
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Delay for staggered animation of menu items
+  const getAnimationDelay = (index: number) => {
+    return { transitionDelay: `${150 + index * 75}ms` };
+  };
 
   return (
     <>
@@ -23,27 +57,16 @@ export function Header() {
             <span className="text-white font-bold">Grail Bridge</span>
           </div>
           <div className="flex items-center gap-5">
-            <Link
-              to="/"
-              className="text-white [&.active]:font-bold"
-              style={{ color: 'white' }}
-            >
-              About BitcoinOS
-            </Link>
-            <Link
-              to="/history"
-              className="text-white [&.active]:font-bold"
-              style={{ color: 'white' }}
-            >
-              Grail Bridge
-            </Link>
-            <Link
-              to="/design-system"
-              className="text-white [&.active]:font-bold"
-              style={{ color: 'white' }}
-            >
-              Whitepaper
-            </Link>
+            {navigationItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={linkClasses.desktop}
+                style={{ color: 'white' }}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
           <div>
             <Card className="flex flex-row items-center justify-center bg-grey w-[265px] h-[88px] rounded-xl pt-2 pr-2 pb-2 pl-10 border-none">
@@ -74,80 +97,64 @@ export function Header() {
             />
             <span className="text-white font-bold text-sm">Grail Bridge</span>
           </div>
-          <button
-            className="text-white p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
+          <button className="text-white p-2 z-50 relative" onClick={toggleMenu}>
             {isMenuOpen ? (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M18 6L6 18M6 6L18 18"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Icon
+                path={ICON_PATHS.CLOSE}
+                stroke="white"
+                width={24}
+                height={24}
+                className="transition-transform duration-300 rotate-90 scale-110"
+              />
             ) : (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3 12h18M3 6h18M3 18h18"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Icon
+                path={ICON_PATHS.MENU}
+                stroke="white"
+                width={24}
+                height={24}
+                className="transition-transform duration-300 rotate-0"
+              />
             )}
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="bg-[#1e1c21] absolute top-[72px] left-0 w-full z-50 p-4 flex flex-col gap-4">
+        {/* Mobile Menu with Animation */}
+        <div
+          className={`bg-[#1e1c21] fixed top-[72px] left-0 right-0 bottom-0 z-40 p-4 flex flex-col gap-4 transition-all duration-300 ease-in-out transform ${
+            isMenuOpen
+              ? 'translate-x-0 opacity-100'
+              : 'translate-x-full opacity-0'
+          } ${mounted ? 'visible' : 'invisible'}`}
+        >
+          {navigationItems.map((item, index) => (
             <Link
-              to="/"
-              className="text-white py-3 border-b border-grey"
-              style={{ color: 'white' }}
+              key={item.to}
+              to={item.to}
+              style={{
+                color: 'white',
+                ...getAnimationDelay(index),
+              }}
+              className={
+                isMenuOpen ? linkClasses.mobileActive : linkClasses.mobile
+              }
               onClick={() => setIsMenuOpen(false)}
             >
-              About BitcoinOS
+              {item.label}
             </Link>
-            <Link
-              to="/history"
-              className="text-white py-3 border-b border-grey"
-              style={{ color: 'white' }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Grail Bridge
-            </Link>
-            <Link
-              to="/design-system"
-              className="text-white py-3 border-b border-grey"
-              style={{ color: 'white' }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Whitepaper
-            </Link>
-            <div className="mt-4">
-              <Button variant="orange" className="w-full py-4 rounded-lg">
-                Connect Wallet
-              </Button>
-            </div>
+          ))}
+          <div
+            className={`mt-4 transition-all duration-300 ease-in-out transform ${
+              isMenuOpen
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-4'
+            }`}
+            style={getAnimationDelay(navigationItems.length)}
+          >
+            <Button variant="orange" className="w-full py-4 rounded-lg">
+              Connect Wallet
+            </Button>
           </div>
-        )}
+        </div>
       </div>
     </>
   );
