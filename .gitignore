@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#environment
+.env
+
+#sst
+.sst
+
+#vite
+.vite
