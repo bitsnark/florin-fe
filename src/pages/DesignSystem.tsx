@@ -28,8 +28,8 @@ import { InputWithButton } from '@/components/input-with-button';
 import { Hero } from '@/components/hero';
 import heroImageGlobal from '@/assets/hero-image-global.png';
 import { AmountInput } from '@/components/amount-input';
-import { CominityLink } from '@/components/comunity-link';
-import { Faq } from '@/components/faq';
+import { CommunityLink } from '@/components/community-links/community-link';
+import { Faq } from '@/components/faq/faq';
 import { TabExample } from '@/components/tab-example';
 
 export function DesignSystem() {
@@ -447,42 +447,42 @@ const TAILWIND_CLASSES = {
   label="Discord"
   comunity="discord"
 />
-<CominityLink
+<CommunityLink
   href="https://t.me/grailbridge"
   label="Telegram"
-  comunity="telegram"
+  community="telegram"
 />
-<CominityLink
+<CommunityLink
   href="https://x.com/grailbridge"
   label="X"
-  comunity="x"
+  community="x"
 />
-<CominityLink
+<CommunityLink
   href="https://github.com/grailbridge"
   label="GitHub"
-  comunity="github"
+  community="github"
 />`}
           >
             <div className="flex flex-col gap-4">
-              <CominityLink
+              <CommunityLink
                 href="https://discord.com/invite/grail"
                 label="Discord"
-                comunity="discord"
+                community="discord"
               />
-              <CominityLink
+              <CommunityLink
                 href="https://t.me/grailbridge"
                 label="Telegram"
-                comunity="telegram"
+                community="telegram"
               />
-              <CominityLink
+              <CommunityLink
                 href="https://x.com/grailbridge"
                 label="X"
-                comunity="x"
+                community="x"
               />
-              <CominityLink
+              <CommunityLink
                 href="https://github.com/grailbridge"
                 label="GitHub"
-                comunity="github"
+                community="github"
               />
             </div>
           </ComponentExample>
