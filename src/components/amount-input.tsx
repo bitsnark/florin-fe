@@ -1,11 +1,59 @@
 import { Card } from './ui/card';
 import walletIcon from '../assets/wallet-icon.svg';
-import { useMemo } from 'react';
 
 const ASSETS = {
   BITCOIN_LOGO: '/src/assets/bitcoin-logo.png',
   ETH_LOGO: '/src/assets/eth-logo.png',
   XBTC_LOGO: '/src/assets/xbtc-logo.svg',
+};
+
+const NETWORK_LOGOS = {
+  bitcoin: ASSETS.BITCOIN_LOGO,
+  ethereum: ASSETS.ETH_LOGO,
+};
+
+const CURRENCY_LOGOS = {
+  btc: ASSETS.BITCOIN_LOGO,
+  xbtc: ASSETS.XBTC_LOGO,
+  eth: ASSETS.ETH_LOGO,
+};
+
+const CURRENCY_BG_COLORS = {
+  btc: 'bg-bitcoin-bg',
+  xbtc: 'bg-transparent',
+  eth: 'bg-ethereum-bg',
+};
+
+const NETWORK_NAMES = {
+  bitcoin: 'Bitcoin',
+  ethereum: 'Ethereum Network',
+};
+
+const NETWORK_BG_COLORS = {
+  bitcoin: 'bg-bitcoin-bg',
+  ethereum: 'bg-ethereum-bg',
+};
+
+const CURRENCY_SYMBOLS = {
+  btc: 'BTC',
+  eth: 'ETH',
+  xbtc: 'xBTC',
+};
+
+const CARD_BG_CLASSES = {
+  bitcoin: 'bg-[var(--card-bitcoin-bg)]',
+  ethereum: 'bg-[var(--card-ethereum-bg)]',
+};
+
+const CARD_BORDER_CLASSES = {
+  bitcoin: 'border-none',
+  ethereum: 'border border-input-border',
+};
+
+const CURRENCY_RATES = {
+  btc: 83400,
+  eth: 3200,
+  xbtc: 83400,
 };
 
 interface AmountInputProps {
@@ -19,67 +67,18 @@ export const AmountInput = ({
   currency,
   amount,
 }: AmountInputProps) => {
-  const networkLogoSrc = useMemo(
-    () => (network === 'bitcoin' ? ASSETS.BITCOIN_LOGO : ASSETS.ETH_LOGO),
-    [network]
-  );
+  const networkLogoSrc = NETWORK_LOGOS[network];
+  const logoSrc = CURRENCY_LOGOS[currency];
+  const currencyBgColor = CURRENCY_BG_COLORS[currency];
+  const networkName = NETWORK_NAMES[network];
+  const bgColor = NETWORK_BG_COLORS[network];
+  const currencySymbol = CURRENCY_SYMBOLS[currency];
+  const cardBgClass = CARD_BG_CLASSES[network];
+  const cardBorderClass = CARD_BORDER_CLASSES[network];
 
-  const logoSrc = useMemo(
-    () => (currency === 'btc' ? ASSETS.BITCOIN_LOGO : ASSETS.XBTC_LOGO),
-    [currency]
-  );
-
-  const currencyBgColor = useMemo(
-    () =>
-      currency === 'btc'
-        ? 'bg-bitcoin-bg'
-        : currency === 'xbtc'
-          ? 'bg-transparent'
-          : 'bg-ethereum-bg',
-    [currency]
-  );
-
-  const networkName = useMemo(
-    () => (network === 'bitcoin' ? 'Bitcoin' : 'Ethereum Network'),
-    [network]
-  );
-
-  const bgColor = useMemo(
-    () => (network === 'bitcoin' ? 'bg-bitcoin-bg' : 'bg-ethereum-bg'),
-    [network]
-  );
-
-  const currencySymbol = useMemo(
-    () => (currency === 'btc' ? 'BTC' : currency === 'eth' ? 'ETH' : 'xBTC'),
-    [currency]
-  );
-
-  const cardBgClass = useMemo(
-    () =>
-      network === 'ethereum'
-        ? 'bg-[var(--card-ethereum-bg)]'
-        : 'bg-[var(--card-bitcoin-bg)]',
-    [network]
-  );
-
-  const cardBorderClass = useMemo(
-    () =>
-      network === 'ethereum' ? 'border border-input-border' : 'border-none',
-    [network]
-  );
-
-  const calculateUsdValue = useMemo(() => {
-    const rates = {
-      btc: 83400,
-      eth: 3200,
-      xbtc: 83400,
-    };
-
-    const numericAmount = parseFloat(amount) || 0;
-    const rate = rates[currency] || 0;
-
-    return (numericAmount * rate).toFixed(2);
-  }, [amount, currency]);
+  const numericAmount = parseFloat(amount) || 0;
+  const rate = CURRENCY_RATES[currency] || 0;
+  const calculateUsdValue = (numericAmount * rate).toFixed(2);
 
   return (
     <Card
