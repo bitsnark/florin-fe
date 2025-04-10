@@ -1,26 +1,38 @@
-export default {
- async config() {
-   const { createApp } = await import("sst");
-   return createApp({
-     name: "florin",
-     region: "us-east-1",
-     stacks: [
-       async () => {
-         const { createStack, StaticSite } = await import("sst");
-         return createStack((stack) => {
-           const site = new StaticSite(stack, "FlorinWeb", {
-             path: ".",
-             buildCommand: "npm run build",
-             buildOutput: "dist",
-             errorPage: "index.html",
-           });
+/// <reference path="./.sst/platform/config.d.ts" />
 
-           stack.addOutputs({
-             URL: site.url,
-           });
-         });
-       },
-     ],
-   });
- },
-};
+// Project configuration constants
+const PROJECT_NAME: string = 'florin'; // Must be set by developer, must only contain alphanumeric characters and hyphens
+const CUSTOMER: string = 'florin'; // Must be set by developer, must only contain alphanumeric characters and hyphens
+
+export default $config({
+  app(input) {
+    return {
+      name: PROJECT_NAME,
+      removal: input?.stage === 'production' ? 'retain' : 'remove',
+      protect: ['production'].includes(input?.stage),
+      home: 'aws',
+      providers: {
+        aws: {
+          defaultTags: {
+            tags: { customer: CUSTOMER, stage: input.stage },
+          },
+        },
+      },
+    };
+  },
+  async run() {
+    const ui = new sst.aws.StaticSite(`${PROJECT_NAME}-ui`, {
+      path: '.',
+      build: {
+        command: 'npm run build',
+        output: 'dist',
+      },
+      errorPage: 'index.html',
+    });
+    // UI <-
+
+    return {
+      ui: ui.url,
+    };
+  },
+});
