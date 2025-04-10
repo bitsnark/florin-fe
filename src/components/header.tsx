@@ -85,7 +85,7 @@ export function Header() {
 
       {/* Mobile Header */}
       <div className="w-full md:hidden">
-        <div className="flex justify-between items-center p-4">
+        <div className="flex justify-between items-center px-4 py-4">
           <div className="flex items-center gap-2">
             <img
               src="/src/assets/bos-bridge-logo.png"

@@ -47,7 +47,7 @@ export function Hero({
         className
       )}
     >
-      <div className="container md:w-[1024px]">
+      <div className="container px-4 md:px-0 md:w-[1024px]">
         {variant === 'center' && (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-16">
             <div

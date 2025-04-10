@@ -60,12 +60,16 @@ interface AmountInputProps {
   network: 'bitcoin' | 'ethereum';
   currency: 'btc' | 'eth' | 'xbtc';
   amount: string;
+  xbtcAmount?: string;
+  onAmountChange?: (value: string) => void;
 }
 
 export const AmountInput = ({
   network,
   currency,
   amount,
+  xbtcAmount,
+  onAmountChange,
 }: AmountInputProps) => {
   const networkLogoSrc = NETWORK_LOGOS[network];
   const logoSrc = CURRENCY_LOGOS[currency];
@@ -79,6 +83,14 @@ export const AmountInput = ({
   const numericAmount = parseFloat(amount) || 0;
   const rate = CURRENCY_RATES[currency] || 0;
   const calculateUsdValue = (numericAmount * rate).toFixed(2);
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and a single decimal point
+    if (/^[0-9]*\.?[0-9]*$/.test(value) || value === '') {
+      onAmountChange?.(value);
+    }
+  };
 
   return (
     <Card
@@ -118,7 +130,7 @@ export const AmountInput = ({
                 className="w-4 h-4 sm:w-5 sm:h-5"
               />
               <span className="text-text-primary font-medium text-xs sm:text-[14px]">
-                0 xBTC
+                {xbtcAmount ?? '0'} xBTC
               </span>
             </div>
           )}
@@ -142,15 +154,22 @@ export const AmountInput = ({
                 </span>
               </div>
             </div>
-            <span className="font-inter font-normal text-[11px] sm:text-[13px] leading-[100%] tracking-[0%] text-label-text">
-              min 0.0004 {currencySymbol} / max 3 {currencySymbol}
-            </span>
+            {network === 'bitcoin' && (
+              <span className="font-inter font-normal text-[11px] sm:text-[13px] leading-[100%] tracking-[0%] text-label-text whitespace-nowrap">
+                min 0.0004 {currencySymbol} / max 3 {currencySymbol}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-col items-end">
-            <span className="text-text-primary text-2xl sm:text-3xl font-bold">
-              {amount}
-            </span>
+            <input
+              type="text"
+              value={amount}
+              onChange={handleAmountChange}
+              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
+              placeholder="0.000"
+              readOnly={network === 'ethereum'}
+            />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
             </span>
