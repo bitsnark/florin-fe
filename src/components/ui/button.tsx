@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           'bg-primary text-primary-foreground shadow-xs hover:bg-white hover:text-black transition-all duration-500 ease-florin rounded-lg',
         orange:
-          'bg-gradient-to-br from-orange to-orange-light text-white rounded-lg transition-all duration-500 ease-florin hover:bg-white hover:text-black hover:border-transparent hover:from-white hover:to-white',
+          'bg-gradient-to-br from-orange-light to-orange text-white rounded-lg transition-all duration-500 ease-florin hover:bg-white hover:text-black hover:border-transparent hover:from-white hover:to-white',
         grey: 'bg-grey border border-grey text-white rounded-lg hover:bg-grey-hover hover:border-grey-border transition-all duration-500 ease-florin',
       },
       size: {
