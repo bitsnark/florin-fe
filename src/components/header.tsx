@@ -65,13 +65,9 @@ export function Header() {
             ))}
           </div>
           <div>
-            <Card className="flex flex-row items-center justify-center bg-grey w-[265px] h-[88px] rounded-xl pt-2 pr-2 pb-2 pl-10 border-none">
+            <Card className="flex flex-row items-center justify-center bg-grey w-[265px] h-[88px] rounded-xl pt-2 pr-2 pb-2 pl-8 border-none">
               <span className="text-white font-bold">Connect Wallet</span>
-              <Button
-                variant="orange"
-                size="icon"
-                className="text-[25px] h-[72px] w-[72px]"
-              >
+              <Button variant="orange" size="box">
                 {'->'}
               </Button>
             </Card>
