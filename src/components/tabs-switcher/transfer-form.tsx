@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import switchArrows from '@/assets/switch-arrows.svg';
+import { cn } from '@/lib/utils';
 
 interface TransferFormProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -87,9 +88,10 @@ export function TransferForm({
       </div>
 
       <div
-        className={`flex flex-col gap-1.5 w-full mt-3 transition-all duration-300 ease-in-out ${
+        className={cn(
+          'flex flex-col gap-1.5 w-full mt-3 transition-all duration-300 ease-in-out',
           isAnimating ? 'opacity-0' : 'opacity-100'
-        }`}
+        )}
       >
         <Label
           htmlFor="wallet-address"
@@ -109,9 +111,10 @@ export function TransferForm({
 
       {toCurrency === 'btc' && (
         <div
-          className={`flex flex-col gap-1.5 w-full mt-3 transition-all duration-300 ease-in-out ${
+          className={cn(
+            'flex flex-col gap-1.5 w-full mt-3 transition-all duration-300 ease-in-out',
             isAnimating ? 'opacity-0' : 'opacity-100'
-          }`}
+          )}
         >
           <Label
             htmlFor="bitcoin-address"

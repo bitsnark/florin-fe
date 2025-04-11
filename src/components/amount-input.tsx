@@ -1,59 +1,20 @@
 import { Card } from './ui/card';
 import walletIcon from '../assets/wallet-icon.svg';
+import { cn } from '../lib/utils';
 
 const ASSETS = {
   BITCOIN_LOGO: '/src/assets/bitcoin-logo.png',
   ETH_LOGO: '/src/assets/eth-logo.png',
   XBTC_LOGO: '/src/assets/xbtc-logo.svg',
-};
-
-const NETWORK_LOGOS = {
-  bitcoin: ASSETS.BITCOIN_LOGO,
-  ethereum: ASSETS.ETH_LOGO,
-};
-
-const CURRENCY_LOGOS = {
-  btc: ASSETS.BITCOIN_LOGO,
-  xbtc: ASSETS.XBTC_LOGO,
-  eth: ASSETS.ETH_LOGO,
-};
-
-const CURRENCY_BG_COLORS = {
-  btc: 'bg-bitcoin-bg',
-  xbtc: 'bg-transparent',
-  eth: 'bg-ethereum-bg',
-};
-
-const NETWORK_NAMES = {
-  bitcoin: 'Bitcoin',
-  ethereum: 'Ethereum Network',
-};
-
-const NETWORK_BG_COLORS = {
-  bitcoin: 'bg-bitcoin-bg',
-  ethereum: 'bg-ethereum-bg',
-};
-
-const CURRENCY_SYMBOLS = {
-  btc: 'BTC',
-  eth: 'ETH',
-  xbtc: 'xBTC',
-};
-
-const CARD_BG_CLASSES = {
-  bitcoin: 'bg-[var(--card-bitcoin-bg)]',
-  ethereum: 'bg-[var(--card-ethereum-bg)]',
-};
-
-const CARD_BORDER_CLASSES = {
-  bitcoin: 'border-none',
-  ethereum: 'border border-input-border',
-};
-
-const CURRENCY_RATES = {
-  btc: 83400,
-  eth: 3200,
-  xbtc: 83400,
+  NETWORK_LOGOS: {
+    bitcoin: '/src/assets/bitcoin-logo.png',
+    ethereum: '/src/assets/eth-logo.png',
+  },
+  CURRENCY_LOGOS: {
+    btc: '/src/assets/bitcoin-logo.png',
+    eth: '/src/assets/eth-logo.png',
+    xbtc: '/src/assets/xbtc-logo.svg',
+  },
 };
 
 interface AmountInputProps {
@@ -71,18 +32,44 @@ export const AmountInput = ({
   xbtcAmount,
   onAmountChange,
 }: AmountInputProps) => {
-  const networkLogoSrc = NETWORK_LOGOS[network];
-  const logoSrc = CURRENCY_LOGOS[currency];
-  const currencyBgColor = CURRENCY_BG_COLORS[currency];
-  const networkName = NETWORK_NAMES[network];
-  const bgColor = NETWORK_BG_COLORS[network];
-  const currencySymbol = CURRENCY_SYMBOLS[currency];
-  const cardBgClass = CARD_BG_CLASSES[network];
-  const cardBorderClass = CARD_BORDER_CLASSES[network];
+  const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
 
-  const numericAmount = parseFloat(amount) || 0;
-  const rate = CURRENCY_RATES[currency] || 0;
-  const calculateUsdValue = (numericAmount * rate).toFixed(2);
+  const logoSrc = ASSETS.CURRENCY_LOGOS[currency];
+
+  const currencyBgColor =
+    currency === 'btc'
+      ? 'bg-bitcoin-bg'
+      : currency === 'xbtc'
+        ? 'bg-transparent'
+        : 'bg-ethereum-bg';
+
+  const networkName = network === 'bitcoin' ? 'Bitcoin' : 'Ethereum Network';
+
+  const bgColor = network === 'bitcoin' ? 'bg-bitcoin-bg' : 'bg-ethereum-bg';
+
+  const currencySymbol =
+    currency === 'btc' ? 'BTC' : currency === 'eth' ? 'ETH' : 'xBTC';
+
+  const cardBgClass =
+    network === 'ethereum'
+      ? 'bg-[var(--card-ethereum-bg)]'
+      : 'bg-[var(--card-bitcoin-bg)]';
+
+  const cardBorderClass =
+    network === 'ethereum' ? 'border border-input-border' : 'border-none';
+
+  const calculateUsdValue = (() => {
+    const rates = {
+      btc: 83400,
+      eth: 3200,
+      xbtc: 83400,
+    };
+
+    const numericAmount = parseFloat(amount) || 0;
+    const rate = rates[currency] || 0;
+
+    return (numericAmount * rate).toFixed(2);
+  })();
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -94,8 +81,11 @@ export const AmountInput = ({
 
   return (
     <Card
-      className={`w-full max-w-[408px] h-auto min-h-[116px] p-[10px_16px_16px_16px]
-      ${cardBgClass} rounded-2xl shadow-sm mb-0 ${cardBorderClass}`}
+      className={cn(
+        'w-full max-w-[408px] h-auto min-h-[116px] p-[10px_16px_16px_16px] rounded-2xl shadow-sm mb-0',
+        cardBgClass,
+        cardBorderClass
+      )}
     >
       <div className="flex flex-col justify-between h-full gap-2.5">
         <div className="flex items-center justify-between gap-2">
@@ -105,7 +95,10 @@ export const AmountInput = ({
             </span>
             <div className="flex items-center gap-1 sm:gap-2">
               <div
-                className={`w-5 h-5 sm:w-6 sm:h-6 ${bgColor} rounded-full flex items-center justify-center overflow-hidden`}
+                className={cn(
+                  'w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center overflow-hidden',
+                  bgColor
+                )}
               >
                 <img
                   src={networkLogoSrc}
@@ -137,7 +130,10 @@ export const AmountInput = ({
           <div>
             <div className="flex items-center gap-1 sm:gap-2">
               <div
-                className={`w-6 h-6 sm:w-8 sm:h-8 ${currencyBgColor} rounded-full flex items-center justify-center overflow-hidden`}
+                className={cn(
+                  'w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center overflow-hidden',
+                  currencyBgColor
+                )}
               >
                 <img
                   src={logoSrc}

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ConnectButtonProps {
   isWalletConnected: boolean;
@@ -17,9 +18,10 @@ export function ConnectButton({
 }: ConnectButtonProps) {
   return (
     <div
-      className={`flex justify-center items-center w-full mt-5 transition-all duration-300 ease-in-out ${
+      className={cn(
+        'flex justify-center items-center w-full mt-5 transition-all duration-300 ease-in-out',
         isAnimating ? 'opacity-0' : 'opacity-100'
-      }`}
+      )}
     >
       <Button
         variant="orange"
