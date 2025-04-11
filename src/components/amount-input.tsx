@@ -79,14 +79,6 @@ export const AmountInput = ({
     }
   };
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Only allow numbers and a single decimal point
-    if (/^[0-9]*\.?[0-9]*$/.test(value) || value === '') {
-      onAmountChange?.(value);
-    }
-  };
-
   return (
     <Card
       className={cn(
