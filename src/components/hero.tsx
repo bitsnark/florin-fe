@@ -41,7 +41,7 @@ export function Hero({
   return (
     <div
       className={cn(
-        'w-full py-16 md:py-10 md:px-[120px]',
+        'w-full pb-16 md:pb-10 md:px-[120px]',
         'bg-transparent',
         'flex justify-center',
         className

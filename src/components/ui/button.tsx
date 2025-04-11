@@ -20,6 +20,7 @@ const buttonVariants = cva(
         sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
         lg: 'h-10 rounded-md px-6 has-[>svg]:px-4 md:h-11 md:px-7',
         icon: 'size-9 md:size-10',
+        box: 'w-[75px] h-[75px]',
         custom:
           'w-[180px] h-[60px] md:w-[228px] md:h-[72px] rounded-lg gap-[10px] pt-[20px] pr-[24px] pb-[20px] pl-[24px] md:pt-[27px] md:pr-[32px] md:pb-[26px] md:pl-[32px]',
       },
