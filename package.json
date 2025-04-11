@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write ./src",
-    "deploy-prod": "sst deploy --stage prod",
+    "deploy-prod": "sst deploy --stage production",
     "deploy-staging": "sst deploy --stage staging"
   },
   "dependencies": {

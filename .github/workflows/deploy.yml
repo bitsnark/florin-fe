@@ -1,40 +1,27 @@
-name: Deploy SST
+name: Deploy Florin Web
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      AWS_REGION: us-east-1
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Setup AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+      - name: Install dependencies
+        run: npm install
 
-      - name: Build frontend
-        working-directory: florin-fe
-        run: |
-          npm install
-          npm run build
-
-      - name: Deploy SST
-        working-directory: sst-infra
-        run: |
-          npm install
-          npm run deploy
+      - name: Deploy with SST
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SST_STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+        run: npx sst deploy --stage $SST_STAGE
