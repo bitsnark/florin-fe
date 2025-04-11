@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TabSwitcher } from '@/components/ui/tab-switcher';
 import { TransferTab } from './transfer-tab';
-import { HistoryTab } from './history-tab';
+import { HistoryTab } from '@/components/history-table/history-tab';
 import { Network, Currency } from './types';
 
 export function TabSwitcherContainer() {
