@@ -20,7 +20,7 @@ export const Route = createRootRoute({
         />
       </div>
       <hr className="border-t border-[#3A3740] h-[1px]" />
-      <div>
+      <div className="px-4 md:px-0">
         <Outlet />
       </div>
       <Footer />
