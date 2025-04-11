@@ -18,13 +18,10 @@ jobs:
           node-version: 20
 
       - name: Install deps
-        working-directory: florin-fe
         run: npm install
 
       - name: Lint
-        working-directory: florin-fe
         run: npm run lint
 
       - name: Build
-        working-directory: florin-fe
         run: npm run build
