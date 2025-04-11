@@ -1,6 +1,6 @@
 import { Card } from './ui/card';
-import walletIcon from '../assets/wallet-icon.svg';
-import { cn } from '../lib/utils';
+import walletIcon from '@/assets/wallet-icon.svg';
+import { cn } from '@/lib/utils';
 
 const ASSETS = {
   BITCOIN_LOGO: '/src/assets/bitcoin-logo.png',
@@ -70,14 +70,6 @@ export const AmountInput = ({
 
     return (numericAmount * rate).toFixed(2);
   })();
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Only allow numbers and a single decimal point
-    if (/^[0-9]*\.?[0-9]*$/.test(value) || value === '') {
-      onAmountChange?.(value);
-    }
-  };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
