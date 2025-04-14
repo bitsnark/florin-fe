@@ -17,6 +17,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Clean install workaround for rollup native
+        run: |
+          rm -rf node_modules package-lock.json
+
       - name: Install deps
         run: npm install
 
