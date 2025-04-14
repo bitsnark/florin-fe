@@ -3,6 +3,7 @@ name: Deploy website
 on: 
   push:
     branches:
+      - main
       - develop
 
 jobs:
@@ -32,10 +33,16 @@ jobs:
         run: npm run build
 
       - name: Deploy to Netlify
-        id: netlify_deploy
         run: |
-          netlify deploy \
-            --prod \
+          DEPLOY_COMMAND="netlify deploy \
             --dir dist \
             --site ${{ secrets.NETLIFY_SITE_ID }} \
-            --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
+            --auth '${{ secrets.NETLIFY_AUTH_TOKEN }}'"
+
+          # If wer are on the main branch --prod
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            DEPLOY_COMMAND="$DEPLOY_COMMAND --prod"
+          fi
+
+          echo "Running: $DEPLOY_COMMAND"
+          eval $DEPLOY_COMMAND
