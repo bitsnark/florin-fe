@@ -3,7 +3,7 @@ name: Deploy website
 on: 
   push:
     branches:
-      - develop
+      - chore/FF-12
 
 jobs:
   build-and-deploy:
@@ -36,5 +36,5 @@ jobs:
         run: |
           netlify deploy \
             --dir dist \
-            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --site ceef7419-f372-4745-94d7-6c886f841f23 \
             --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
