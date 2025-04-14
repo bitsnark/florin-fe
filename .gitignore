@@ -31,3 +31,9 @@ dist-ssr
 
 #vite
 .vite
+
+#environment
+.env
+
+#sst
+.sst
