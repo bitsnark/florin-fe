@@ -35,6 +35,7 @@ jobs:
         id: netlify_deploy
         run: |
           netlify deploy \
+            --prod \
             --dir dist \
             --site ceef7419-f372-4745-94d7-6c886f841f23 \
             --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
