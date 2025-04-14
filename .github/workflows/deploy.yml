@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - chore/FF-12
 
 jobs:
   build-and-deploy:
