@@ -1,23 +1,17 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
+import { createRootRoute, Outlet } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
   component: () => (
-    <div className="min-h-screen w-full">
-      <div className="container mx-auto p-4">
-        <div className="p-2 flex gap-2">
-          <Link to="/" className="[&.active]:font-bold">
-            Home
-          </Link>{' '}
-          <Link to="/history" className="[&.active]:font-bold">
-            History
-          </Link>{' '}
-          <Link to="/design-system" className="[&.active]:font-bold">
-            Design System
-          </Link>
-        </div>
-        <hr />
+    <div className="w-full min-h-screen flex flex-col">
+      <Header />
+      <hr className="border-t border-[#3A3740] h-[1px]" />
+      <hr className="border-t border-[#3A3740] h-[1px]" />
+      <div className="px-4 md:px-0">
         <Outlet />
       </div>
+      <Footer />
     </div>
   ),
 });

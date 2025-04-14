@@ -39,8 +39,15 @@ export function Hero({
   }, []);
 
   return (
-    <div className={cn('w-full py-16 md:py-24', 'bg-transparent', className)}>
-      <div className="container mx-auto px-4">
+    <div
+      className={cn(
+        'w-full pb-16 md:pb-10 md:px-[120px]',
+        'bg-transparent',
+        'flex justify-center',
+        className
+      )}
+    >
+      <div className="container px-4 md:px-0 md:w-[1024px]">
         {variant === 'center' && (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-16">
             <div
@@ -49,14 +56,9 @@ export function Hero({
             >
               {topTitle && (
                 <h2
-                  className="text-[#939097] mb-4 uppercase text-center md:text-left"
+                  className="text-[#939097] mb-4 uppercase text-center md:text-left text-[24px] font-bold leading-[120%] tracking-[1%]"
                   style={{
                     fontFamily: 'Druk, sans-serif',
-                    fontWeight: 'bold',
-                    fontSize: '24px',
-                    lineHeight: '120%',
-                    letterSpacing: '1%',
-                    textTransform: 'uppercase',
                   }}
                 >
                   {topTitle}
@@ -72,13 +74,12 @@ export function Hero({
             {imageSrc && (
               <div
                 ref={imageContainerRef}
-                className="w-full md:max-w-[500px] lg:max-w-[600px] md:flex md:items-center md:justify-center"
-                style={{
-                  height:
-                    imageHeight && window.innerWidth >= 768
-                      ? `${imageHeight}px`
-                      : 'auto',
-                }}
+                className="w-full md:max-w-[528px] lg:max-w-[528px] md:max-h-[281px] lg:max-h-[281px] md:flex md:items-center md:justify-center"
+                style={
+                  imageHeight && window.innerWidth >= 768
+                    ? { height: `${imageHeight}px` }
+                    : { height: 'auto' }
+                }
               >
                 <img
                   src={imageSrc}

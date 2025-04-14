@@ -1,16 +1,16 @@
-import discordLogo from '../assets/discord-logo.png';
-import telegramLogo from '../assets/telegram-logo.png';
-import xLogo from '../assets/x-logo.png';
-import githubLogo from '../assets/github-logo.png';
-import { Card } from './ui/card';
+import discordLogo from '@/assets/discord-logo.png';
+import telegramLogo from '@/assets/telegram-logo.png';
+import xLogo from '@/assets/x-logo.png';
+import githubLogo from '@/assets/github-logo.png';
+import { Card } from '@/components/ui/card';
 
-interface CominityLinkProps {
+interface CommunityLinkProps {
   href: string;
   label: string;
-  comunity: 'discord' | 'telegram' | 'x' | 'github';
+  community: 'discord' | 'telegram' | 'x' | 'github';
 }
 
-export function CominityLink({ href, label, comunity }: CominityLinkProps) {
+export function CommunityLink({ href, label, community }: CommunityLinkProps) {
   const logoMap = {
     discord: discordLogo,
     telegram: telegramLogo,
@@ -28,8 +28,8 @@ export function CominityLink({ href, label, comunity }: CominityLinkProps) {
       <Card className="bg-grey pt-2 pr-8 pb-2 pl-2 h-[88px] rounded-xl backdrop-blur-lg border-none flex flex-row items-center gap-5 cursor-pointer">
         <div className="w-[72px] h-[72px] flex items-center justify-center rounded-xl bg-primary">
           <img
-            src={logoMap[comunity]}
-            alt={`${comunity} logo`}
+            src={logoMap[community]}
+            alt={`${community} logo`}
             className="w-[27px] h-[27px]"
           />
         </div>

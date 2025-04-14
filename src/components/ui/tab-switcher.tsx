@@ -7,8 +7,9 @@ const tabSwitcherVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-input-bg border border-input-border w-[440px] h-[62px]',
-        pill: 'bg-grey w-[440px] h-[62px]',
+        default:
+          'bg-input-bg border border-input-border w-full sm:w-[90%] md:w-[440px] h-[50px] md:h-[62px]',
+        pill: 'bg-grey w-full sm:w-[90%] md:w-[440px] h-[50px] md:h-[62px]',
       },
       size: {
         default: '',
@@ -24,7 +25,7 @@ const tabSwitcherVariants = cva(
 );
 
 const tabItemVariants = cva(
-  'flex items-center justify-center rounded-md text-sm font-medium transition-all duration-300 ease-florin cursor-pointer select-none flex-1 h-full',
+  'flex items-center justify-center rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ease-florin cursor-pointer select-none flex-1 h-full',
   {
     variants: {
       variant: {
@@ -67,7 +68,7 @@ export function TabSwitcher({
           onClick={() => onTabChange(index)}
           className={cn(
             tabItemVariants({ variant }),
-            'outline-none focus:none focus:none h-full'
+            'outline-none focus:none focus:none h-full px-1 md:px-3'
           )}
           data-state={index === activeTab ? 'active' : 'inactive'}
           type="button"

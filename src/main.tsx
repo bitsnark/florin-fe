@@ -7,7 +7,13 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-const router = createRouter({ routeTree });
+import { NotFoundPage } from '@/pages/NotFoundPage';
+
+// Pass the NotFoundPage component to the router configuration
+const router = createRouter({
+  routeTree,
+  defaultNotFoundComponent: NotFoundPage,
+});
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
