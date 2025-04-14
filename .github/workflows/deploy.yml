@@ -39,7 +39,7 @@ jobs:
             --site ${{ secrets.NETLIFY_SITE_ID }} \
             --auth '${{ secrets.NETLIFY_AUTH_TOKEN }}'"
 
-          # Si estamos en main, agregamos --prod
+          # If wer are on the main branch --prod
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             DEPLOY_COMMAND="$DEPLOY_COMMAND --prod"
           fi
