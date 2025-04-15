@@ -1,9 +1,8 @@
 import { Link } from '@tanstack/react-router';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
 import { useState, useEffect } from 'react';
 import { Icon } from './ui/icon';
 import { ICON_PATHS } from './ui/icons';
+import { EvmWalletConnect } from './evm-wallet-connector';
 
 // Define the navigation items
 const navigationItems = [
@@ -64,14 +63,7 @@ export function Header() {
               </Link>
             ))}
           </div>
-          <div>
-            <Card className="flex flex-row items-center justify-center bg-grey w-[265px] h-[88px] rounded-xl pt-2 pr-2 pb-2 pl-8 border-none">
-              <span className="text-white font-bold">Connect Wallet</span>
-              <Button variant="orange" size="box">
-                {'->'}
-              </Button>
-            </Card>
-          </div>
+          <EvmWalletConnect />
         </div>
       </div>
 
@@ -86,25 +78,31 @@ export function Header() {
             />
             <span className="text-white font-bold text-sm">Grail Bridge</span>
           </div>
-          <button className="text-white p-2 z-50 relative" onClick={toggleMenu}>
-            {isMenuOpen ? (
-              <Icon
-                path={ICON_PATHS.CLOSE}
-                stroke="white"
-                width={24}
-                height={24}
-                className="transition-transform duration-300 rotate-90 scale-110"
-              />
-            ) : (
-              <Icon
-                path={ICON_PATHS.MENU}
-                stroke="white"
-                width={24}
-                height={24}
-                className="transition-transform duration-300 rotate-0"
-              />
-            )}
-          </button>
+          <div className="flex">
+            <EvmWalletConnect />
+            <button
+              className="text-white p-2 z-50 relative"
+              onClick={toggleMenu}
+            >
+              {isMenuOpen ? (
+                <Icon
+                  path={ICON_PATHS.CLOSE}
+                  stroke="white"
+                  width={24}
+                  height={24}
+                  className="transition-transform duration-300 rotate-90 scale-110"
+                />
+              ) : (
+                <Icon
+                  path={ICON_PATHS.MENU}
+                  stroke="white"
+                  width={24}
+                  height={24}
+                  className="transition-transform duration-300 rotate-0"
+                />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu with Animation */}
@@ -135,11 +133,7 @@ export function Header() {
                 : 'opacity-0 translate-y-4'
             }`}
             style={getAnimationDelay(navigationItems.length)}
-          >
-            <Button variant="orange" className="w-full py-4 rounded-lg">
-              Connect Wallet
-            </Button>
-          </div>
+          ></div>
         </div>
       </div>
     </>
