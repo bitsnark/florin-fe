@@ -7,15 +7,10 @@ import { Card } from '../ui/card';
 import EthLogo from '@/assets/eth-logo.png';
 export const EvmWalletConnected = () => {
   const { disconnect } = useDisconnect();
-  const { address, connector } = useAccount();
+  const { address } = useAccount();
   const [isOpen, setIsOpen] = useState(false);
 
-  /* const onCopyAddress = useCallback(() => {
-    navigator.clipboard.writeText(address || '');
-  }, [address]); */
-
   const truncatedAddr = truncateAddress(address || '');
-  console.log(connector);
   return (
     <>
       <Card
