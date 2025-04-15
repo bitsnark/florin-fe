@@ -31,7 +31,8 @@ jobs:
 
       - name: Build project
         run: npm run build
-
+        env:
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
       - name: Deploy to Netlify
         run: |
           DEPLOY_COMMAND="netlify deploy \
