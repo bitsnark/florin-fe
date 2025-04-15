@@ -15,6 +15,6 @@ export const wagmiConfig = createConfig({
   chains: supportedChains,
   connectors: [injected(), walletConnector, metaMask()],
   transports: Object.fromEntries(
-    supportedChains.map(chain => [chain.id, http()]),
+    supportedChains.map((chain) => [chain.id, http()])
   ) as Record<ChainId, ReturnType<typeof http>>,
 });

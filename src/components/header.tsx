@@ -78,7 +78,7 @@ export function Header() {
             />
             <span className="text-white font-bold text-sm">Grail Bridge</span>
           </div>
-          <div className='flex'>
+          <div className="flex">
             <EvmWalletConnect />
             <button
               className="text-white p-2 z-50 relative"

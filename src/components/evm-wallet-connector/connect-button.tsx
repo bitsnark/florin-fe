@@ -2,7 +2,11 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { ArrowRight } from 'lucide-react';
 
-export const ConnectWalletButton = ({ handleConnectClick }: { handleConnectClick: () => void }) => {
+export const ConnectWalletButton = ({
+  handleConnectClick,
+}: {
+  handleConnectClick: () => void;
+}) => {
   return (
     <>
       <Card className="hidden md:flex flex-row items-center justify-center bg-grey w-[265px] h-[88px] rounded-xl pt-2 pr-2 pb-2 pl-8 border-none">

@@ -23,12 +23,8 @@ export const EvmWalletConnected = () => {
         className="text-white text-[14px] font-bold | bg-grey h-[88px] rounded-xl py-2 px-4 border-none cursor-pointer hover:opacity-90 transition-opacity"
       >
         <div className=" h-full flex flex-row items-center justify-between gap-9">
-          <div className='flex flex-row items-center gap-2'>
-            <img
-              src={EthLogo}
-              alt="Ethereum Logo"
-              className="w-4 h-4"
-            />
+          <div className="flex flex-row items-center gap-2">
+            <img src={EthLogo} alt="Ethereum Logo" className="w-4 h-4" />
             {truncatedAddr}
           </div>
 
@@ -37,7 +33,9 @@ export const EvmWalletConnected = () => {
       </Card>
       <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
         <DialogContent className="p-6">
-          <div onClick={() => disconnect()} className='cursor-pointer'>Disconnect</div>
+          <div onClick={() => disconnect()} className="cursor-pointer">
+            Disconnect
+          </div>
         </DialogContent>
       </Dialog>
     </>

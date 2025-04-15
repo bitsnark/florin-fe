@@ -7,7 +7,7 @@ const createChain = (
   nativeSymbol: string,
   rpcUrl: string,
   explorerUrl: string,
-  explorerApiUrl: string,
+  explorerApiUrl: string
 ) =>
   defineChain({
     id,
@@ -35,7 +35,7 @@ export const sepolia = createChain(
   'tETH',
   'https://sepolia.gateway.tenderly.co',
   'https://sepolia.etherscan.io',
-  'https://api-sepolia.etherscan.io/api',
+  'https://api-sepolia.etherscan.io/api'
 );
 
 export const baseSepolia = createChain(
@@ -44,14 +44,10 @@ export const baseSepolia = createChain(
   'ETH',
   'https://sepolia.base.org',
   'https://sepolia.basescan.org',
-  'https://sepolia.basescan.org/api',
+  'https://sepolia.basescan.org/api'
 );
 
-
-export const supportedChains = [
-  sepolia,
-  baseSepolia,
-] as const;
+export const supportedChains = [sepolia, baseSepolia] as const;
 
 export const AIRDROP_API_MAP: Record<number, string> = {
   [ChainId.Sepolia]: 'https://sepolia.airdroper.bitcoinos.build',
