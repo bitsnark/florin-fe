@@ -144,3 +144,16 @@ export const MobileEmptyState = () => (
     </div>
   </div>
 );
+
+// Mobile Wallet Not Connected State
+export const MobileWalletNotConnectedState = () => (
+  <div className="bg-[#1D1F25] rounded-[24px] border border-[#333845] p-6 text-center">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <SymbolIcon className="h-10 w-10 text-[#666]" />
+      <p className="text-white text-base">Wallet not connected</p>
+      <p className="text-[#9A9A9A] text-sm">
+        Connect your wallet to see your transaction history.
+      </p>
+    </div>
+  </div>
+);

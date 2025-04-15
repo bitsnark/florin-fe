@@ -13,30 +13,36 @@ import {
   MobileTransactionItem,
   MobileLoadingSkeleton,
   MobileEmptyState,
+  MobileWalletNotConnectedState,
 } from './mobile-components';
 import {
   DesktopTransactionRow,
   SkeletonRow,
   EmptyState,
+  WalletNotConnectedState,
 } from './desktop-components';
 
 /**
  * Transactions history table component
- * 
+ *
  * This component displays transaction history in both desktop and mobile views.
- * It uses the useTransactions hook which transforms our backend data (Positions 
+ * It uses the useTransactions hook which transforms our backend data (Positions
  * and Reservations) into the Transaction format required by the UI design.
  */
 export default function TransactionsTable() {
   const { width } = useWindowSize();
   const isMobile = width < 768;
   const { data: transactions = [], isLoading } = useTransactions();
+  // TODO: Replace with actual wallet connection state from your context or hook
+  const isWalletConnected = true;
 
   // Render mobile view
   if (isMobile) {
     return (
       <div className="bg-primary p-4 rounded-xl w-full max-w-[359px] mx-auto overflow-y-auto">
-        {isLoading ? (
+        {!isWalletConnected ? (
+          <MobileWalletNotConnectedState />
+        ) : isLoading ? (
           <div className="flex flex-col gap-3">
             <MobileLoadingSkeleton />
             <MobileLoadingSkeleton />
@@ -112,7 +118,9 @@ export default function TransactionsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading ? (
+          {!isWalletConnected ? (
+            <WalletNotConnectedState />
+          ) : isLoading ? (
             <>
               <SkeletonRow />
               <SkeletonRow />
