@@ -108,14 +108,26 @@ export const EmptyState = () => (
   <TableRow className="hover:bg-transparent">
     <TableCell
       colSpan={8}
-      className="border border-[#333845] rounded-[10px] bg-[#1D1F25] py-8 px-4 text-center"
+      className="border border-[#333845] rounded-[10px] py-8 px-4 text-center"
     >
       <div className="flex flex-col items-center justify-center gap-2">
-        <SymbolIcon className="h-8 w-8 text-gray-400" />
-        <p className="text-gray-400">No transactions found</p>
         <p className="text-gray-500 text-xs">
-          Your transactions will appear here once you start interacting with the
-          platform.
+          You haven't made any transfers yet
+        </p>
+      </div>
+    </TableCell>
+  </TableRow>
+);
+
+export const WalletNotConnectedState = () => (
+  <TableRow className="hover:bg-transparent">
+    <TableCell
+      colSpan={8}
+      className="border border-[#333845] rounded-[10px] py-8 px-4 text-center"
+    >
+      <div className="flex flex-col items-center justify-center gap-2">
+        <p className="text-gray-500 text-xs">
+          Connect your wallet to see the transfer history
         </p>
       </div>
     </TableCell>

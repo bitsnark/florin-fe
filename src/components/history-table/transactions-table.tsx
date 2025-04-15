@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -9,40 +8,41 @@ import {
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { Accordion } from '@/components/ui/accordion';
 import { useWindowSize } from './utils';
-import { Transaction } from './types';
-import { mockTransactions } from './mock-data';
+import { useTransactions } from '@/hooks/useTransactions';
 import {
   MobileTransactionItem,
   MobileLoadingSkeleton,
   MobileEmptyState,
+  MobileWalletNotConnectedState,
 } from './mobile-components';
 import {
   DesktopTransactionRow,
   SkeletonRow,
   EmptyState,
+  WalletNotConnectedState,
 } from './desktop-components';
 
+/**
+ * Transactions history table component
+ *
+ * This component displays transaction history in both desktop and mobile views.
+ * It uses the useTransactions hook which transforms our backend data (Positions
+ * and Reservations) into the Transaction format required by the UI design.
+ */
 export default function TransactionsTable() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { width } = useWindowSize();
-  const isMobile = width < 768; // Define mobile breakpoint at 768px
-
-  useEffect(() => {
-    // Simulate API delay
-    const timer = setTimeout(() => {
-      setTransactions(mockTransactions);
-      setLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const isMobile = width < 768;
+  const { data: transactions = [], isLoading } = useTransactions();
+  // TODO: Replace with actual wallet connection state from your context or hook
+  const isWalletConnected = true;
 
   // Render mobile view
   if (isMobile) {
     return (
       <div className="bg-primary p-4 rounded-xl w-full max-w-[359px] mx-auto overflow-y-auto">
-        {loading ? (
+        {!isWalletConnected ? (
+          <MobileWalletNotConnectedState />
+        ) : isLoading ? (
           <div className="flex flex-col gap-3">
             <MobileLoadingSkeleton />
             <MobileLoadingSkeleton />
@@ -118,7 +118,9 @@ export default function TransactionsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {loading ? (
+          {!isWalletConnected ? (
+            <WalletNotConnectedState />
+          ) : isLoading ? (
             <>
               <SkeletonRow />
               <SkeletonRow />
