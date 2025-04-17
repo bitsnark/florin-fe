@@ -131,7 +131,6 @@ export const useExchange = () => {
         typeof value === 'bigint' ? value.toString() : value
       );
       window.localStorage.setItem('receitp_reservation', rJson);
-
       setLoading(false);
       return receipt;
     } catch (error) {
