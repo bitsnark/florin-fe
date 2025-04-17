@@ -1,22 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import { EvmWalletConnected } from './connected-wallet-button';
-import { ConnectorsListDialog } from './connectors-list-dialog';
 import { ConnectWalletButton } from './connect-button';
+import { useWalletDialog } from '@/hooks/useWalletDialog';
 
 export const EvmWalletConnect = () => {
   const { address } = useAccount();
-  const [isOpen, setIsOpen] = useState(false);
+  const { openDialog } = useWalletDialog();
   const handleConnectClick = useCallback(() => {
-    setIsOpen(true);
+    openDialog();
   }, []);
 
   return address ? (
     <EvmWalletConnected />
   ) : (
-    <>
-      <ConnectWalletButton handleConnectClick={handleConnectClick} />
-      <ConnectorsListDialog isOpen={isOpen} setIsOpen={setIsOpen} />
-    </>
+    <ConnectWalletButton handleConnectClick={handleConnectClick} />
   );
 };

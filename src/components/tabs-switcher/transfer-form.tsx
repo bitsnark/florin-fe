@@ -4,6 +4,7 @@ import { Label } from '@radix-ui/react-label';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import switchArrows from '@/assets/switch-arrows.svg';
 import { cn } from '@/lib/utils';
+import { Address } from 'viem';
 
 interface TransferFormProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -15,12 +16,12 @@ interface TransferFormProps {
   xbtcAmount: string;
   isAnimating: boolean;
   isWalletConnected: boolean;
-  ethWalletAddress: string;
-  bitcoinAddress: string;
+  ethWalletAddress?: Address;
+  bitcoinAddress?: Address;
   handleSwitchNetworks: () => void;
   handleFromAmountChange: (value: string) => void;
   handleToAmountChange: (value: string) => void;
-  setBitcoinAddress: (value: string) => void;
+  setBitcoinAddress: (value: Address | undefined) => void;
 }
 
 export function TransferForm({
@@ -127,7 +128,7 @@ export function TransferForm({
             id="bitcoin-address"
             placeholder="Paste your Bitcoin receiving address"
             value={bitcoinAddress}
-            onChange={(e) => setBitcoinAddress(e.target.value)}
+            onChange={(e) => setBitcoinAddress(e.target.value as Address)}
           />
         </div>
       )}

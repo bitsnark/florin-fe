@@ -4,21 +4,18 @@ import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
 import { Card } from '../ui/card';
 import { walletIcons } from '@/lib/utils';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { useWalletDialog } from '@/hooks/useWalletDialog';
 
-export const ConnectorsListDialog = ({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}) => {
+export const ConnectorsListDialog = () => {
+  const { open, setOpen } = useWalletDialog();
   const { connectors, connect } = useConnect();
 
   const handleConnectorClick = useCallback(
     (connector: Connector) => {
       connect({ connector });
+      setOpen(false);
     },
-    [connect]
+    [connect, setOpen]
   );
 
   // Ensure OKX Wallet is first in the list
@@ -29,7 +26,7 @@ export const ConnectorsListDialog = ({
     .filter((connector) => connector.id !== 'injected');
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+    <Dialog open={open} onOpenChange={(o) => setOpen(o)}>
       <DialogTrigger
         title="Connect EVM wallet"
         className="rounded-t-[0.625rem]"

@@ -3,8 +3,13 @@ import { TabSwitcher } from '@/components/ui/tab-switcher';
 import { TransferTab } from './transfer-tab';
 import { HistoryTab } from '@/components/history-table/history-tab';
 import { Network, Currency } from './types';
+import { useAccount } from 'wagmi';
+import { Address, formatEther, parseEther } from 'viem';
+import { useExchange } from '@/hooks/useExchange';
+import { TransactionTrackerDialog } from '../transaction-tracker';
 
 export function TabSwitcherContainer() {
+  const { address } = useAccount();
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
@@ -18,14 +23,19 @@ export function TabSwitcherContainer() {
   const [fromAmount, setFromAmount] = useState('0.012');
   const [toAmount, setToAmount] = useState('0.012');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [bitcoinAddress, setBitcoinAddress] = useState('');
+  const [bitcoinAddress, setBitcoinAddress] = useState<Address | undefined>(
+    undefined
+  );
+  const { openPosition, reservePosition, loading } = useExchange();
+  const [openTracker, setOpenTracker] = useState(false);
+  const [trackerData, setTrackerData] = useState<any>({});
   const xbtcAmount = '1.123';
 
   const tabs = ['Transfer', 'History'];
   const variant = 'default';
   const size = 'default';
-  const isWalletConnected = false;
-  const ethWalletAddress = '0x1234567890abcdef';
+  const isWalletConnected = !!address;
+  const ethWalletAddress = address;
 
   const handleSwitchNetworks = () => {
     if (isAnimating) return;
@@ -63,6 +73,27 @@ export function TabSwitcherContainer() {
     // setFromAmount(value);
   };
 
+  const handleBridgeFunds = async () => {
+    let transaction: any;
+    if (fromNetwork === 'bitcoin') {
+      transaction = await reservePosition({
+        tokenAmount: BigInt(parseEther(fromAmount)),
+        reservationId: BigInt(1n),
+        positionId: '0x1234' as Address,
+        evmReceivingAddress: address!,
+      });
+    } else {
+      transaction = await openPosition({
+        tokenAmount: BigInt(parseEther(fromAmount)),
+        exchangeRate: 1,
+        bitcoinAddresses: bitcoinAddress!,
+        deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
+        owner: address!,
+      });
+    }
+    setTrackerData(transaction);
+    setOpenTracker(true);
+  };
   return (
     <div className="flex flex-col items-center justify-center pb-10">
       <TabSwitcher
@@ -73,7 +104,16 @@ export function TabSwitcherContainer() {
         size={size}
         className="gap-2.5 bg-primary border-none"
       />
-
+      <TransactionTrackerDialog
+        open={openTracker}
+        onOpenChange={setOpenTracker}
+        transactionData={{
+          amount: trackerData?.logs && formatEther(trackerData?.logs[0]?.args?.tokenAmount), 
+          recipientAddress: trackerData?.logs && trackerData?.logs[0].args.bitcoinAddresses,
+          reservationTx: trackerData?.receipt?.transactionHash,
+          currentStep: 0,
+        }}
+      />
       <div className="my-3">
         {activeTab === 0 ? (
           <TransferTab
@@ -94,6 +134,8 @@ export function TabSwitcherContainer() {
             handleToAmountChange={handleToAmountChange}
             setBitcoinAddress={setBitcoinAddress}
             setTermsAccepted={setTermsAccepted}
+            handleBridgeFunds={handleBridgeFunds}
+            loading={loading}
           />
         ) : (
           <HistoryTab />

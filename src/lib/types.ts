@@ -1,3 +1,5 @@
+import { Address, Chain, Hash } from "viem";
+
 export enum Finality {
   UNKNOWN = 'UNKNOWN',
   FINAL = 'FINAL',
@@ -43,3 +45,21 @@ export interface Reservation {
   amount: string; // Using string instead of bigint for JSON compatibility
   finality: Finality;
 } 
+
+export interface ContractManagerConfig {
+  chain: Chain;
+  network: {
+    rpcUrl: string;
+  };
+  privateKey?: Address;
+ }
+ 
+ export interface ContractConfig {
+  abi: any[];
+  bytecode: Address;
+ }
+ 
+ export interface TransactionResponse {
+  hash: Hash;
+  wait: () => Promise<any>;
+ }

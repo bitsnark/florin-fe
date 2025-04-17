@@ -37,17 +37,22 @@ function Button({
   variant,
   size,
   asChild = false,
+  isAnimating = false,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    isAnimating?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
 
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        isAnimating ? 'opacity-0' : 'opacity-100'
+      )}
       {...props}
     />
   );
