@@ -47,7 +47,18 @@ export const baseSepolia = createChain(
   'https://sepolia.basescan.org/api'
 );
 
-export const supportedChains = [sepolia, baseSepolia] as const;
+export const localhost = defineChain({
+  id: 31337,
+  name: 'Hardhat',
+  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['http://127.0.0.1:8545'],
+    },
+  },
+});
+
+export const supportedChains = [sepolia, baseSepolia, localhost] as const;
 
 export const AIRDROP_API_MAP: Record<number, string> = {
   [ChainId.Sepolia]: 'https://sepolia.airdroper.bitcoinos.build',

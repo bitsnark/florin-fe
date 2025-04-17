@@ -6,12 +6,12 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
 import { NotFoundPage } from '@/pages/NotFoundPage';
-import { makeServer } from '@/lib/mock-server';
+//import { makeServer } from '@/lib/mock-server';
 
 // Initialize mock server in development
-if (import.meta.env.DEV) {
+/* if (import.meta.env.DEV) {
   makeServer({ environment: 'development' });
-}
+} */
 import { Providers } from './providers';
 
 // Pass the NotFoundPage component to the router configuration

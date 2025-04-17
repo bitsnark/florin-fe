@@ -5,4 +5,5 @@ export enum ChainId {
   // BobSepolia = 808813,
   BaseSepolia = 84532,
   ModeSepolia = 919,
+  Hardhat = 31337,
 }

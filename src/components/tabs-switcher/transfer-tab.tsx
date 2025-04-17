@@ -2,6 +2,8 @@ import { TransferForm } from './transfer-form';
 import { FeeCard } from './fee-card';
 import { TermsSection } from './terms-section';
 import { ConnectButton } from './connect-button';
+import { Address } from 'viem';
+import { Button } from '../ui/button';
 
 interface TransferTabProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -13,14 +15,15 @@ interface TransferTabProps {
   xbtcAmount: string;
   isAnimating: boolean;
   isWalletConnected: boolean;
-  ethWalletAddress: string;
-  bitcoinAddress: string;
+  ethWalletAddress?: Address;
+  bitcoinAddress?: Address;
   termsAccepted: boolean;
   handleSwitchNetworks: () => void;
   handleFromAmountChange: (value: string) => void;
   handleToAmountChange: (value: string) => void;
-  setBitcoinAddress: (value: string) => void;
+  setBitcoinAddress: (value: Address | undefined) => void;
   setTermsAccepted: (value: boolean) => void;
+  handleBridgeFunds: () => void;
 }
 
 export function TransferTab({
@@ -41,6 +44,7 @@ export function TransferTab({
   handleToAmountChange,
   setBitcoinAddress,
   setTermsAccepted,
+  handleBridgeFunds,
 }: TransferTabProps) {
   return (
     <>
@@ -61,10 +65,8 @@ export function TransferTab({
         handleToAmountChange={handleToAmountChange}
         setBitcoinAddress={setBitcoinAddress}
       />
-
       <FeeCard toCurrency={toCurrency} isAnimating={isAnimating} />
-
-      {!isWalletConnected && (
+      {isWalletConnected && (
         <TermsSection
           termsAccepted={termsAccepted}
           setTermsAccepted={setTermsAccepted}
@@ -72,14 +74,23 @@ export function TransferTab({
           isAnimating={isAnimating}
         />
       )}
-
-      <ConnectButton
-        isWalletConnected={isWalletConnected}
-        termsAccepted={termsAccepted}
-        toCurrency={toCurrency}
-        bitcoinAddress={bitcoinAddress}
-        isAnimating={isAnimating}
-      />
+      <div className="flex justify-center mt-5">
+        <ConnectButton
+          isWalletConnected={isWalletConnected}
+          isAnimating={isAnimating}
+        />
+        {isWalletConnected && (
+          <Button
+            onClick={handleBridgeFunds}
+            isAnimating={isAnimating}
+            variant="orange"
+            size="custom"
+            disabled={!termsAccepted}
+          >
+            {'Bridge funds'}
+          </Button>
+        )}
+      </div>
     </>
   );
 }
