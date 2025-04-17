@@ -6,6 +6,7 @@ import { Network, Currency } from './types';
 import { useAccount } from 'wagmi';
 import { Address, parseEther } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
+import { TransactionTrackerDialog } from '../transaction-tracker';
 
 export function TabSwitcherContainer() {
   const { address } = useAccount();
@@ -26,7 +27,7 @@ export function TabSwitcherContainer() {
     undefined
   );
   const { openPosition, reservePosition, loading } = useExchange();
-
+  const [openTracker, setOpenTracker] = useState(false);
   const xbtcAmount = '1.123';
 
   const tabs = ['Transfer', 'History'];
@@ -71,16 +72,16 @@ export function TabSwitcherContainer() {
     // setFromAmount(value);
   };
 
-  const handleBridgeFunds = () => {
+  const handleBridgeFunds = async () => {
     if (fromNetwork === 'bitcoin') {
-      reservePosition({
+     await reservePosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         reservationId: BigInt(1n),
-        positionId: "0x1234" as Address,
+        positionId: '0x1234' as Address,
         evmReceivingAddress: address!,
       });
     } else {
-      openPosition({
+      await openPosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress!,
@@ -88,6 +89,7 @@ export function TabSwitcherContainer() {
         owner: address!,
       });
     }
+    setOpenTracker(true);
   };
   return (
     <div className="flex flex-col items-center justify-center pb-10">
@@ -99,7 +101,16 @@ export function TabSwitcherContainer() {
         size={size}
         className="gap-2.5 bg-primary border-none"
       />
-
+      <TransactionTrackerDialog
+        open={openTracker}
+        onOpenChange={setOpenTracker}
+        transactionData={{
+          amount: fromAmount,
+          recipientAddress: '0x1234',
+          reservationTx: '0x1234',
+          currentStep: 0,
+        }}
+      />
       <div className="my-3">
         {activeTab === 0 ? (
           <TransferTab

@@ -1,0 +1,44 @@
+import { ReactNode } from 'react';
+import { StatusIcon } from './StatusIcon';
+
+interface TransactionStepProps {
+  title: string;
+  description: string;
+  status: 'completed' | 'pending' | 'current';
+  isLastStep?: boolean;
+  children?: ReactNode;
+  completed: boolean;
+}
+
+export function TransactionStep({
+  title,
+  description,
+  status,
+  isLastStep = false,
+  completed,
+  children,
+}: TransactionStepProps) {
+  return (
+    <div className="flex mb-6 md:mb-8 relative">
+      {!isLastStep && (
+        <div
+          className={`absolute left-[14px] top-[30px] w-[3px] h-[calc(100%)] ${
+            completed
+              ? 'bg-gradient-to-b from-orange-light to-orange'
+              : 'bg-[#3A3740]'
+          }`}
+        ></div>
+      )}
+
+      <div className="flex-shrink-0 z-10">
+        <StatusIcon status={status} />
+      </div>
+      <div className="ml-3 md:ml-4 max-w-full md:max-w-[457px]">
+        <h3 className="font-semibold text-sm md:text-base">{title}</h3>
+        <p className="text-[#888888] text-xs md:text-sm">{description}</p>
+
+        {children && <div className="mt-3 md:mt-4">{children}</div>}
+      </div>
+    </div>
+  );
+}
