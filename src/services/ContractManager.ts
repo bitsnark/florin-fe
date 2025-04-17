@@ -3,6 +3,7 @@
 import {
   createPublicClient,
   createWalletClient,
+  decodeEventLog,
   http,
   PublicClient,
   WalletClient,
@@ -130,7 +131,6 @@ export class ContractManager {
         ...request,
         ...options,
       };
-
       const hash = await this.walletClient.writeContract(txRequest);
 
       return {
@@ -138,9 +138,20 @@ export class ContractManager {
         wait: async () => {
           const receipt = await this.publicClient.waitForTransactionReceipt({
             hash,
-            confirmations: 1, 
+            confirmations: 1,
           });
-          return receipt;
+
+          // Parse logs from the receipt
+          const logs = receipt.logs
+            .map((log) => {
+              try {
+                return decodeEventLog({ abi, ...log });
+              } catch {
+                return null;
+              }
+            })
+            .filter(Boolean);
+          return { receipt, logs };
         },
       };
     } catch (error) {
@@ -168,7 +179,6 @@ export class ContractManager {
     if (!this.walletClient?.account) {
       throw new CMError('Wallet client not initialized');
     }
-
     return await this.walletClient.signTypedData({
       account: this.walletClient.account,
       domain: {

@@ -25,7 +25,7 @@ export function TabSwitcherContainer() {
   const [bitcoinAddress, setBitcoinAddress] = useState<Address | undefined>(
     undefined
   );
-  const { openPosition, reservePosition } = useExchange();
+  const { openPosition, reservePosition, loading } = useExchange();
 
   const xbtcAmount = '1.123';
 
@@ -76,7 +76,7 @@ export function TabSwitcherContainer() {
       reservePosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         reservationId: BigInt(1n),
-        positionId: BigInt(1n),
+        positionId: "0x1234" as Address,
         evmReceivingAddress: address!,
       });
     } else {
@@ -121,6 +121,7 @@ export function TabSwitcherContainer() {
             setBitcoinAddress={setBitcoinAddress}
             setTermsAccepted={setTermsAccepted}
             handleBridgeFunds={handleBridgeFunds}
+            loading={loading}
           />
         ) : (
           <HistoryTab />

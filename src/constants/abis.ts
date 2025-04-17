@@ -612,6 +612,11 @@ export const AMMEXCHANGE_ABI = [
             "internalType": "enum IAMMExchange.ReservationStatus",
             "name": "status",
             "type": "uint8"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "bitcoinAddress",
+            "type": "bytes32"
           }
         ],
         "internalType": "struct IAMMExchange.Reservation",
@@ -846,7 +851,13 @@ export const AMMEXCHANGE_ABI = [
       }
     ],
     "name": "openPosition",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "positionId",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -936,19 +947,6 @@ export const AMMEXCHANGE_ABI = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_positionId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "reactivatePosition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "reservationDepositAmount",
     "outputs": [
@@ -1018,6 +1016,11 @@ export const AMMEXCHANGE_ABI = [
         "internalType": "enum IAMMExchange.ReservationStatus",
         "name": "status",
         "type": "uint8"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "bitcoinAddress",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -1135,6 +1138,19 @@ export const AMMEXCHANGE_ABI = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_positionId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "unpausePosition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

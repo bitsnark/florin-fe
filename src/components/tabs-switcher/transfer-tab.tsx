@@ -24,6 +24,7 @@ interface TransferTabProps {
   setBitcoinAddress: (value: Address | undefined) => void;
   setTermsAccepted: (value: boolean) => void;
   handleBridgeFunds: () => void;
+  loading: boolean;
 }
 
 export function TransferTab({
@@ -45,6 +46,7 @@ export function TransferTab({
   setBitcoinAddress,
   setTermsAccepted,
   handleBridgeFunds,
+  loading
 }: TransferTabProps) {
   return (
     <>
@@ -85,7 +87,7 @@ export function TransferTab({
             isAnimating={isAnimating}
             variant="orange"
             size="custom"
-            disabled={!termsAccepted}
+            disabled={!termsAccepted || loading}
           >
             {'Bridge funds'}
           </Button>

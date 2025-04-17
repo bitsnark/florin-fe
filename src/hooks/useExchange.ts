@@ -1,5 +1,6 @@
 import { env } from '@/config/env';
 import { useContractManager } from '@/hooks/useContractManager';
+import { randomUUID } from 'crypto';
 import { useState } from 'react';
 import { Address, keccak256, toBytes } from 'viem';
 
@@ -34,10 +35,8 @@ export const useExchange = () => {
         [owner],
         tokenAddress
       );
-
-      console.log('nonce', nonce);
       const domain = {
-        name: 'ERC20BitSnark',
+        name: 'BitSnark',
         version: '1',
         verifyingContract: tokenAddress,
       };
@@ -73,7 +72,16 @@ export const useExchange = () => {
         [tokenAmount, exchangeRate, bitcoinAddresses, deadline, v, r, s],
         contractAddress
       );
-      await wait();
+      const receipt = await wait();
+      console.log('receipt', receipt);
+      console.log('hash', hash);
+      const rJson = JSON.stringify(receipt, (_, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      );
+      console.log('rJson', rJson);
+      window.localStorage.setItem('hash', hash);
+      window.localStorage.setItem('receipt_position', rJson);
+      console.log('position created!!!');
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -88,7 +96,7 @@ export const useExchange = () => {
     tokenAmount,
   }: {
     reservationId: bigint;
-    positionId: bigint;
+    positionId: Address;
     evmReceivingAddress: Address;
     tokenAmount: bigint;
   }) => {
@@ -96,16 +104,33 @@ export const useExchange = () => {
       if (!contractManager) throw new Error('contractManager not available');
 
       setLoading(true);
-      const rIdb32 = keccak256(toBytes(reservationId)) as `0x${string}`;
-      const pIdb32 = keccak256(toBytes(positionId)) as `0x${string}`;
+
+      const positionReceit = JSON.parse(
+        window.localStorage.getItem('receipt_position') || ''
+      );
+      const rIdb32 = keccak256(
+        toBytes(positionReceit?.logs[0].args?.positionId)
+      ) as `0x${string}`;
+      console.log('positionReceit', positionReceit?.logs[0].args?.positionId);
       const { hash, wait } = await contractManager.writeContract(
         'AMMExchange',
         'reservePosition',
-        [rIdb32, pIdb32, evmReceivingAddress, tokenAmount],
+        [
+          rIdb32,
+          positionReceit?.logs[0].args?.positionId,
+          evmReceivingAddress,
+          tokenAmount,
+        ],
         contractAddress,
         { value: 0n }
       );
-      await wait();
+      const receipt = await wait();
+      console.log('receipt', receipt);
+      const rJson = JSON.stringify(receipt, (_, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      );
+      window.localStorage.setItem('receitp_reservation', rJson);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
