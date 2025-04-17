@@ -83,6 +83,7 @@ export const useExchange = () => {
       window.localStorage.setItem('receipt_position', rJson);
       console.log('position created!!!');
       setLoading(false);
+      return receipt;
     } catch (error) {
       setLoading(false);
       setError((error as Error).message);
@@ -132,6 +133,7 @@ export const useExchange = () => {
       window.localStorage.setItem('receitp_reservation', rJson);
 
       setLoading(false);
+      return receipt;
     } catch (error) {
       setLoading(false);
       setError((error as Error).message);

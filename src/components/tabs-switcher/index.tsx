@@ -4,7 +4,7 @@ import { TransferTab } from './transfer-tab';
 import { HistoryTab } from '@/components/history-table/history-tab';
 import { Network, Currency } from './types';
 import { useAccount } from 'wagmi';
-import { Address, parseEther } from 'viem';
+import { Address, formatEther, parseEther } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
 import { TransactionTrackerDialog } from '../transaction-tracker';
 
@@ -28,6 +28,7 @@ export function TabSwitcherContainer() {
   );
   const { openPosition, reservePosition, loading } = useExchange();
   const [openTracker, setOpenTracker] = useState(false);
+  const [trackerData, setTrackerData] = useState<any>({});
   const xbtcAmount = '1.123';
 
   const tabs = ['Transfer', 'History'];
@@ -73,15 +74,16 @@ export function TabSwitcherContainer() {
   };
 
   const handleBridgeFunds = async () => {
+    let transaction: any;
     if (fromNetwork === 'bitcoin') {
-     await reservePosition({
+      transaction = await reservePosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         reservationId: BigInt(1n),
         positionId: '0x1234' as Address,
         evmReceivingAddress: address!,
       });
     } else {
-      await openPosition({
+      transaction = await openPosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress!,
@@ -89,6 +91,7 @@ export function TabSwitcherContainer() {
         owner: address!,
       });
     }
+    setTrackerData(transaction);
     setOpenTracker(true);
   };
   return (
@@ -105,9 +108,9 @@ export function TabSwitcherContainer() {
         open={openTracker}
         onOpenChange={setOpenTracker}
         transactionData={{
-          amount: fromAmount,
-          recipientAddress: '0x1234',
-          reservationTx: '0x1234',
+          amount: trackerData?.logs && formatEther(trackerData?.logs[0]?.args?.tokenAmount), 
+          recipientAddress: trackerData?.logs && trackerData?.logs[0].args.bitcoinAddresses,
+          reservationTx: trackerData?.receipt?.transactionHash,
           currentStep: 0,
         }}
       />
