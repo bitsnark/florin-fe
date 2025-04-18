@@ -1,5 +1,6 @@
 import { ChainId } from '@/types/chains';
 import { defineChain } from 'viem';
+import { env } from './env';
 
 const createChain = (
   id: ChainId,
@@ -53,7 +54,7 @@ export const localhost = defineChain({
   nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['http://127.0.0.1:8545'],
+      http: [env.VITE_RPC_URL],
     },
   },
 });

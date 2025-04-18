@@ -10,7 +10,9 @@ export const FlorinAPI = {
    * Get positions by owner address
    */
   async getPositionsByOwner(ownerAddress: string): Promise<Position[]> {
-    const response = await fetch(`${API_BASE_URL}/positions/owner/${ownerAddress}`);
+    const response = await fetch(
+      `${API_BASE_URL}/positions/owner/${ownerAddress}`
+    );
     if (!response.ok) {
       throw new Error(`Failed to fetch positions: ${response.statusText}`);
     }
@@ -23,7 +25,9 @@ export const FlorinAPI = {
   async getActivePositions(): Promise<Position[]> {
     const response = await fetch(`${API_BASE_URL}/positions/active`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch active positions: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch active positions: ${response.statusText}`
+      );
     }
     return response.json();
   },
@@ -43,7 +47,9 @@ export const FlorinAPI = {
    * Get reservations by owner address
    */
   async getReservationsByOwner(ownerAddress: string): Promise<Reservation[]> {
-    const response = await fetch(`${API_BASE_URL}/reservations/owner/${ownerAddress}`);
+    const response = await fetch(
+      `${API_BASE_URL}/reservations/owner/${ownerAddress}`
+    );
     if (!response.ok) {
       throw new Error(`Failed to fetch reservations: ${response.statusText}`);
     }
@@ -54,10 +60,12 @@ export const FlorinAPI = {
    * Get a reservation by ID
    */
   async getReservationById(reservationId: string): Promise<Reservation> {
-    const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`);
+    const response = await fetch(
+      `${API_BASE_URL}/reservations/${reservationId}`
+    );
     if (!response.ok) {
       throw new Error(`Failed to fetch reservation: ${response.statusText}`);
     }
     return response.json();
-  }
-}; 
+  },
+};

@@ -1,24 +1,29 @@
 /**
  * @fileoverview Data Adapter for Transaction History
- * 
+ *
  * This adapter is necessary because the backend data structure doesn't match the UI designs in Figma.
  * The UI components expect transaction data in a specific format, but our backend provides data as
  * Position and Reservation objects.
- * 
+ *
  * This adapter transforms Position and Reservation objects into Transaction objects that can be
  * directly consumed by the UI components, ensuring that we maintain the exact same UI design
  * while still using our actual backend data.
- * 
+ *
  * Without this adapter, we would either need to modify the UI components (breaking the design)
  * or change the backend implementation (which might not be feasible at the moment).
  */
 
 import { Transaction } from './types';
-import { Position, PositionState, Reservation, ReservationState } from '@/lib/types';
+import {
+  Position,
+  PositionState,
+  Reservation,
+  ReservationState,
+} from '@/lib/types';
 
 /**
  * Converts a Position into a Transaction for the history table
- * 
+ *
  * @param position - The position object from the backend
  * @returns A transaction object compatible with the UI components
  */
@@ -59,11 +64,13 @@ export const positionToTransaction = (position: Position): Transaction => {
 
 /**
  * Converts a Reservation into a Transaction for the history table
- * 
+ *
  * @param reservation - The reservation object from the backend
  * @returns A transaction object compatible with the UI components
  */
-export const reservationToTransaction = (reservation: Reservation): Transaction => {
+export const reservationToTransaction = (
+  reservation: Reservation
+): Transaction => {
   // Determine the status based on reservation state
   let status: 'Completed' | 'Pending' | 'Failed';
   switch (reservation.state) {
@@ -95,4 +102,4 @@ export const reservationToTransaction = (reservation: Reservation): Transaction 
     originTxId: reservation.blockHash,
     destinationTxId: reservation.reservationId,
   };
-}; 
+};

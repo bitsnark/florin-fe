@@ -8,7 +8,10 @@ import { Position } from '@/lib/types';
 export function usePositionsByOwner(ownerAddress: string | undefined) {
   return useQuery<Position[]>({
     queryKey: ['positions', 'owner', ownerAddress],
-    queryFn: () => ownerAddress ? FlorinAPI.getPositionsByOwner(ownerAddress) : Promise.resolve([]),
+    queryFn: () =>
+      ownerAddress
+        ? FlorinAPI.getPositionsByOwner(ownerAddress)
+        : Promise.resolve([]),
     enabled: !!ownerAddress,
   });
-} 
+}

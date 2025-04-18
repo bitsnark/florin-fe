@@ -16,9 +16,7 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
     <>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={evmQueryClient}>
-        <WalletDialogProvider>
-          {children}
-        </WalletDialogProvider>
+          <WalletDialogProvider>{children}</WalletDialogProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </WagmiProvider>

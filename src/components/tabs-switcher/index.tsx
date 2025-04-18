@@ -94,6 +94,7 @@ export function TabSwitcherContainer() {
     setTrackerData(transaction);
     setOpenTracker(true);
   };
+
   return (
     <div className="flex flex-col items-center justify-center pb-10">
       <TabSwitcher
@@ -108,8 +109,14 @@ export function TabSwitcherContainer() {
         open={openTracker}
         onOpenChange={setOpenTracker}
         transactionData={{
-          amount: trackerData?.logs && formatEther(trackerData?.logs[0]?.args?.tokenAmount), 
-          recipientAddress: trackerData?.logs && trackerData?.logs[0].args.bitcoinAddresses,
+          amount:
+            (trackerData?.logs &&
+              trackerData?.logs[0] &&
+              trackerData?.logs[0]?.args?.tokenAmount &&
+              formatEther(trackerData?.logs[0]?.args?.tokenAmount)) ||
+            '0.012',
+          recipientAddress:
+            trackerData?.logs && trackerData?.logs[0].args.bitcoinAddresses,
           reservationTx: trackerData?.receipt?.transactionHash,
           currentStep: 0,
         }}
