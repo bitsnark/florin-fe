@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Icon } from './ui/icon';
 import { ICON_PATHS } from './ui/icons';
 import { EvmWalletConnect } from './evm-wallet-connector';
-
+import logo from '@/assets/bos-bridge-logo.png';
 // Define the navigation items
 const navigationItems = [
   { to: '/', label: 'About BitcoinOS' },
@@ -46,7 +46,7 @@ export function Header() {
         <div className="p-2 flex gap-2 w-[1024px] h-[120px] justify-between pt-8">
           <div className="flex items-center gap-5">
             <img
-              src="/src/assets/bos-bridge-logo.png"
+              src={logo}
               alt="Grail Bridge Logo"
               className="w-[72px] h-[72px]"
             />

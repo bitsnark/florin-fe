@@ -1,19 +1,22 @@
 import { Card } from './ui/card';
 import walletIcon from '@/assets/wallet-icon.svg';
+import bitcoinLogo from '@/assets/bitcoin-logo.png';
+import ethLogo from '@/assets/eth-logo.png';
+import xbtcLogo from '@/assets/xbtc-logo.svg';
 import { cn } from '@/lib/utils';
 
 const ASSETS = {
-  BITCOIN_LOGO: '/src/assets/bitcoin-logo.png',
-  ETH_LOGO: '/src/assets/eth-logo.png',
-  XBTC_LOGO: '/src/assets/xbtc-logo.svg',
+  BITCOIN_LOGO: bitcoinLogo,
+  ETH_LOGO: ethLogo,
+  XBTC_LOGO: xbtcLogo,
   NETWORK_LOGOS: {
-    bitcoin: '/src/assets/bitcoin-logo.png',
-    ethereum: '/src/assets/eth-logo.png',
+    bitcoin: bitcoinLogo,
+    ethereum: ethLogo,
   },
   CURRENCY_LOGOS: {
-    btc: '/src/assets/bitcoin-logo.png',
-    eth: '/src/assets/eth-logo.png',
-    xbtc: '/src/assets/xbtc-logo.svg',
+    btc: bitcoinLogo,
+    eth: ethLogo,
+    xbtc: xbtcLogo,
   },
 };
 
