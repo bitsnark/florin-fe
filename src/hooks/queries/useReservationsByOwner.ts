@@ -8,7 +8,10 @@ import { Reservation } from '@/lib/types';
 export function useReservationsByOwner(ownerAddress: string | undefined) {
   return useQuery<Reservation[]>({
     queryKey: ['reservations', 'owner', ownerAddress],
-    queryFn: () => ownerAddress ? FlorinAPI.getReservationsByOwner(ownerAddress) : Promise.resolve([]),
+    queryFn: () =>
+      ownerAddress
+        ? FlorinAPI.getReservationsByOwner(ownerAddress)
+        : Promise.resolve([]),
     enabled: !!ownerAddress,
   });
-} 
+}

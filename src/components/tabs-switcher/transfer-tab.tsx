@@ -46,7 +46,7 @@ export function TransferTab({
   setBitcoinAddress,
   setTermsAccepted,
   handleBridgeFunds,
-  loading
+  loading,
 }: TransferTabProps) {
   return (
     <>

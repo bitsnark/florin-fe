@@ -8,7 +8,10 @@ import { Reservation } from '@/lib/types';
 export function useReservation(reservationId: string | undefined) {
   return useQuery<Reservation>({
     queryKey: ['reservation', reservationId],
-    queryFn: () => reservationId ? FlorinAPI.getReservationById(reservationId) : Promise.reject('No reservation ID provided'),
+    queryFn: () =>
+      reservationId
+        ? FlorinAPI.getReservationById(reservationId)
+        : Promise.reject('No reservation ID provided'),
     enabled: !!reservationId,
   });
-} 
+}

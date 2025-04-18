@@ -13,7 +13,7 @@ export const useContractManager = () => {
       await manager.refreshWalletClient();
       return manager;
     },
-    throwOnError: true, 
+    throwOnError: true,
     enabled: !!address && !!chainId,
     staleTime: 0,
   });

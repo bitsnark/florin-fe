@@ -10,4 +10,4 @@ export function useActivePositions() {
     queryKey: ['positions', 'active'],
     queryFn: () => FlorinAPI.getActivePositions(),
   });
-} 
+}

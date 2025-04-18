@@ -13,12 +13,12 @@ export function makeServer({ environment = 'development' } = {}) {
 
     seeds(server) {
       // Add mock positions
-      mockPositions.forEach(position => {
+      mockPositions.forEach((position) => {
         server.db.positions.insert(position);
       });
 
       // Add mock reservations
-      mockReservations.forEach(reservation => {
+      mockReservations.forEach((reservation) => {
         server.db.reservations.insert(reservation);
       });
     },
@@ -89,4 +89,4 @@ export function makeServer({ environment = 'development' } = {}) {
       this.passthrough();
     },
   });
-} 
+}

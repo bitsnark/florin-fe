@@ -1,6 +1,5 @@
 import { env } from '@/config/env';
 import { useContractManager } from '@/hooks/useContractManager';
-import { randomUUID } from 'crypto';
 import { useState } from 'react';
 import { Address, keccak256, toBytes } from 'viem';
 
@@ -101,6 +100,7 @@ export const useExchange = () => {
     evmReceivingAddress: Address;
     tokenAmount: bigint;
   }) => {
+    console.log('reservationId', reservationId, 'positionId', positionId);
     try {
       if (!contractManager) throw new Error('contractManager not available');
 
@@ -113,7 +113,7 @@ export const useExchange = () => {
         toBytes(positionReceit?.logs[0].args?.positionId)
       ) as `0x${string}`;
       console.log('positionReceit', positionReceit?.logs[0].args?.positionId);
-      const { hash, wait } = await contractManager.writeContract(
+      const { wait } = await contractManager.writeContract(
         'AMMExchange',
         'reservePosition',
         [

@@ -8,7 +8,10 @@ import { Position } from '@/lib/types';
 export function usePosition(positionId: string | undefined) {
   return useQuery<Position>({
     queryKey: ['position', positionId],
-    queryFn: () => positionId ? FlorinAPI.getPositionById(positionId) : Promise.reject('No position ID provided'),
+    queryFn: () =>
+      positionId
+        ? FlorinAPI.getPositionById(positionId)
+        : Promise.reject('No position ID provided'),
     enabled: !!positionId,
   });
-} 
+}

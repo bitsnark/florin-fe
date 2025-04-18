@@ -8,7 +8,9 @@ type WalletDialogContextType = {
   setOpen: (value: boolean) => void;
 };
 
-export const WalletDialogContext = createContext<WalletDialogContextType | undefined>(undefined);
+export const WalletDialogContext = createContext<
+  WalletDialogContextType | undefined
+>(undefined);
 
 export const WalletDialogProvider = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -17,7 +19,9 @@ export const WalletDialogProvider = ({ children }: { children: ReactNode }) => {
   const closeDialog = useCallback(() => setOpen(false), []);
 
   return (
-    <WalletDialogContext.Provider value={{ open, openDialog, closeDialog, setOpen }}>
+    <WalletDialogContext.Provider
+      value={{ open, openDialog, closeDialog, setOpen }}
+    >
       {children}
     </WalletDialogContext.Provider>
   );
