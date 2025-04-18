@@ -1,0 +1,52 @@
+name: Deploy website
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Clean install
+        run: |
+          rm -rf node_modules package-lock.json
+
+      - name: Install Netlify
+        run: npm install netlify-cli@17.10.1 -g
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+        env:
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
+          VITE_RPC_URL: ${{ secrets.VITE_RPC_URL }}
+          VITE_EXCHANGE_CONTRACT_ADDRESS: ${{ secrets.VITE_EXCHANGE_CONTRACT_ADDRESS }}
+          VITE_TOKEN_ADDRESS: ${{ secrets.VITE_TOKEN_ADDRESS }}
+      - name: Deploy to Netlify
+        run: |
+          DEPLOY_COMMAND="netlify deploy \
+            --dir dist \
+            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --auth '${{ secrets.NETLIFY_AUTH_TOKEN }}'"
+
+          # If wer are on the main branch --prod
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            DEPLOY_COMMAND="$DEPLOY_COMMAND --prod"
+          fi
+
+          echo "Running: $DEPLOY_COMMAND"
+          eval $DEPLOY_COMMAND
