@@ -55,11 +55,15 @@ export interface ContractManagerConfig {
 }
 
 export interface ContractConfig {
+  // TODO: Fix this type once we have the correct type for the contract
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any[];
   bytecode: Address;
 }
 
 export interface TransactionResponse {
   hash: Hash;
+  // TODO: Fix this type once we have the correct type for the transaction
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wait: () => Promise<any>;
 }

@@ -24,6 +24,8 @@ export class NetworkError extends Error {
 export class ValidationError extends CMError {
   constructor(
     message: string,
+    // TODO: Fix this type once we have the correct type for the error
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public details?: any
   ) {
     super(`ValidationError: ${message}`);
@@ -49,6 +51,8 @@ export enum ErrorCode {
   TokenTransferFailed = 'TokenTransferFailed',
 }
 
+// TODO: Fix this type once we have the correct type for the error
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseContractError = (error: any): string => {
   const message = error?.message || '';
   const knownErrors: Record<string, string> = {
