@@ -43,7 +43,7 @@ export function AddressReveal({
       className={`w-full p-3 cursor-pointer border-none bg-grey flex flex-col items-center gap-2 ${
         !showAddress
           ? 'h-[100px] md:h-[116px] justify-center'
-          : 'h-auto md:h-[500px]'
+          : `${showQrCode ? 'h-[360px]' : 'h-[165px]'}`
       }`}
       onClick={() => setShowAddress(!showAddress)}
     >
