@@ -20,6 +20,20 @@ export function Header() {
     setMounted(true);
   }, []);
 
+  // Use effect to prevent scrolling when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup function to ensure we restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
+
   // Reusable classes
   const linkClasses = {
     desktop: 'text-white [&.active]:font-bold',
@@ -72,7 +86,7 @@ export function Header() {
         <div className="flex justify-between items-center px-4 py-4">
           <div className="flex items-center gap-2">
             <img
-              src="/src/assets/bos-bridge-logo.png"
+              src={logo}
               alt="Grail Bridge Logo"
               className="w-[40px] h-[40px]"
             />
@@ -107,7 +121,7 @@ export function Header() {
 
         {/* Mobile Menu with Animation */}
         <div
-          className={`bg-[#1e1c21] fixed top-[72px] left-0 right-0 bottom-0 z-40 p-4 flex flex-col gap-4 transition-all duration-300 ease-in-out transform ${
+          className={`bg-[#1e1c21] fixed top-[100px] left-0 right-0 bottom-0 z-40 p-4 flex flex-col gap-4 transition-all duration-300 ease-in-out transform ${
             isMenuOpen
               ? 'translate-x-0 opacity-100'
               : 'translate-x-full opacity-0'

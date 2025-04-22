@@ -1,16 +1,9 @@
 // src/context/WalletDialogContext.tsx
-import { createContext, useState, ReactNode, useCallback } from 'react';
-
-type WalletDialogContextType = {
-  open: boolean;
-  openDialog: () => void;
-  closeDialog: () => void;
-  setOpen: (value: boolean) => void;
-};
-
-export const WalletDialogContext = createContext<
-  WalletDialogContextType | undefined
->(undefined);
+import { useState, ReactNode, useCallback } from 'react';
+import {
+  WalletDialogContext,
+  WalletDialogContextType,
+} from './walletDialogContext-instance';
 
 export const WalletDialogProvider = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -26,3 +19,5 @@ export const WalletDialogProvider = ({ children }: { children: ReactNode }) => {
     </WalletDialogContext.Provider>
   );
 };
+
+export type { WalletDialogContextType };

@@ -2,7 +2,7 @@ interface QRCodeProps {
   address: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 export function QRCode({ address }: QRCodeProps) {
   // The 'address' parameter would be used to generate a real QR code in a complete implementation
   console.log('address', address);

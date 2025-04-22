@@ -43,11 +43,15 @@ export const ConnectorsListDialog = () => {
             >
               <div className="flex gap-2 items-center">
                 <div className="bg-white/16 w-8 h-8 flex items-center justify-center p-[5px] rounded">
-                  <img
-                    src={walletIcons[connector?.id as keyof typeof walletIcons]}
-                    alt={connector.name}
-                    className="w-6 h-6 min-w-6 min-h-6 rounded"
-                  />
+                  {walletIcons[connector?.id as keyof typeof walletIcons] && (
+                    <img
+                      src={
+                        walletIcons[connector?.id as keyof typeof walletIcons]
+                      }
+                      alt={connector.name}
+                      className="w-6 h-6 min-w-6 min-h-6 rounded"
+                    />
+                  )}
                 </div>
                 <span>{connector.name}</span>
               </div>

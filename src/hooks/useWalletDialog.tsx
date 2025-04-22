@@ -1,4 +1,4 @@
-import { WalletDialogContext } from '@/context/walletDialogContext';
+import { WalletDialogContext } from '@/context/walletDialogContext-instance';
 import { useContext } from 'react';
 
 export const useWalletDialog = () => {
