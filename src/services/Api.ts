@@ -1,5 +1,5 @@
 
-import { Position, Reservation } from "@/types";
+import { Finality, Position, PositionState, Reservation, ReservationState } from "@/types";
 
 const POSITIONS_KEY = 'florin_positions';
 const RESERVATIONS_KEY = 'florin_reservations';
@@ -119,6 +119,65 @@ export class FlorinApiService {
   static async getMaxAmount(): Promise<bigint> {
     return withDelay(BigInt(1000000));
   }
+
+  static async seed(): Promise<void> {
+   const samplePositions: Position[] = [
+     {
+       positionId: '0xpos1',
+       chainId: 1,
+       ownerAddress: '0xowner1',
+       tokenAddress: '0xtoken1',
+       originalAmount: "1000000",
+       bitcoinAddress: 'bc1pos1btcaddress',
+       exchangeRate: "20000",
+       state: PositionState.ACTIVE,
+       blockNumber: 12345,
+       blockHash: '0xabc123',
+       finality: Finality.FINAL
+     },
+     {
+       positionId: '0xpos2',
+       chainId: 1,
+       ownerAddress: '0xowner2',
+       tokenAddress: '0xtoken2',
+       originalAmount: "2000000",
+       bitcoinAddress: 'bc1pos2btcaddress',
+       exchangeRate: "30000",
+       state: PositionState.CLOSED,
+       blockNumber: 12350,
+       blockHash: '0xdef456',
+       finality: Finality.FINAL
+     }
+   ];
+ 
+   const sampleReservations: Reservation[] = [
+     {
+       reservationId: '0xres1',
+       ownerAddress: '0xowner1',
+       positionId: '0xpos1',
+       amount: "500000",
+       state: ReservationState.PENDING,
+       blockNumber: 12346,
+       blockHash: '0xaaa111',
+       finality: Finality.FINAL
+     },
+     {
+       reservationId: '0xres2',
+       ownerAddress: '0xowner2',
+       positionId: '0xpos2',
+       amount: "1000000",
+       state: ReservationState.PENDING,
+       blockNumber: 12351,
+       blockHash: '0xbbb222',
+       finality: Finality.FINAL
+     }
+   ];
+ 
+   this.savePositions(samplePositions);
+   this.saveReservations(sampleReservations);
+ 
+   await withDelay(undefined);
+ }
 
   static clearAllMockData(): void {
     localStorage.removeItem(POSITIONS_KEY);
