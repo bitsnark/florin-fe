@@ -1,6 +1,6 @@
 import { createServer, Model, Response } from 'miragejs';
-import { mockPositions, mockReservations } from './mock-data';
 import { Position, Reservation } from '../types';
+import { samplePositions, sampleReservations } from './mock-data';
 
 export function makeServer({ environment = 'development' } = {}) {
   return createServer({
@@ -13,12 +13,12 @@ export function makeServer({ environment = 'development' } = {}) {
 
     seeds(server) {
       // Add mock positions
-      mockPositions.forEach((position) => {
+      samplePositions.forEach((position) => {
         server.db.positions.insert(position);
       });
 
       // Add mock reservations
-      mockReservations.forEach((reservation) => {
+      sampleReservations.forEach((reservation) => {
         server.db.reservations.insert(reservation);
       });
     },
