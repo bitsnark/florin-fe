@@ -28,6 +28,8 @@ export function TabSwitcherContainer() {
   );
   const { openPosition, reservePosition, loading } = useExchange();
   const [openTracker, setOpenTracker] = useState(false);
+  // TODO: Fix this type once we have the correct type for the transaction
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [trackerData, setTrackerData] = useState<any>({});
   const xbtcAmount = '1.123';
 
@@ -74,6 +76,8 @@ export function TabSwitcherContainer() {
   };
 
   const handleBridgeFunds = async () => {
+    // TODO: Fix this type once we have the correct type for the transaction
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let transaction: any;
     if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
@@ -91,6 +95,7 @@ export function TabSwitcherContainer() {
         owner: address!,
       });
     }
+
     setTrackerData(transaction);
     setOpenTracker(true);
   };

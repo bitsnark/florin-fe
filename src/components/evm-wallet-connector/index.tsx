@@ -9,7 +9,7 @@ export const EvmWalletConnect = () => {
   const { openDialog } = useWalletDialog();
   const handleConnectClick = useCallback(() => {
     openDialog();
-  }, []);
+  }, [openDialog]);
 
   return address ? (
     <EvmWalletConnected />
