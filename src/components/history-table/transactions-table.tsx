@@ -48,7 +48,6 @@ export default function TransactionsTable() {
   const isLoading = isLoadingPositions || isLoadingReservations;
 
   const isWalletConnected = account.isConnected;
-  console.log('transactions', transactions);
   // Render mobile view
   if (isMobile) {
     return (
