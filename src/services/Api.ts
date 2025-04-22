@@ -1,10 +1,7 @@
+import { samplePositions, sampleReservations } from '@/lib/mock-data';
 import {
-  Finality,
   Position,
-  PositionStatus,
   Reservation,
-  ReservationStatus,
-  TransactionStatus,
 } from '@/types';
 
 const POSITIONS_KEY = 'florin_positions';
@@ -152,95 +149,7 @@ export class FlorinApiService {
   }
 
   static async seed(): Promise<void> {
-    const samplePositions: Position[] = [
-      {
-        positionId: '0xpos1',
-        chainId: 1,
-        ownerAddress: '0xowner1',
-        tokenAddress: '0xtoken1',
-        originalAmount: '1000000',
-        bitcoinAddress: 'bc1pos1btcaddress',
-        exchangeRate: '20000',
-        state: PositionStatus.ACTIVE,
-        finality: Finality.FINAL,
-        amount: '1000000',
-        transaction: {
-          hash: '0x456...xx123124',
-          date: '2023-09-13T09:15:30Z',
-          receivedAmount: '0.495',
-          status: TransactionStatus.COMPLETED,
-          contractRegistration: '0xcdef123456789',
-          originTxId: '0xb876...A133131',
-          destinationTxId: '',
-          blockHash: '0xabc123',
-          blockNumber: 12345,
-        },
-      },
-      {
-        positionId: '0xpos2',
-        chainId: 1,
-        ownerAddress: '0xowner2',
-        tokenAddress: '0xtoken2',
-        originalAmount: '2000000',
-        bitcoinAddress: 'bc1pos2btcaddress',
-        exchangeRate: '30000',
-        state: PositionStatus.COMPLETED,
-        finality: Finality.FINAL,
-        amount: '2000000',
-        transaction: {
-          hash: '0x456...',
-          date: '2023-09-13T09:15:30Z',
-          receivedAmount: '0.495',
-          status: TransactionStatus.COMPLETED,
-          contractRegistration: '0xcdef123456789',
-          originTxId: '0xb876...',
-          destinationTxId: '',
-          blockHash: '0xabc123',
-          blockNumber: 12345,
-        },
-      },
-    ];
-
-    const sampleReservations: Reservation[] = [
-      {
-        reservationId: '0xres1',
-        ownerAddress: '0xowner1',
-        positionId: '0xpos1',
-        amount: '500000',
-        state: ReservationStatus.COMPLETED,
-        finality: Finality.FINAL,
-        transaction: {
-          hash: '0x456...',
-          date: '2023-09-13T09:15:30Z',
-          receivedAmount: '0.495',
-          status: TransactionStatus.PENDING,
-          contractRegistration: '0xcdef123456789',
-          originTxId: '0xb876...',
-          destinationTxId: '',
-          blockHash: '0xabc123',
-          blockNumber: 12345,
-        },
-      },
-      {
-        reservationId: '0xres2',
-        ownerAddress: '0xowner2',
-        positionId: '0xpos2',
-        amount: '1000000',
-        state: ReservationStatus.EXPIRED,
-        finality: Finality.FINAL,
-        transaction: {
-          hash: '0x456...',
-          date: '2023-09-13T09:15:30Z',
-          receivedAmount: '0.495',
-          status: TransactionStatus.PENDING,
-          contractRegistration: '0xcdef123456789',
-          originTxId: '0xb876...',
-          destinationTxId: '',
-          blockHash: '0xabc123',
-          blockNumber: 12345,
-        },
-      },
-    ];
+   
 
     this.savePositions(samplePositions);
     this.saveReservations(sampleReservations);
