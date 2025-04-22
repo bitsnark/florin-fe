@@ -1,17 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { FlorinAPI } from '@/lib/api';
-import { Position } from '@/lib/types';
+import { Position } from '@/types';
+import { FlorinApiService } from '@/services/Api';
 
 /**
  * Hook to fetch a single position by ID
  */
 export function usePosition(positionId: string | undefined) {
-  return useQuery<Position>({
+  return useQuery<Position | undefined>({
     queryKey: ['position', positionId],
-    queryFn: () =>
-      positionId
-        ? FlorinAPI.getPositionById(positionId)
-        : Promise.reject('No position ID provided'),
+    queryFn: () => FlorinApiService.getPositionById(positionId),
     enabled: !!positionId,
   });
 }

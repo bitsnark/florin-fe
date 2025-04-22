@@ -109,7 +109,7 @@ export function AddressReveal({
                 </div>
               </div>
             </div>
-            {showQrCode && <QRCode address={address} />}
+            {showQrCode && <QRCode /* address={address} */ />}
           </>
         )}
       </>

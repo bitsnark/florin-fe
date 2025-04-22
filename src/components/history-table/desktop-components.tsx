@@ -1,4 +1,3 @@
-import { Transaction } from './types';
 import { formatHash, getChainLogo } from './utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -7,64 +6,79 @@ import {
   SymbolIcon,
 } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
+import {
+  Position,
+  PositionStatus,
+  Reservation,
+} from '@/types';
 
-export const DesktopTransactionRow = ({ tx }: { tx: Transaction }) => (
-  <TableRow key={tx.hash} className="hover:bg-transparent">
-    <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <div className="flex flex-row gap-1 items-center">
-        <div className="flex items-center gap-1">
-          <img
-            src={getChainLogo(tx.fromChain)}
-            alt={tx.fromChain}
-            className="h-4 w-4"
-          />
-          <span>{tx.fromChain}</span>
-        </div>
-        <ArrowRightIcon />
-        <div className="flex items-center gap-1">
-          <img
-            src={getChainLogo(tx.toChain)}
-            alt={tx.toChain}
-            className="h-4 w-4"
-          />
-          <span>{tx.toChain}</span>
-        </div>
-      </div>
-    </TableCell>
-    <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      {formatHash(tx.contractRegistration)}
-    </TableCell>
-    <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      {tx.amount} {tx.asset}
-    </TableCell>
-    <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      {tx.receivedAmount}
-    </TableCell>
-    <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      {formatHash(tx.originTxId)}
-    </TableCell>
-    <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      {formatHash(tx.destinationTxId)}
-    </TableCell>
-    <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <div className="flex flex-row gap-1 items-center justify-start">
-        {tx.status === 'Completed' ? (
-          <div className="bg-grey rounded-full p-[0.125rem]">
-            <CheckCircledIcon className="text-green-600" />
+export const DesktopTransactionRow = ({
+  tx,
+}: {
+  tx: Reservation | Position;
+}) => {
+  const isReservation = 'reservationId' in tx;
+  const fromChain = isReservation ? 'ethereum' : 'bitcoin';
+  const toChain = isReservation ? 'bitcoin' : 'ethereum';
+  const asset = isReservation ? 'usdc' : 'btc';
+  return (
+    <TableRow key={tx?.transaction?.hash} className="hover:bg-transparent">
+      <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        <div className="flex flex-row gap-1 items-center">
+          <div className="flex items-center gap-1">
+            <img
+              src={getChainLogo(fromChain)}
+              alt={fromChain}
+              className="h-4 w-4"
+            />
+            <span>{fromChain}</span>
           </div>
-        ) : (
-          <div className="bg-grey rounded-full p-[0.125rem]">
-            <SymbolIcon />
+          <ArrowRightIcon />
+          <div className="flex items-center gap-1">
+            <img
+              src={getChainLogo(toChain)}
+              alt={toChain}
+              className="h-4 w-4"
+            />
+            <span>{toChain}</span>
           </div>
-        )}
-        {tx.status}
-      </div>
-    </TableCell>
-    <TableCell className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      Track
-    </TableCell>
-  </TableRow>
-);
+        </div>
+      </TableCell>
+      <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        {formatHash(tx?.transaction?.contractRegistration)}
+      </TableCell>
+      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        {tx.amount} {asset}
+      </TableCell>
+      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        {tx.transaction?.receivedAmount}
+      </TableCell>
+      <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        {formatHash(tx.transaction?.originTxId)}
+      </TableCell>
+      <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        {formatHash(tx.transaction?.destinationTxId)}
+      </TableCell>
+      <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        <div className="flex flex-row gap-1 items-center justify-start">
+          {tx.state === PositionStatus.COMPLETED ? (
+            <div className="bg-grey rounded-full p-[0.125rem]">
+              <CheckCircledIcon className="text-green-600" />
+            </div>
+          ) : (
+            <div className="bg-grey rounded-full p-[0.125rem]">
+              <SymbolIcon />
+            </div>
+          )}
+          {tx.state}
+        </div>
+      </TableCell>
+      <TableCell className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        Track
+      </TableCell>
+    </TableRow>
+  );
+};
 
 export const SkeletonRow = () => (
   <TableRow className="hover:bg-transparent">

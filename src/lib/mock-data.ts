@@ -1,102 +1,98 @@
 import {
   Finality,
   Position,
-  PositionState,
+  PositionStatus,
   Reservation,
-  ReservationState,
-} from './types';
+  ReservationStatus,
+  TransactionStatus,
+} from '../types';
 
-// Mock data for positions
-export const mockPositions: Position[] = [
+export const samplePositions: Position[] = [
   {
-    positionId:
-      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    positionId: '0xpos1',
     chainId: 1,
-    state: PositionState.ACTIVE,
-    ownerAddress: '0xabc123def456abc123def456abc123def456abc1',
-    tokenAddress: '0xdef456abc123def456abc123def456abc123def4',
-    originalAmount: '1000000000000000000', // 1 token with 18 decimals
-    bitcoinAddress:
-      'bc1q123xyz456abc789def0123456789abcdef0123456789abcdef0123456789',
-    exchangeRate: '10000000000', // 10^10 (1:1)
-    blockNumber: 12345678,
-    blockHash:
-      '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+    ownerAddress: '0xowner1',
+    tokenAddress: '0xtoken1',
+    originalAmount: '1000000',
+    bitcoinAddress: 'bc1pos1btcaddress',
+    exchangeRate: '20000',
+    state: PositionStatus.ACTIVE,
     finality: Finality.FINAL,
+    amount: '1000000',
+    transaction: {
+      hash: '0x1230x1230xb876', //random hash ,
+      date: '2023-09-13T09:15:30Z',
+      receivedAmount: '0.495',
+      status: TransactionStatus.COMPLETED,
+      contractRegistration: '0x1230x1230xb876',
+      originTxId: '0xb8760x1230x1230xb876A133131',
+      destinationTxId: '',
+      blockHash: '0xabc123',
+      blockNumber: 12345,
+    },
   },
   {
-    positionId:
-      '0x2345678901abcdef2345678901abcdef2345678901abcdef2345678901abcdef',
+    positionId: '0xpos2',
     chainId: 1,
-    state: PositionState.ACTIVE,
-    ownerAddress: '0xabc123def456abc123def456abc123def456abc1',
-    tokenAddress: '0xdef456abc123def456abc123def456abc123def4',
-    originalAmount: '2000000000000000000', // 2 tokens with 18 decimals
-    bitcoinAddress:
-      'bc1q234xyz567abc890def1234567890abcdef1234567890abcdef1234567890',
-    exchangeRate: '10000000000', // 10^10 (1:1)
-    blockNumber: 12345679,
-    blockHash:
-      '0xbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890a',
+    ownerAddress: '0xowner2',
+    tokenAddress: '0xtoken2',
+    originalAmount: '2000000',
+    bitcoinAddress: 'bc1pos2btcaddress',
+    exchangeRate: '30000',
+    state: PositionStatus.COMPLETED,
     finality: Finality.FINAL,
-  },
-  {
-    positionId:
-      '0x3456789012abcdef3456789012abcdef3456789012abcdef3456789012abcdef',
-    chainId: 1,
-    state: PositionState.PAUSED,
-    ownerAddress: '0xdef456abc123def456abc123def456abc123def4',
-    tokenAddress: '0xdef456abc123def456abc123def456abc123def4',
-    originalAmount: '5000000000000000000', // 5 tokens with 18 decimals
-    bitcoinAddress:
-      'bc1q345xyz678abc901def2345678901abcdef2345678901abcdef2345678901',
-    exchangeRate: '10000000000', // 10^10 (1:1)
-    blockNumber: 12345680,
-    blockHash:
-      '0xcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab',
-    finality: Finality.FINAL,
+    amount: '2000000',
+    transaction: {
+      hash: '0x456...0xb876',
+      date: '2023-09-13T09:15:30Z',
+      receivedAmount: '0.495',
+      status: TransactionStatus.COMPLETED,
+      contractRegistration: '0xcdef123456789',
+      originTxId: '0xb8760x1230x1230xb8760xb876',
+      destinationTxId: '',
+      blockHash: '0xabc123',
+      blockNumber: 12345,
+    },
   },
 ];
 
-// Mock data for reservations
-export const mockReservations: Reservation[] = [
+export const sampleReservations: Reservation[] = [
   {
-    reservationId:
-      '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
-    positionId:
-      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    state: ReservationState.PENDING,
-    ownerAddress: '0xabc123def456abc123def456abc123def456abc1',
-    blockNumber: 12345700,
-    blockHash:
-      '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
-    amount: '500000000000000000', // 0.5 tokens with 18 decimals
+    reservationId: '0xres1',
+    ownerAddress: '0xowner1',
+    positionId: '0xpos1',
+    amount: '500000',
+    state: ReservationStatus.COMPLETED,
     finality: Finality.FINAL,
+    transaction: {
+      hash: '0x4560x1230x1230xb8760xb876',
+      date: '2023-09-13T09:15:30Z',
+      receivedAmount: '0.495',
+      status: TransactionStatus.PENDING,
+      contractRegistration: '0xcdef123456789',
+      originTxId: '0xb8760x1230x1230xb8760xb876',
+      destinationTxId: '',
+      blockHash: '0xabc123',
+      blockNumber: 12345,
+    },
   },
   {
-    reservationId:
-      '0xbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890a',
-    positionId:
-      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    state: ReservationState.SETTLED,
-    ownerAddress: '0xabc123def456abc123def456abc123def456abc1',
-    blockNumber: 12345701,
-    blockHash:
-      '0x23456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef01',
-    amount: '300000000000000000', // 0.3 tokens with 18 decimals
+    reservationId: '0xres2',
+    ownerAddress: '0xowner2',
+    positionId: '0xpos2',
+    amount: '1000000',
+    state: ReservationStatus.EXPIRED,
     finality: Finality.FINAL,
-  },
-  {
-    reservationId:
-      '0xcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab',
-    positionId:
-      '0x2345678901abcdef2345678901abcdef2345678901abcdef2345678901abcdef',
-    state: ReservationState.PENDING,
-    ownerAddress: '0xdef456abc123def456abc123def456abc123def4',
-    blockNumber: 12345702,
-    blockHash:
-      '0x3456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef012',
-    amount: '1000000000000000000', // 1 token with 18 decimals
-    finality: Finality.FINAL,
+    transaction: {
+      hash: '0x456...',
+      date: '2023-09-13T09:15:30Z',
+      receivedAmount: '0.495',
+      status: TransactionStatus.PENDING,
+      contractRegistration: '0xcdef123456789',
+      originTxId: '0xb8760x1230x1230xb8760xb876',
+      destinationTxId: '',
+      blockHash: '0xabc123',
+      blockNumber: 12345,
+    },
   },
 ];

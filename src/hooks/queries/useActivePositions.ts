@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { FlorinAPI } from '@/lib/api';
-import { Position } from '@/lib/types';
+import { Position } from '@/types';
+import { FlorinApiService } from '@/services/Api';
 
 /**
  * Hook to fetch all active positions
@@ -8,6 +8,6 @@ import { Position } from '@/lib/types';
 export function useActivePositions() {
   return useQuery<Position[]>({
     queryKey: ['positions', 'active'],
-    queryFn: () => FlorinAPI.getActivePositions(),
+    queryFn: () => FlorinApiService.getActivePositions(),
   });
 }

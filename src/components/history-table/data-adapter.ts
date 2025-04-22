@@ -16,10 +16,10 @@
 import { Transaction } from './types';
 import {
   Position,
-  PositionState,
+  PositionStatus,
   Reservation,
-  ReservationState,
-} from '@/lib/types';
+  ReservationStatus
+} from '@/types';
 
 /**
  * Converts a Position into a Transaction for the history table
@@ -31,10 +31,10 @@ export const positionToTransaction = (position: Position): Transaction => {
   // Determine the status based on position state
   let status: 'Completed' | 'Pending' | 'Failed';
   switch (position.state) {
-    case PositionState.ACTIVE:
+    case PositionStatus.ACTIVE:
       status = 'Completed';
       break;
-    case PositionState.PAUSED:
+    case PositionStatus.PAUSED:
       status = 'Pending';
       break;
     default:
@@ -57,7 +57,7 @@ export const positionToTransaction = (position: Position): Transaction => {
     receivedAmount,
     status,
     contractRegistration: position.tokenAddress,
-    originTxId: position.blockHash,
+    originTxId: position?.transaction?.originTxId || '',
     destinationTxId: position.bitcoinAddress,
   };
 };
@@ -74,10 +74,10 @@ export const reservationToTransaction = (
   // Determine the status based on reservation state
   let status: 'Completed' | 'Pending' | 'Failed';
   switch (reservation.state) {
-    case ReservationState.SETTLED:
+    case ReservationStatus.COMPLETED:
       status = 'Completed';
       break;
-    case ReservationState.PENDING:
+    case ReservationStatus.PENDING:
       status = 'Pending';
       break;
     default:
@@ -99,7 +99,7 @@ export const reservationToTransaction = (
     receivedAmount,
     status,
     contractRegistration: reservation.positionId.substring(0, 10) + '...',
-    originTxId: reservation.blockHash,
+    originTxId: reservation?.transaction?.originTxId || '',
     destinationTxId: reservation.reservationId,
   };
 };

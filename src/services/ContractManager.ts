@@ -11,7 +11,7 @@ import {
 import { getConnectorClient } from '@wagmi/core';
 import { AMMEXCHANGE_ABI, ERC20_BITSNARK_ABI } from '@/constants/abis';
 import { CMError, ContractError, parseContractError } from '@/lib/errors';
-import { TransactionResponse } from '@/lib/types';
+import { TransactionResponse } from '@/types';
 import { Address } from 'viem';
 import { wagmiConfig } from '@/config/wagmi';
 import { env } from '@/config/env';
