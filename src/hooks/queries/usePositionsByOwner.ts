@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { FlorinAPI } from '@/lib/api';
 import { Position } from '@/types';
+import { FlorinApiService } from '@/services/Api';
 
 /**
  * Hook to fetch positions by owner address
@@ -8,10 +8,8 @@ import { Position } from '@/types';
 export function usePositionsByOwner(ownerAddress: string | undefined) {
   return useQuery<Position[]>({
     queryKey: ['positions', 'owner', ownerAddress],
-    queryFn: () =>
-      ownerAddress
-        ? FlorinAPI.getPositionsByOwner(ownerAddress)
-        : Promise.resolve([]),
-    enabled: !!ownerAddress,
+    queryFn: () => FlorinApiService.getPositionsByOwner(ownerAddress),
+
+    //enabled: !!ownerAddress,
   });
 }

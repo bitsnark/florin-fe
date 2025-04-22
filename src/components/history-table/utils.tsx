@@ -3,7 +3,7 @@ import bitcoinLogo from '@/assets/bitcoin-logo.png';
 import ethLogo from '@/assets/eth-logo.png';
 
 // Formatter for hash display
-export function formatHash(hash: string) {
+export function formatHash(hash: string = '') {
   return hash.slice(0, 6) + '...' + hash.slice(-4);
 }
 

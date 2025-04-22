@@ -6,45 +6,65 @@ export enum Finality {
   REVERTED = 'REVERTED',
 }
 
-export enum PositionState {
+export enum PositionStatus {
   NONE = 'NONE',
   ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
   CLOSED = 'CLOSED',
+  COMPLETED = 'COMPLETED',
 }
 
-export enum ReservationState {
+export enum ReservationStatus {
   NONE = 'NONE',
   PENDING = 'PENDING',
   EXPIRED = 'EXPIRED',
   CANCELED = 'CANCELED',
-  SETTLED = 'SETTLED',
+  COMPLETED = 'COMPLETED',
 }
 
-export interface Position {
+export enum TransactionStatus {
+  NONE = 'NONE',
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+}
+
+export type Position = {
   positionId: string;
   chainId: number;
-  state: PositionState;
   ownerAddress: string;
   tokenAddress: string;
-  originalAmount: string; // Using string instead of bigint for JSON compatibility
+  originalAmount: string;
   bitcoinAddress: string;
-  exchangeRate: string; // Using string instead of bigint for JSON compatibility
-  blockNumber: number;
-  blockHash: string;
+  exchangeRate: string;
+  state: PositionStatus;
   finality: Finality;
-}
+  amount: string;
+  transaction?: Transaction;
+};
 
-export interface Reservation {
+export type Reservation = {
   reservationId: string;
-  positionId: string;
-  state: ReservationState;
   ownerAddress: string;
+  positionId: string;
+  amount: string;
+  state: ReservationStatus;
+  finality: Finality;
+  transaction?: Transaction;
+};
+
+export type Transaction = {
   blockNumber: number;
   blockHash: string;
-  amount: string; // Using string instead of bigint for JSON compatibility
-  finality: Finality;
-}
+  hash: string;
+  date: string; // ISO 8601 string
+  receivedAmount: string;
+  status: TransactionStatus;
+  contractRegistration: string;
+  originTxId: string;
+  destinationTxId?: string;
+};
+
 
 export interface ContractManagerConfig {
   chain: Chain;

@@ -1,4 +1,3 @@
-import { Transaction } from './types';
 import { formatHash, getChainLogo } from './utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,15 +11,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Position, Reservation, ReservationStatus } from '@/types';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
   tx,
   index,
 }: {
-  tx: Transaction;
+  tx: Reservation | Position;
   index: number;
-}) => (
+}) => { 
+  const isReservation = 'reservationId' in tx;
+  const fromChain = isReservation ? 'ethereum' : 'bitcoin'
+  const toChain = isReservation ? 'bitcoin' : 'ethereum'
+  const asset = isReservation ? 'usdc' : 'btc'
+  return (
   <AccordionItem
     value={`tx-${index}`}
     className="bg-[#1D1F25] rounded-xl border-none overflow-hidden"
@@ -28,23 +33,23 @@ export const MobileTransactionItem = ({
     <AccordionTrigger className="flex items-center justify-between p-3 w-[327px] h-[52px] text-white hover:no-underline">
       <div className="flex items-center gap-1">
         <img
-          src={getChainLogo(tx.fromChain)}
-          alt={tx.fromChain}
+          src={getChainLogo(fromChain)}
+          alt={fromChain}
           className="h-5 w-5"
         />
-        <span className="text-sm font-medium">{tx.fromChain}</span>
+        <span className="text-sm font-medium">{fromChain}</span>
         <ArrowRightIcon className="text-white w-3 h-3" />
         <img
-          src={getChainLogo(tx.toChain)}
-          alt={tx.toChain}
+          src={getChainLogo(toChain)}
+          alt={toChain}
           className="h-5 w-5"
         />
-        <span className="text-sm font-medium">{tx.toChain}</span>
+        <span className="text-sm font-medium">{toChain}</span>
       </div>
 
       <div className="flex items-center gap-3">
         <div className="text-sm font-medium text-right">
-          <span className="text-white">{tx.amount}</span> {tx.asset}
+          <span className="text-white">{tx.amount}</span> {asset}
         </div>
       </div>
     </AccordionTrigger>
@@ -54,40 +59,40 @@ export const MobileTransactionItem = ({
         <div className="grid grid-cols-2 items-center">
           <span className="text-sm">Contract registration</span>
           <span className="text-sm text-right text-[#F0A719]">
-            {formatHash(tx.contractRegistration)}
+            {formatHash(tx.transaction?.contractRegistration)}
           </span>
         </div>
 
         <div className="grid grid-cols-2 items-center">
           <span className="text-sm">Requested amount</span>
           <span className="text-sm text-right">
-            {tx.amount} {tx.asset}
+            {tx.transaction?.receivedAmount} {asset}
           </span>
         </div>
 
         <div className="grid grid-cols-2 items-center">
           <span className="text-sm">Received amount</span>
-          <span className="text-sm text-right">{tx.receivedAmount}</span>
+          <span className="text-sm text-right">{tx.transaction?.receivedAmount}</span>
         </div>
 
         <div className="grid grid-cols-2 items-center">
           <span className="text-sm">Origin network TXID</span>
           <span className="text-sm text-right text-orange-light">
-            {formatHash(tx.originTxId)}
+            {formatHash(tx.transaction?.originTxId)}
           </span>
         </div>
 
         <div className="grid grid-cols-2 items-center">
           <span className="text-sm">Destination network TXID</span>
           <span className="text-sm text-right text-orange-light">
-            {formatHash(tx.destinationTxId)}
+            {formatHash(tx.transaction?.destinationTxId)}
           </span>
         </div>
 
         <div className="grid grid-cols-2 items-center">
           <span className="text-sm">Status</span>
           <div className="flex items-center justify-end gap-2">
-            {tx.status === 'Completed' ? (
+            {tx.state === ReservationStatus.COMPLETED ? (
               <>
                 <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
                   <CheckCircledIcon className="text-green-600" />
@@ -111,7 +116,7 @@ export const MobileTransactionItem = ({
       </div>
     </AccordionContent>
   </AccordionItem>
-);
+)};
 
 // Mobile Loading Skeleton
 export const MobileLoadingSkeleton = () => (
