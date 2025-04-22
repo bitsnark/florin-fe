@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { FlorinAPI } from '@/lib/api';
-import { Reservation } from '@/lib/types';
+import { Reservation } from '@/types';
 
 /**
  * Hook to fetch reservations by owner address

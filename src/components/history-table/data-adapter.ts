@@ -19,7 +19,7 @@ import {
   PositionState,
   Reservation,
   ReservationState,
-} from '@/lib/types';
+} from '@/types';
 
 /**
  * Converts a Position into a Transaction for the history table

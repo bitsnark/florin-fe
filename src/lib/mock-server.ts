@@ -1,6 +1,6 @@
 import { createServer, Model, Response } from 'miragejs';
 import { mockPositions, mockReservations } from './mock-data';
-import { Position, Reservation } from './types';
+import { Position, Reservation } from '../types';
 
 export function makeServer({ environment = 'development' } = {}) {
   return createServer({

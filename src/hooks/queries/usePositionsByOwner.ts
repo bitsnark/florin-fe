@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { FlorinAPI } from '@/lib/api';
-import { Position } from '@/lib/types';
+import { Position } from '@/types';
 
 /**
  * Hook to fetch positions by owner address

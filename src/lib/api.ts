@@ -1,4 +1,4 @@
-import { Position, Reservation } from './types';
+import { Position, Reservation } from '../types';
 
 const API_BASE_URL = '/api';
 

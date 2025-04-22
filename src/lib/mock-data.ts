@@ -4,7 +4,7 @@ import {
   PositionState,
   Reservation,
   ReservationState,
-} from './types';
+} from '../types';
 
 // Mock data for positions
 export const mockPositions: Position[] = [
