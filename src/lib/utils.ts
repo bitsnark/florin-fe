@@ -25,5 +25,5 @@ export function truncateAddress(address: string) {
   if (!address) return '';
   const first = address.substring(0, 6);
   const last = address.substring(address.length - 4);
-  return `${first}..${last}`;
+  return `${first}...${last}`;
 }

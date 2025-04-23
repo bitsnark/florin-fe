@@ -111,9 +111,11 @@ export function TabSwitcherContainer() {
         className="gap-2.5 bg-primary border-none"
       />
       <TransactionTrackerDialog
+        type={fromNetwork === 'bitcoin' ? 'btc' : 'eth'}
         open={openTracker}
         onOpenChange={setOpenTracker}
         transactionData={{
+          type: fromNetwork === 'bitcoin' ? 'btc' : 'eth',
           amount:
             (trackerData?.logs &&
               trackerData?.logs[0] &&

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { CopyIcon } from '@radix-ui/react-icons';
-import { QrCode } from 'lucide-react';
 import { CircleProgress } from './CircleProgress';
 import { EyeIcon } from './EyeIcon';
 import { QRCode } from './QRCode';
+import { truncateAddress } from '@/lib/utils';
 
 interface AddressRevealProps {
   amount: string;
@@ -15,6 +15,25 @@ interface AddressRevealProps {
     seconds: number;
   };
   progress: number;
+  isReadyToSend?: boolean;
+  type: 'btc' | 'eth';
+}
+
+// Hook for checking if screen matches a media query
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
+
+  return matches;
 }
 
 export function AddressReveal({
@@ -22,30 +41,51 @@ export function AddressReveal({
   address,
   timeLeft,
   progress,
+  isReadyToSend,
+  type,
 }: AddressRevealProps) {
-  const [showAddress, setShowAddress] = useState(false);
-  const [showQrCode, setShowQrCode] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [showAddress, setShowAddress] = useState(isReadyToSend || false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
+  const [copiedAmount, setCopiedAmount] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  // Update showAddress if isReadyToSend changes
+  useEffect(() => {
+    if (isReadyToSend) {
+      setShowAddress(true);
+    }
+  }, [isReadyToSend]);
 
   // Format time as 00:00:00
   const formattedTime = `${String(timeLeft.hours).padStart(2, '0')}:${String(timeLeft.minutes).padStart(2, '0')}:${String(timeLeft.seconds).padStart(2, '0')}`;
 
-  // Handle copy to clipboard
+  // Handle copy address to clipboard
   const copyToClipboard = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(address);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedAddress(true);
+    setTimeout(() => setCopiedAddress(false), 2000);
+  };
+
+  // Handle copy amount to clipboard
+  const copyAmountToClipboard = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(amount);
+    setCopiedAmount(true);
+    setTimeout(() => setCopiedAmount(false), 2000);
   };
 
   return (
     <Card
-      className={`w-full p-3 cursor-pointer border-none bg-grey flex flex-col items-center gap-2 ${
+      className={`w-full p-3 cursor-pointer border-none bg-grey flex flex-col items-center justify-center gap-2 ${
         !showAddress
           ? 'h-[100px] md:h-[116px] justify-center'
-          : `${showQrCode ? 'h-[360px]' : 'h-[165px]'}`
+          : 'h-[330px] md:h-[360px]'
       }`}
-      onClick={() => setShowAddress(!showAddress)}
+      onClick={() => {
+        if (isReadyToSend) return;
+
+        setShowAddress(!showAddress);
+      }}
     >
       <>
         {!showAddress ? (
@@ -60,7 +100,7 @@ export function AddressReveal({
         ) : (
           <>
             <div className="max-h-full w-full">
-              <div className="flex gap-2 md:gap-4 items-center justify-between mb-3 md:mb-4">
+              <div className="flex gap-2 md:gap-4 items-center justify-center mb-3 md:mb-4">
                 <div className="relative w-[35px] h-[35px] md:w-[38px] md:h-[38px]">
                   <CircleProgress progress={progress} />
                 </div>
@@ -78,38 +118,39 @@ export function AddressReveal({
               <span className="text-[#888888] text-[11px] md:text-[13px]">
                 Amount
               </span>
-              <span className="text-white text-[11px] md:text-[13px]">
-                {amount}
-              </span>
+              <div className="flex items-center gap-1 md:gap-2">
+                <span className="text-white text-[11px] md:text-[13px]">
+                  ~{amount} {type === 'btc' ? 'BTC' : 'XBTC'}
+                </span>
+                <div
+                  className="cursor-pointer flex items-center justify-center w-[30px] h-[30px] md:w-[33px] md:h-[35px] rounded-lg bg-[#3A3740]"
+                  onClick={copyAmountToClipboard}
+                >
+                  <CopyIcon
+                    className={`w-3 h-3 md:w-4 md:h-4 ${copiedAmount ? 'text-green-500' : 'text-white'}`}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between items-center w-full">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center w-full">
               <span className="text-[#888888] text-[11px] md:text-[13px]">
                 Bitcoin address
               </span>
               <div className="flex items-center gap-1 md:gap-2">
                 <span className="text-orange-light text-[10px] md:text-[13px] truncate max-w-[100px] md:max-w-none">
-                  {address}
+                  {isDesktop ? truncateAddress(address) : address}
                 </span>
                 <div
                   className="cursor-pointer flex items-center justify-center w-[30px] h-[30px] md:w-[33px] md:h-[35px] rounded-lg bg-[#3A3740]"
                   onClick={copyToClipboard}
                 >
                   <CopyIcon
-                    className={`w-3 h-3 md:w-4 md:h-4 ${copied ? 'text-green-500' : 'text-white'}`}
+                    className={`w-3 h-3 md:w-4 md:h-4 ${copiedAddress ? 'text-green-500' : 'text-white'}`}
                   />
-                </div>
-                <div
-                  className="cursor-pointer flex items-center justify-center w-[30px] h-[30px] md:w-[33px] md:h-[35px] rounded-lg bg-[#3A3740]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowQrCode(!showQrCode);
-                  }}
-                >
-                  <QrCode className="w-3 h-3 md:w-4 md:h-4 text-white" />
                 </div>
               </div>
             </div>
-            {showQrCode && <QRCode /* address={address} */ />}
+            <QRCode address={address} />
           </>
         )}
       </>
