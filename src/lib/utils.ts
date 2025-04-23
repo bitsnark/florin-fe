@@ -27,3 +27,9 @@ export function truncateAddress(address: string) {
   const last = address.substring(address.length - 4);
   return `${first}...${last}`;
 }
+
+export function stringifyWithBigInt(obj: any): string {
+  return JSON.stringify(obj, (_, value) =>
+    typeof value === 'bigint' ? value.toString() : value
+  );
+}
