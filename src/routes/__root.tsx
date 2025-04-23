@@ -1,10 +1,18 @@
 import { ConnectorsListDialog } from '@/components/evm-wallet-connector/connectors-list-dialog';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
+import { FlorinApiService } from '@/services/Api';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
-export const Route = createRootRoute({
-  component: () => (
+const Layout = () => {
+
+  useEffect(() => {
+    FlorinApiService.clearAllMockData();
+    FlorinApiService.seed();
+  },[])
+  
+  return  (
     <div className="w-full min-h-screen flex flex-col">
       <Header />
       <ConnectorsListDialog />
@@ -15,5 +23,10 @@ export const Route = createRootRoute({
       </div>
       <Footer />
     </div>
-  ),
+  )
+}
+
+export const Route = createRootRoute({
+  component: Layout
 });
+

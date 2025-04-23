@@ -73,7 +73,6 @@ export const useExchange = () => {
       );
       const receipt = await wait();
       console.log('receipt', receipt);
-      console.log('hash', hash);
       const rJson = JSON.stringify(receipt, (_, value) =>
         typeof value === 'bigint' ? value.toString() : value
       );

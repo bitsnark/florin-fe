@@ -11,7 +11,7 @@ import {
 import { getConnectorClient } from '@wagmi/core';
 import { AMMEXCHANGE_ABI, ERC20_BITSNARK_ABI } from '@/constants/abis';
 import { CMError, ContractError, parseContractError } from '@/lib/errors';
-import { TransactionResponse } from '@/lib/types';
+import { TransactionResponse } from '@/types';
 import { Address } from 'viem';
 import { wagmiConfig } from '@/config/wagmi';
 import { env } from '@/config/env';
@@ -22,6 +22,8 @@ export class ContractManager {
 
   public publicClient!: PublicClient;
   public walletClient?: WalletClient;
+  // TODO: Fix this type once we have the correct type for the contract
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private contracts: Map<string, { abi: any[] }> = new Map();
 
   private constructor() {}
@@ -66,6 +68,8 @@ export class ContractManager {
     return instance;
   }
 
+  // TODO: Fix this type once we have the correct type for the contract
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public registerContract(contractName: string, abi: any[]) {
     this.contracts.set(contractName, { abi });
   }
@@ -73,6 +77,8 @@ export class ContractManager {
   public async readContract(
     contractName: string,
     method: string,
+    // TODO: Fix this type once we have the correct type for the contract
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args: any[] = [],
     address: Address
   ) {
@@ -107,6 +113,8 @@ export class ContractManager {
   public async writeContract(
     contractName: string,
     method: string,
+    // TODO: Fix this type once we have the correct type for the contract
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args: any[] = [],
     address: Address,
     options?: { value?: bigint }
@@ -162,6 +170,8 @@ export class ContractManager {
     }
   }
 
+  // TODO: Fix this type once we have the correct type for the contract
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getABI(contractName: string): any[] {
     const contract = this.contracts.get(contractName);
     if (!contract) {
@@ -170,8 +180,14 @@ export class ContractManager {
     return contract.abi;
   }
 
+  // TODO: Fix this type once we have the correct type for the contract
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async signTypedData<T extends Record<string, any>>(params: {
+    // TODO: Fix this type once we have the correct type for the contract
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     domain: Record<string, any>;
+    // TODO: Fix this type once we have the correct type for the contract
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     types: Record<string, any>;
     primaryType: string;
     message: T;

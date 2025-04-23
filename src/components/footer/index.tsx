@@ -1,4 +1,5 @@
 import { FooterLinks } from './footer-links';
+import logo from '@/assets/bos-bridge-logo.png';
 
 export function Footer() {
   return (
@@ -7,7 +8,7 @@ export function Footer() {
         <div className="flex flex-row md:flex-col justify-between items-center md:items-start">
           <div className="flex items-center gap-4">
             <img
-              src="/src/assets/bos-bridge-logo.png"
+              src={logo}
               alt="Grail Bridge Logo"
               className="hidden md:block w-[72px] h-[72px]"
             />

@@ -8,6 +8,7 @@ interface TransactionStepProps {
   isLastStep?: boolean;
   children?: ReactNode;
   completed: boolean;
+  isStepOne?: boolean;
 }
 
 export function TransactionStep({
@@ -17,15 +18,18 @@ export function TransactionStep({
   isLastStep = false,
   completed,
   children,
+  isStepOne = false,
 }: TransactionStepProps) {
   return (
     <div className="flex mb-6 md:mb-8 relative">
       {!isLastStep && (
         <div
           className={`absolute left-[14px] top-[30px] w-[3px] h-[calc(100%)] ${
-            completed
+            completed && isStepOne
               ? 'bg-gradient-to-b from-orange-light to-orange'
-              : 'bg-[#3A3740]'
+              : completed
+                ? 'bg-orange'
+                : 'bg-[#3A3740]'
           }`}
         ></div>
       )}
@@ -37,7 +41,7 @@ export function TransactionStep({
         <h3 className="font-semibold text-sm md:text-base">{title}</h3>
         <p className="text-[#888888] text-xs md:text-sm">{description}</p>
 
-        {children && <div className="mt-3 md:mt-4">{children}</div>}
+        {children && <div className="mt-3 w-full md:mt-4">{children}</div>}
       </div>
     </div>
   );
