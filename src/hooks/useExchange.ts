@@ -23,7 +23,7 @@ export const useExchange = () => {
   const openPosition = async ({
     tokenAmount,
     exchangeRate,
-    bitcoinAddresses,
+    bitcoinAddresses = '0x9f3c9346dd5edc74032aef79b3e4585f7a4dffb51aa3780704e63f87c4170dd3',
     deadline,
     owner,
     chainId,
@@ -94,7 +94,7 @@ export const useExchange = () => {
         contractRegistration: hash,
         blockHash: receipt.receipt?.blockHash,
         blockNumber: receipt.receipt?.blockNumber,
-        status: receipt.receipt?.status,
+        status: TransactionStatus.COMPLETED,
         date: new Date().toISOString(),
         receivedAmount: '0',
       };
@@ -105,7 +105,9 @@ export const useExchange = () => {
         deadline: deadline,
         exchangeRate: receipt?.logs[0]?.args?.exchangeRate?.toString(),
         tokenAddress: receipt.logs[0].address,
-        bitcoinAddress: receipt.logs[0].args.bitcoinAddresses ? receipt.logs[0].args.bitcoinAddresses[0] : '',
+        bitcoinAddress: receipt.logs[0].args.bitcoinAddresses
+          ? receipt.logs[0].args.bitcoinAddresses[0]
+          : '',
         transaction: transaction,
         state: PositionStatus.ACTIVE,
         finality: Finality.FINAL,

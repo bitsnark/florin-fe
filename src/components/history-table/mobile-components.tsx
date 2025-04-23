@@ -17,106 +17,127 @@ import { Position, Reservation, ReservationStatus } from '@/types';
 export const MobileTransactionItem = ({
   tx,
   index,
+  setTransactionToTrack,
+  setOpenTrackerDialog,
 }: {
   tx: Reservation | Position;
   index: number;
-}) => { 
+  setTransactionToTrack?: (tx: {
+    id: string;
+    type: 'reservation' | 'position';
+  }) => void;
+  setOpenTrackerDialog?: (open: boolean) => void;
+}) => {
   const isReservation = 'reservationId' in tx;
-  const fromChain = isReservation ? 'ethereum' : 'bitcoin'
-  const toChain = isReservation ? 'bitcoin' : 'ethereum'
-  const asset = isReservation ? 'usdc' : 'btc'
+  const fromChain = isReservation ? 'ethereum' : 'bitcoin';
+  const toChain = isReservation ? 'bitcoin' : 'ethereum';
+  const asset = isReservation ? 'usdc' : 'btc';
+
+  const handleOpenTrackerDialog = () => {
+    if (setOpenTrackerDialog && setTransactionToTrack) {
+      setOpenTrackerDialog(true);
+      setTransactionToTrack({
+        id: 'reservationId' in tx ? tx.reservationId : tx.positionId,
+        type: 'reservationId' in tx ? 'reservation' : 'position',
+      });
+    }
+  };
+
   return (
-  <AccordionItem
-    value={`tx-${index}`}
-    className="bg-[#1D1F25] rounded-xl border-none overflow-hidden"
-  >
-    <AccordionTrigger className="flex items-center justify-between p-3 w-[327px] h-[52px] text-white hover:no-underline">
-      <div className="flex items-center gap-1">
-        <img
-          src={getChainLogo(fromChain)}
-          alt={fromChain}
-          className="h-5 w-5"
-        />
-        <span className="text-sm font-medium">{fromChain}</span>
-        <ArrowRightIcon className="text-white w-3 h-3" />
-        <img
-          src={getChainLogo(toChain)}
-          alt={toChain}
-          className="h-5 w-5"
-        />
-        <span className="text-sm font-medium">{toChain}</span>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="text-sm font-medium text-right">
-          <span className="text-white">{tx.amount}</span> {asset}
-        </div>
-      </div>
-    </AccordionTrigger>
-
-    <AccordionContent className="px-4 pb-4 pt-0">
-      <div className="space-y-4 text-[#9A9A9A]">
-        <div className="grid grid-cols-2 items-center">
-          <span className="text-sm">Contract registration</span>
-          <span className="text-sm text-right text-[#F0A719]">
-            {formatHash(tx.transaction?.contractRegistration)}
-          </span>
+    <AccordionItem
+      value={`tx-${index}`}
+      className="bg-[#1D1F25] rounded-xl border-none overflow-hidden"
+    >
+      <AccordionTrigger className="flex items-center justify-between p-3 w-[327px] h-[52px] text-white hover:no-underline">
+        <div className="flex items-center gap-1">
+          <img
+            src={getChainLogo(fromChain)}
+            alt={fromChain}
+            className="h-5 w-5"
+          />
+          <span className="text-sm font-medium">{fromChain}</span>
+          <ArrowRightIcon className="text-white w-3 h-3" />
+          <img src={getChainLogo(toChain)} alt={toChain} className="h-5 w-5" />
+          <span className="text-sm font-medium">{toChain}</span>
         </div>
 
-        <div className="grid grid-cols-2 items-center">
-          <span className="text-sm">Requested amount</span>
-          <span className="text-sm text-right">
-            {tx.transaction?.receivedAmount} {asset}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 items-center">
-          <span className="text-sm">Received amount</span>
-          <span className="text-sm text-right">{tx.transaction?.receivedAmount}</span>
-        </div>
-
-        <div className="grid grid-cols-2 items-center">
-          <span className="text-sm">Origin network TXID</span>
-          <span className="text-sm text-right text-orange-light">
-            {formatHash(tx.transaction?.originTxId)}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 items-center">
-          <span className="text-sm">Destination network TXID</span>
-          <span className="text-sm text-right text-orange-light">
-            {formatHash(tx.transaction?.destinationTxId)}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 items-center">
-          <span className="text-sm">Status</span>
-          <div className="flex items-center justify-end gap-2">
-            {tx.state === ReservationStatus.COMPLETED ? (
-              <>
-                <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
-                  <CheckCircledIcon className="text-green-600" />
-                </div>
-                <span className="text-sm">Completed</span>
-              </>
-            ) : (
-              <>
-                <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
-                  <SymbolIcon className="h-5 w-5" />
-                </div>
-                <span className="text-sm">Pending</span>
-              </>
-            )}
+        <div className="flex items-center gap-3">
+          <div className="text-sm font-medium text-right">
+            <span className="text-white">{tx.amount}</span> {asset}
           </div>
         </div>
+      </AccordionTrigger>
 
-        <Button variant="grey" className="w-full h-[56px]">
-          Track
-        </Button>
-      </div>
-    </AccordionContent>
-  </AccordionItem>
-)};
+      <AccordionContent className="px-4 pb-4 pt-0">
+        <div className="space-y-4 text-[#9A9A9A]">
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Contract registration</span>
+            <span className="text-sm text-right text-[#F0A719]">
+              {formatHash(tx.transaction?.contractRegistration)}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Requested amount</span>
+            <span className="text-sm text-right">
+              {tx.transaction?.receivedAmount} {asset}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Received amount</span>
+            <span className="text-sm text-right">
+              {tx.transaction?.receivedAmount}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Origin network TXID</span>
+            <span className="text-sm text-right text-orange-light">
+              {formatHash(tx.transaction?.originTxId)}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Destination network TXID</span>
+            <span className="text-sm text-right text-orange-light">
+              {formatHash(tx.transaction?.destinationTxId)}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Status</span>
+            <div className="flex items-center justify-end gap-2">
+              {tx.state === ReservationStatus.COMPLETED ? (
+                <>
+                  <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
+                    <CheckCircledIcon className="text-green-600" />
+                  </div>
+                  <span className="text-sm">Completed</span>
+                </>
+              ) : (
+                <>
+                  <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
+                    <SymbolIcon className="h-5 w-5" />
+                  </div>
+                  <span className="text-sm">Pending</span>
+                </>
+              )}
+            </div>
+          </div>
+
+          <Button
+            variant="grey"
+            className="w-full h-[56px]"
+            onClick={handleOpenTrackerDialog}
+          >
+            Track
+          </Button>
+        </div>
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
 
 // Mobile Loading Skeleton
 export const MobileLoadingSkeleton = () => (
