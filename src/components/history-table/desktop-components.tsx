@@ -6,21 +6,35 @@ import {
   SymbolIcon,
 } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
-import {
-  Position,
-  PositionStatus,
-  Reservation,
-} from '@/types';
+import { Position, PositionStatus, Reservation } from '@/types';
+
+interface DesktopTransactionRowProps {
+  tx: Reservation | Position;
+  setTransactionToTrack: (tx: {
+    id: string;
+    type: 'reservation' | 'position';
+  }) => void;
+  setOpenTrackerDialog: (open: boolean) => void;
+}
 
 export const DesktopTransactionRow = ({
   tx,
-}: {
-  tx: Reservation | Position;
-}) => {
+  setTransactionToTrack,
+  setOpenTrackerDialog,
+}: DesktopTransactionRowProps) => {
   const isReservation = 'reservationId' in tx;
   const fromChain = isReservation ? 'ethereum' : 'bitcoin';
   const toChain = isReservation ? 'bitcoin' : 'ethereum';
   const asset = isReservation ? 'usdc' : 'btc';
+
+  const handleOpenTrackerDialog = () => {
+    setOpenTrackerDialog(true);
+    setTransactionToTrack({
+      id: 'reservationId' in tx ? tx.reservationId : tx.positionId,
+      type: 'reservationId' in tx ? 'reservation' : 'position',
+    });
+  };
+
   return (
     <TableRow key={tx?.transaction?.hash} className="hover:bg-transparent">
       <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
@@ -73,7 +87,11 @@ export const DesktopTransactionRow = ({
           {tx.state}
         </div>
       </TableCell>
-      <TableCell className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+
+      <TableCell
+        onClick={handleOpenTrackerDialog}
+        className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap"
+      >
         Track
       </TableCell>
     </TableRow>

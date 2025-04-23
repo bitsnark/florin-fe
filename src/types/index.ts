@@ -12,11 +12,12 @@ export enum PositionStatus {
   PAUSED = 'PAUSED',
   CLOSED = 'CLOSED',
   COMPLETED = 'COMPLETED',
+  EXPIRED = 'EXPIRED',
 }
 
 export enum ReservationStatus {
   NONE = 'NONE',
-  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
   EXPIRED = 'EXPIRED',
   CANCELED = 'CANCELED',
   COMPLETED = 'COMPLETED',
@@ -33,38 +34,42 @@ export type Position = {
   positionId: string;
   chainId: number;
   ownerAddress: string;
-  tokenAddress: string;
-  originalAmount: string;
+  tokenAddress: Address;
   bitcoinAddress: string;
   exchangeRate: string;
   state: PositionStatus;
   finality: Finality;
   amount: string;
   transaction?: Transaction;
+  deadline?: number;
 };
 
 export type Reservation = {
   reservationId: string;
   ownerAddress: string;
   positionId: string;
+  tokenAddress: Address,
   amount: string;
   state: ReservationStatus;
   finality: Finality;
   transaction?: Transaction;
+  chainId: number;
+  bitcoinAddress?: string;
 };
 
 export type Transaction = {
-  blockNumber: number;
-  blockHash: string;
+  blockNumber?: number;
+  blockHash?: string;
   hash: string;
   date: string; // ISO 8601 string
-  receivedAmount: string;
+  receivedAmount?: string;
   status: TransactionStatus;
   contractRegistration: string;
-  originTxId: string;
+  originTxId?: string;
   destinationTxId?: string;
+  originTxConfirmations?: number;
+  destinationsTxConfirmations?: number;
 };
-
 
 export interface ContractManagerConfig {
   chain: Chain;

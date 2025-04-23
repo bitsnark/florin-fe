@@ -5,10 +5,14 @@ import { FlorinApiService } from '@/services/Api';
 /**
  * Hook to fetch a single reservation by ID
  */
-export function useReservation(reservationId: string | undefined) {
+export function useReservation(
+  reservationId: string | undefined,
+  { refetchInterval }: { refetchInterval?: number }
+) {
   return useQuery<Reservation | undefined>({
     queryKey: ['reservation', reservationId],
     queryFn: () => FlorinApiService.getReservationById(reservationId),
     enabled: !!reservationId,
+    refetchInterval: refetchInterval || undefined,
   });
 }

@@ -31,9 +31,9 @@ export function useTimer(
     const totalSeconds =
       timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds;
 
-    const timer = setTimeout(() => {
-      if (totalSeconds <= 0) return;
+    if (totalSeconds <= 0) return;
 
+    const timer = setTimeout(() => {
       // Update time
       let newSeconds = timeLeft.seconds - 1;
       let newMinutes = timeLeft.minutes;
@@ -65,7 +65,7 @@ export function useTimer(
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, isActive]);
+  }, [isActive, timeLeft]);
 
   return { timeLeft, progress };
 }

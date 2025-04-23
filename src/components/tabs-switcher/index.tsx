@@ -3,16 +3,24 @@ import { TabSwitcher } from '@/components/ui/tab-switcher';
 import { TransferTab } from './transfer-tab';
 import { HistoryTab } from '@/components/history-table/history-tab';
 import { Network, Currency } from './types';
-import { useAccount } from 'wagmi';
-import { Address, formatEther, parseEther } from 'viem';
+import { useAccount, useChainId } from 'wagmi';
+import { Address, parseEther } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
 import { TransactionTrackerDialog } from '../transaction-tracker';
+import { Position, Reservation } from '@/types';
 
+type TrackerData = {
+  type: 'position' | 'reservation';
+  open: boolean;
+  transactionId: string;
+};
 export function TabSwitcherContainer() {
   const { address } = useAccount();
+  const chainId = useChainId();
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
+  console.log({ fromNetwork, toNetwork });
   const [fromCurrency, setFromCurrency] = useState<Currency>(
     fromNetwork === 'bitcoin' ? 'btc' : 'eth'
   );
@@ -27,12 +35,14 @@ export function TabSwitcherContainer() {
     undefined
   );
   const { openPosition, reservePosition, loading } = useExchange();
-  const [openTracker, setOpenTracker] = useState(false);
   // TODO: Fix this type once we have the correct type for the transaction
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [trackerData, setTrackerData] = useState<any>({});
-  const xbtcAmount = '1.123';
+  const [trackerData, setTrackerData] = useState<TrackerData>({
+    type: 'position',
+    open: false,
+    transactionId: '',
+  });
 
+  const xbtcAmount = '1.123';
   const tabs = ['Transfer', 'History'];
   const variant = 'default';
   const size = 'default';
@@ -77,14 +87,13 @@ export function TabSwitcherContainer() {
 
   const handleBridgeFunds = async () => {
     // TODO: Fix this type once we have the correct type for the transaction
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let transaction: any;
-    if (fromNetwork === 'bitcoin') {
+    let transaction: Position | Reservation | undefined;
+    if (fromNetwork === 'ethereum') {
       transaction = await reservePosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
-        reservationId: BigInt(1n),
-        positionId: '0x1234' as Address,
         evmReceivingAddress: address!,
+        chainId,
+        owner: address!,
       });
     } else {
       transaction = await openPosition({
@@ -93,11 +102,18 @@ export function TabSwitcherContainer() {
         bitcoinAddresses: bitcoinAddress!,
         deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
         owner: address!,
+        chainId,
       });
     }
-
-    setTrackerData(transaction);
-    setOpenTracker(true);
+    console.log('transaction', transaction, fromNetwork);
+    setTrackerData({
+      type: fromNetwork === 'bitcoin' ? 'position' : 'reservation',
+      open: true,
+      transactionId:
+        fromNetwork === 'bitcoin'
+          ? (transaction as Position)?.positionId
+          : (transaction as Reservation)?.reservationId,
+    });
   };
 
   return (
@@ -111,22 +127,12 @@ export function TabSwitcherContainer() {
         className="gap-2.5 bg-primary border-none"
       />
       <TransactionTrackerDialog
-        type={fromNetwork === 'bitcoin' ? 'btc' : 'eth'}
-        open={openTracker}
-        onOpenChange={setOpenTracker}
-        transactionData={{
-          type: fromNetwork === 'bitcoin' ? 'btc' : 'eth',
-          amount:
-            (trackerData?.logs &&
-              trackerData?.logs[0] &&
-              trackerData?.logs[0]?.args?.tokenAmount &&
-              formatEther(trackerData?.logs[0]?.args?.tokenAmount)) ||
-            '0.012',
-          recipientAddress:
-            trackerData?.logs && trackerData?.logs[0].args.bitcoinAddresses,
-          reservationTx: trackerData?.receipt?.transactionHash,
-          currentStep: 0,
+        open={trackerData?.open}
+        onOpenChange={(open) => {
+          setTrackerData((prev) => ({ ...prev, open }));
         }}
+        type={trackerData?.type}
+        id={trackerData?.transactionId}
       />
       <div className="my-3">
         {activeTab === 0 ? (
