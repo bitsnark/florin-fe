@@ -54,8 +54,9 @@ export function TransactionTrackerDialog({
     if (
       sendBtcStepCompleted &&
       stepThreeCompleted &&
-      !transactionData?.transaction?.destinationTxId
+      transactionData?.transaction?.destinationTxId
     ) {
+      console.log('transactionData', transactionData);
       setTimeout(() => {
         setBtcTransactionDetected(true);
       }, 10000);

@@ -19,12 +19,11 @@ export type Result =
     };
 
 export function useTrackerData(type: TrackerType, id: string): Result {
-  const position = usePosition(type === 'reservation' ? id : undefined, {
-    refetchInterval: 50000,
-  });
-  const reservation = useReservation(type === 'position' ? id : undefined, {
-    refetchInterval: 50000,
-  });
+  const position = usePosition(type === 'position' ? id : undefined, {});
+  const reservation = useReservation(
+    type === 'reservation' ? id : undefined,
+    {}
+  );
 
   if (type === 'position') {
     return {

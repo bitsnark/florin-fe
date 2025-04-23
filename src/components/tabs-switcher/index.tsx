@@ -10,7 +10,7 @@ import { TransactionTrackerDialog } from '../transaction-tracker';
 import { Position, Reservation } from '@/types';
 
 type TrackerData = {
-  type: 'btc' | 'eth';
+  type: 'position' | 'reservation';
   open: boolean;
   transactionId: string;
 };
@@ -20,6 +20,7 @@ export function TabSwitcherContainer() {
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
+  console.log({ fromNetwork, toNetwork });
   const [fromCurrency, setFromCurrency] = useState<Currency>(
     fromNetwork === 'bitcoin' ? 'btc' : 'eth'
   );
@@ -37,7 +38,7 @@ export function TabSwitcherContainer() {
   // TODO: Fix this type once we have the correct type for the transaction
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [trackerData, setTrackerData] = useState<TrackerData>({
-    type: 'btc',
+    type: 'position',
     open: false,
     transactionId: '',
   });
@@ -89,7 +90,7 @@ export function TabSwitcherContainer() {
     // TODO: Fix this type once we have the correct type for the transaction
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let transaction: Position | Reservation | undefined;
-    if (fromNetwork === 'bitcoin') {
+    if (fromNetwork === 'ethereum') {
       transaction = await reservePosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         evmReceivingAddress: address!,
@@ -108,24 +109,24 @@ export function TabSwitcherContainer() {
     }
     console.log('transaction', transaction, fromNetwork);
     setTrackerData({
-      type: fromNetwork === 'bitcoin' ? 'btc' : 'eth',
+      type: fromNetwork === 'bitcoin' ? 'position' : 'reservation',
       open: true,
       transactionId:
         fromNetwork === 'bitcoin'
-          ? (transaction as Reservation)?.reservationId
-          : (transaction as Position)?.positionId,
+          ? (transaction as Position)?.positionId
+          : (transaction as Reservation)?.reservationId,
     });
   };
 
   const handleClickTransaction = (transaction: Position | Reservation) => {
-    const type = 'reservationId' in transaction ? 'btc' : 'eth';
+    const type = 'reservationId' in transaction ? 'reservation' : 'position';
     setTrackerData({
       type: type,
       open: true,
       transactionId:
-        type === 'eth'
-          ? (transaction as Position)?.positionId || ''
-          : (transaction as Reservation)?.reservationId,
+        type === 'reservation'
+          ? (transaction as Reservation)?.reservationId
+          : (transaction as Position)?.positionId,
     });
   };
   return (
@@ -143,10 +144,8 @@ export function TabSwitcherContainer() {
         onOpenChange={(open) => {
           setTrackerData((prev) => ({ ...prev, open }));
         }}
-        transactionData={{
-          type: trackerData?.type,
-          id: trackerData?.transactionId,
-        }}
+        type={trackerData?.type}
+        id={trackerData?.transactionId}
       />
       <div className="my-3">
         {activeTab === 0 ? (
