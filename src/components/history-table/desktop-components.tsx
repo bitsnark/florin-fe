@@ -6,16 +6,14 @@ import {
   SymbolIcon,
 } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
-import {
-  Position,
-  PositionStatus,
-  Reservation,
-} from '@/types';
+import { Position, PositionStatus, Reservation } from '@/types';
 
 export const DesktopTransactionRow = ({
   tx,
+  handleClickTransaction,
 }: {
   tx: Reservation | Position;
+  handleClickTransaction: (transaction: Position | Reservation) => void;
 }) => {
   const isReservation = 'reservationId' in tx;
   const fromChain = isReservation ? 'ethereum' : 'bitcoin';
@@ -73,7 +71,10 @@ export const DesktopTransactionRow = ({
           {tx.state}
         </div>
       </TableCell>
-      <TableCell className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <TableCell
+        className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap"
+        onClick={() => handleClickTransaction(tx)}
+      >
         Track
       </TableCell>
     </TableRow>

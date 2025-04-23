@@ -33,7 +33,11 @@ import { Position, Reservation } from '@/types';
  * It uses the useTransactions hook which transforms our backend data (Positions
  * and Reservations) into the Transaction format required by the UI design.
  */
-export default function TransactionsTable() {
+export default function TransactionsTable({
+  handleClickTransaction,
+}: {
+  handleClickTransaction: (transaction: Position | Reservation) => void;
+}) {
   const account = useAccount();
   const { width } = useWindowSize();
   const isMobile = width < 768;
@@ -143,7 +147,11 @@ export default function TransactionsTable() {
             </>
           ) : transactions.length > 0 ? (
             transactions.map((tx) => (
-              <DesktopTransactionRow key={tx.transaction?.hash} tx={tx} />
+              <DesktopTransactionRow
+                key={tx.transaction?.hash}
+                tx={tx}
+                handleClickTransaction={handleClickTransaction}
+              />
             ))
           ) : (
             <EmptyState />

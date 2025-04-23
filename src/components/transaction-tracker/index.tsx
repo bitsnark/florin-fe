@@ -4,12 +4,10 @@ import { TransactionCard } from './TransactionCard';
 import { BtcSendStep } from './BtcSendStep';
 import { CompletionCard } from './CompletionCard';
 import { useTimer } from './TimerLogic';
+import { useTrackerData } from '@/hooks/useTrackerData';
 
 interface TransactionData {
-  amount: string;
-  recipientAddress: string;
-  reservationTx: string;
-  currentStep: number;
+  id: string;
   type: 'btc' | 'eth';
 }
 
@@ -17,7 +15,6 @@ interface TransactionTrackerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   transactionData: TransactionData;
-  type: 'btc' | 'eth';
 }
 
 export function TransactionTrackerDialog({
@@ -26,6 +23,13 @@ export function TransactionTrackerDialog({
   transactionData,
 }: TransactionTrackerDialogProps) {
   const { timeLeft, progress } = useTimer(open);
+
+  const { data: transaction, /* loading */ } = useTrackerData(
+    transactionData.type,
+    transactionData.id
+  );
+
+  console.log('transaction', transaction, transactionData);
   const sendBtcStepCompleted = true;
   const stepThreeCompleted = true;
   const btcTransactionDetected = true;
@@ -45,7 +49,7 @@ export function TransactionTrackerDialog({
     `Funds (${transactionData.type === 'btc' ? 'xBTC' : 'BTC'}) are in your wallet now.`;
 
   return (
-    <Dialog open={true} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={`bg-[#1E1C21] border-none rounded-xl overflow-y-auto w-full md:w-[585px] ${
           transactionData.type === 'eth'
@@ -70,10 +74,11 @@ export function TransactionTrackerDialog({
               <TransactionCard
                 type={transactionData.type}
                 data={{
-                  amount: transactionData.amount,
-                  recipientAddress: transactionData.recipientAddress,
-                  reservationTx: transactionData.reservationTx,
-                  confirmations: 157,
+                  amount: transaction?.amount || '0',
+                  recipientAddress: transaction?.ownerAddress,
+                  reservationTx: transaction?.transaction?.hash,
+                  confirmations:
+                    transaction?.transaction?.originTxConfirmations,
                   fiatAmount: '919',
                 }}
               />
@@ -83,8 +88,8 @@ export function TransactionTrackerDialog({
               <>
                 {/* Step 2 - Send BTC */}
                 <BtcSendStep
-                  amount={transactionData.amount}
-                  recipientAddress={transactionData.recipientAddress}
+                  amount={transaction?.amount || '0'}
+                  recipientAddress={transaction?.bitcoinAddress || ''}
                   timeLeft={timeLeft}
                   progress={progress}
                   type={transactionData.type}
@@ -102,10 +107,11 @@ export function TransactionTrackerDialog({
                     <TransactionCard
                       type="btc"
                       data={{
-                        amount: transactionData.amount,
-                        txid: transactionData.reservationTx,
-                        confirmations: 6,
-                        fiatAmount: '10',
+                        amount: transaction?.amount || '0',
+                        txid: transaction?.transaction?.destinationTxId,
+                        confirmations:
+                          transaction?.transaction?.destinationsTxConfirmations,
+                        fiatAmount: '-',
                       }}
                       isStepThree={true}
                     />
@@ -122,9 +128,11 @@ export function TransactionTrackerDialog({
                 >
                   {bridgingCompleted && (
                     <CompletionCard
-                      amount={transactionData.amount}
-                      recipientAddress={transactionData.recipientAddress}
-                      reservationTx={transactionData.reservationTx}
+                      amount={transaction?.amount || '0'}
+                      recipientAddress={transaction?.ownerAddress || ''}
+                      reservationTx={
+                        transaction?.transaction?.destinationTxId || ''
+                      }
                       type={transactionData.type}
                     />
                   )}
@@ -143,9 +151,11 @@ export function TransactionTrackerDialog({
                 >
                   {bridgingCompleted && (
                     <CompletionCard
-                      amount={transactionData.amount}
-                      recipientAddress={transactionData.recipientAddress}
-                      reservationTx={transactionData.reservationTx}
+                      amount={transaction?.amount || '0'}
+                      recipientAddress={transaction?.ownerAddress || ''}
+                      reservationTx={
+                        transaction?.transaction?.destinationTxId || ''
+                      }
                       type={transactionData.type}
                     />
                   )}

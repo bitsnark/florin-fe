@@ -1,8 +1,6 @@
 import { samplePositions, sampleReservations } from '@/lib/mock-data';
-import {
-  Position,
-  Reservation,
-} from '@/types';
+import { stringifyWithBigInt } from '@/lib/utils';
+import { Position, Reservation, ReservationStatus } from '@/types';
 
 const POSITIONS_KEY = 'florin_positions';
 const RESERVATIONS_KEY = 'florin_reservations';
@@ -49,11 +47,13 @@ export class FlorinApiService {
   ): Promise<Position[]> {
     const positions = this.getPositions();
     return withDelay(
-      !ownerId ? positions : positions.filter(
-        (p) =>
-          p.ownerAddress === ownerId &&
-          (finalityFlag === undefined || p.finality === 'FINAL')
-      )
+      !ownerId
+        ? positions
+        : positions.filter(
+            (p) =>
+              p.ownerAddress === ownerId &&
+              (finalityFlag === undefined || p.finality === 'FINAL')
+          )
     );
   }
 
@@ -87,27 +87,21 @@ export class FlorinApiService {
     ownerId: string | undefined,
     finalityFlag?: boolean
   ): Promise<Reservation[]> {
-    
     const reservations = this.getReservations();
     return withDelay(
-      reservations.filter(
-        (r) =>
-          !ownerId ? true : r.ownerAddress === ownerId &&
-          (finalityFlag === undefined || r.finality === 'FINAL')
+      reservations.filter((r) =>
+        !ownerId
+          ? true
+          : r.ownerAddress === ownerId &&
+            (finalityFlag === undefined || r.finality === 'FINAL')
       )
     );
   }
 
-  static async getActiveReservations(
-    finalityFlag?: boolean
-  ): Promise<Reservation[]> {
+  static async getActiveReservations(): Promise<Reservation[]> {
     const reservations = this.getReservations();
     return withDelay(
-      reservations.filter(
-        (r) =>
-          r.state === 'PENDING' &&
-          (finalityFlag === undefined || r.finality === 'FINAL')
-      )
+      reservations.filter((r) => r.state === ReservationStatus.ACTIVE)
     );
   }
 
@@ -126,16 +120,19 @@ export class FlorinApiService {
     );
   }
 
-  static async addPosition(position: Position): Promise<void> {
+  static async addPosition(position: Position): Promise<Position> {
+    console.log('addPosition', position);
     const positions = this.getPositions();
-    this.savePositions([...positions, position]);
-    return withDelay(undefined);
+    //this.savePositions([...positions, position]);
+    localStorage.setItem(POSITIONS_KEY, stringifyWithBigInt([...positions, position]));
+    return withDelay(position);
   }
 
-  static async addReservation(reservation: Reservation): Promise<void> {
+  static async addReservation(reservation: Reservation): Promise<Reservation> {
+    console.log('addReservation', reservation);
     const reservations = this.getReservations();
     this.saveReservations([...reservations, reservation]);
-    return withDelay(undefined);
+    return withDelay(reservation);
   }
 
   static async getBitcoinTaprootAddress(): Promise<string> {
@@ -144,13 +141,17 @@ export class FlorinApiService {
     );
   }
 
+  static async finPositionIdForAmount(amount: bigint): Promise<string> {
+    console.log('finPositionIdForAmount', amount);
+    const positions = this.getPositions();
+    return withDelay(positions[0].positionId);
+  }
+
   static async getMaxAmount(): Promise<bigint> {
     return withDelay(BigInt(1000000));
   }
 
   static async seed(): Promise<void> {
-   
-
     this.savePositions(samplePositions);
     this.saveReservations(sampleReservations);
 
