@@ -118,17 +118,6 @@ export function TabSwitcherContainer() {
     });
   };
 
-  const handleClickTransaction = (transaction: Position | Reservation) => {
-    const type = 'reservationId' in transaction ? 'reservation' : 'position';
-    setTrackerData({
-      type: type,
-      open: true,
-      transactionId:
-        type === 'reservation'
-          ? (transaction as Reservation)?.reservationId
-          : (transaction as Position)?.positionId,
-    });
-  };
   return (
     <div className="flex flex-col items-center justify-center pb-10">
       <TabSwitcher
@@ -171,7 +160,7 @@ export function TabSwitcherContainer() {
             loading={loading}
           />
         ) : (
-          <HistoryTab handleClickTransaction={handleClickTransaction} />
+          <HistoryTab />
         )}
       </div>
     </div>

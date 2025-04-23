@@ -5,7 +5,7 @@ interface QRCodeProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function QRCode({ address }: QRCodeProps) {
   // The 'address' parameter would be used to generate a real QR code in a complete implementation
-
+  console.log({ address });
   return (
     <div className="flex flex-col items-center justify-center gap-1.5">
       <span className="text-white text-[10px] md:text-xs font-bold">

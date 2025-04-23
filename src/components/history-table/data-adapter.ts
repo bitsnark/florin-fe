@@ -18,7 +18,7 @@ import {
   Position,
   PositionStatus,
   Reservation,
-  ReservationStatus
+  ReservationStatus,
 } from '@/types';
 
 /**
@@ -42,7 +42,7 @@ export const positionToTransaction = (position: Position): Transaction => {
   }
 
   // Calculate received amount based on original amount and exchange rate
-  const originalAmount = Number(position.originalAmount) / 1e18; // Convert from wei to ETH
+  const originalAmount = Number(position.amount) / 1e18; // Convert from wei to ETH
   const exchangeRate = Number(position.exchangeRate) / 1e10; // Normalize exchange rate
   const receivedAmount = (originalAmount * exchangeRate).toFixed(8); // BTC has 8 decimals
 
@@ -77,7 +77,7 @@ export const reservationToTransaction = (
     case ReservationStatus.COMPLETED:
       status = 'Completed';
       break;
-    case ReservationStatus.PENDING:
+    case ReservationStatus.ACTIVE:
       status = 'Pending';
       break;
     default:

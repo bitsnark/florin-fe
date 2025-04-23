@@ -35,11 +35,7 @@ import { useState } from 'react';
  * It uses the useTransactions hook which transforms our backend data (Positions
  * and Reservations) into the Transaction format required by the UI design.
  */
-export default function TransactionsTable({
-  handleClickTransaction,
-}: {
-  handleClickTransaction: (transaction: Position | Reservation) => void;
-}) {
+export default function TransactionsTable() {
   const account = useAccount();
   const { width } = useWindowSize();
   const isMobile = width < 768;
