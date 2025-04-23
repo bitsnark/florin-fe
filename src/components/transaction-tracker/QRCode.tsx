@@ -5,6 +5,7 @@ interface QRCodeProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function QRCode({ address }: QRCodeProps) {
   // The 'address' parameter would be used to generate a real QR code in a complete implementation
+
   return (
     <div className="flex flex-col items-center justify-center gap-1.5">
       <span className="text-white text-[10px] md:text-xs font-bold">
@@ -12,7 +13,7 @@ export function QRCode({ address }: QRCodeProps) {
       </span>
       <div className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] bg-white p-2 rounded-xl">
         {/* Hardcoded QR code image - in a real app this would be generated from the address */}
-        {/* <svg
+        <svg
           width="132"
           height="133"
           viewBox="0 0 132 133"
@@ -1598,7 +1599,7 @@ export function QRCode({ address }: QRCodeProps) {
             d="M122.198 127.599H117.672V132.125H122.198V127.599Z"
             fill="black"
           />
-        </svg> */}
+        </svg>
       </div>
     </div>
   );

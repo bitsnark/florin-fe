@@ -12,6 +12,7 @@ export enum PositionStatus {
   PAUSED = 'PAUSED',
   CLOSED = 'CLOSED',
   COMPLETED = 'COMPLETED',
+  EXPIRED = 'EXPIRED',
 }
 
 export enum ReservationStatus {
@@ -69,7 +70,6 @@ export type Transaction = {
   originTxConfirmations?: number;
   destinationsTxConfirmations?: number;
 };
-
 
 export interface ContractManagerConfig {
   chain: Chain;

@@ -25,6 +25,8 @@ import { usePositionsByOwner } from '@/hooks/queries/usePositionsByOwner';
 import { useAccount } from 'wagmi';
 import { useReservationsByOwner } from '@/hooks/queries/useReservationsByOwner';
 import { Position, Reservation } from '@/types';
+import { TransactionTrackerDialog } from '../transaction-tracker';
+import { useState } from 'react';
 
 /**
  * Transactions history table component
@@ -49,6 +51,11 @@ export default function TransactionsTable({
     ...(positions || []),
     ...(reservations || []),
   ];
+  const [transactionToTrack, setTransactionToTrack] = useState<{
+    id: string;
+    type: 'reservation' | 'position';
+  } | null>(null);
+  const [openTrackerDialog, setOpenTrackerDialog] = useState(false);
   const isLoading = isLoadingPositions || isLoadingReservations;
 
   const isWalletConnected = account.isConnected;
@@ -70,12 +77,20 @@ export default function TransactionsTable({
                 key={tx.transaction?.hash}
                 tx={tx}
                 index={index}
+                setTransactionToTrack={setTransactionToTrack}
+                setOpenTrackerDialog={setOpenTrackerDialog}
               />
             ))}
           </Accordion>
         ) : (
           <MobileEmptyState />
         )}
+        <TransactionTrackerDialog
+          open={openTrackerDialog}
+          onOpenChange={setOpenTrackerDialog}
+          type={transactionToTrack?.type || 'reservation'}
+          id={transactionToTrack?.id || ''}
+        />
       </div>
     );
   }
@@ -150,7 +165,8 @@ export default function TransactionsTable({
               <DesktopTransactionRow
                 key={tx.transaction?.hash}
                 tx={tx}
-                handleClickTransaction={handleClickTransaction}
+                setTransactionToTrack={setTransactionToTrack}
+                setOpenTrackerDialog={setOpenTrackerDialog}
               />
             ))
           ) : (
@@ -158,6 +174,12 @@ export default function TransactionsTable({
           )}
         </TableBody>
       </Table>
+      <TransactionTrackerDialog
+        open={openTrackerDialog}
+        onOpenChange={setOpenTrackerDialog}
+        type={transactionToTrack?.type || 'reservation'}
+        id={transactionToTrack?.id || ''}
+      />
     </div>
   );
 }

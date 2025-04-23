@@ -30,9 +30,6 @@ export function TransactionCard({
   data,
   isStepThree = false,
 }: TransactionCardProps) {
-  //TODO: Implement confirmation completed
-  const confirmationCompleted = true;
-
   const renderConfirmations = () => {
     if (type === 'btc' && isHighAmount(data.fiatAmount)) {
       return (
@@ -40,7 +37,7 @@ export function TransactionCard({
           <span className="text-white text-[12px] font-medium">
             {data.confirmations}
           </span>
-          {confirmationCompleted ? (
+          {data.confirmations === 20 ? (
             <CheckCircledIcon className="text-green-600 w-4 h-4" />
           ) : (
             <RefreshCw className="text-foreground w-4 h-4 animate-[spin_2s_linear_infinite]" />
@@ -62,7 +59,7 @@ export function TransactionCard({
           <span className="text-white text-[12px] font-medium">
             {data.confirmations}
           </span>
-          {confirmationCompleted ? (
+          {data.confirmations === 20 ? (
             <CheckCircledIcon className="text-green-600 w-4 h-4" />
           ) : (
             <RefreshCw className="text-foreground w-4 h-4 animate-[spin_2s_linear_infinite]" />

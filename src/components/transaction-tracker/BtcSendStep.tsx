@@ -3,7 +3,8 @@ import { TransactionStep } from './TransactionStep';
 import { WarningMessage } from './WarningMessage';
 import { AddressReveal } from './AddressReveal';
 import { WarningIcon } from './WarningIcon';
-
+import { useState, useEffect } from 'react';
+import { PositionStatus } from '@/types';
 interface BtcSendStepProps {
   amount: string;
   recipientAddress: string;
@@ -15,6 +16,8 @@ interface BtcSendStepProps {
   progress: number;
   type: 'btc' | 'eth';
   isSent: boolean;
+  confirmations: number;
+  state: PositionStatus;
 }
 
 export function BtcSendStep({
@@ -24,13 +27,21 @@ export function BtcSendStep({
   progress,
   type,
   isSent,
+  confirmations,
+  state,
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
-  const isReadyToSend = true;
-  const isExpired = false;
+  const [isReadyToSend, setIsReadyToSend] = useState(false);
+
   const descriptionMessage = isSent
     ? 'You initiated transaction in your wallet to send BTC.'
     : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address.';
+
+  useEffect(() => {
+    if (confirmations === 20) {
+      setIsReadyToSend(true);
+    }
+  }, [confirmations]);
 
   return (
     <TransactionStep
@@ -40,9 +51,9 @@ export function BtcSendStep({
       completed={isReadyToSend}
     >
       {!isSent && (
-        <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full md:w-[400px]">
+        <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full md:w-[400px] gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
-          {isExpired ? (
+          {state === PositionStatus.EXPIRED ? (
             <div className="flex gap-2 bg-grey rounded-xl p-3">
               <div className="text-orange w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5 mr-2 md:mr-3">
                 <WarningIcon />
