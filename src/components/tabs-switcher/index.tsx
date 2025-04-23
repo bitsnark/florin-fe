@@ -36,7 +36,6 @@ export function TabSwitcherContainer() {
   );
   const { openPosition, reservePosition, loading } = useExchange();
   // TODO: Fix this type once we have the correct type for the transaction
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [trackerData, setTrackerData] = useState<TrackerData>({
     type: 'position',
     open: false,
@@ -88,7 +87,6 @@ export function TabSwitcherContainer() {
 
   const handleBridgeFunds = async () => {
     // TODO: Fix this type once we have the correct type for the transaction
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let transaction: Position | Reservation | undefined;
     if (fromNetwork === 'ethereum') {
       transaction = await reservePosition({

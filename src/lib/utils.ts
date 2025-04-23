@@ -28,6 +28,7 @@ export function truncateAddress(address: string) {
   return `${first}...${last}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function stringifyWithBigInt(obj: any): string {
   return JSON.stringify(obj, (_, value) =>
     typeof value === 'bigint' ? value.toString() : value
