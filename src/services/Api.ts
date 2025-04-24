@@ -71,16 +71,15 @@ export class FlorinApiService {
   static async getPositionById(
     id: string | undefined,
     finalityFlag?: boolean
-  ): Promise<Position | undefined> {
-    if (!id) return undefined;
+  ): Promise<Position | null> {
+    if (!id) return null;
     const positions = this.getPositions();
-    return withDelay(
-      positions.find(
-        (p) =>
-          p.positionId === id &&
-          (finalityFlag === undefined || p.finality === 'FINAL')
-      )
+    const position = positions.find(
+      (p) =>
+        p.positionId === id &&
+        (finalityFlag === undefined || p.finality === 'FINAL')
     );
+    return withDelay(position || null);
   }
 
   static async getReservationsByOwner(
@@ -124,7 +123,10 @@ export class FlorinApiService {
     console.log('addPosition', position);
     const positions = this.getPositions();
     //this.savePositions([...positions, position]);
-    localStorage.setItem(POSITIONS_KEY, stringifyWithBigInt([...positions, position]));
+    localStorage.setItem(
+      POSITIONS_KEY,
+      stringifyWithBigInt([...positions, position])
+    );
     return withDelay(position);
   }
 

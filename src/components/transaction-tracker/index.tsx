@@ -24,7 +24,7 @@ export function TransactionTrackerDialog({
   id,
 }: TransactionTrackerDialogProps) {
   const { timeLeft, progress } = useTimer(open);
-
+  console.log('type', type);
   const {
     data: transactionData,
     isLoading: loading,
