@@ -1,4 +1,4 @@
-import { formatHash, getChainLogo } from './utils';
+import { formatHash, getChainLogo, formatDate } from './utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   ArrowRightIcon,
@@ -23,8 +23,8 @@ export const DesktopTransactionRow = ({
   setOpenTrackerDialog,
 }: DesktopTransactionRowProps) => {
   const isReservation = 'reservationId' in tx;
-  const fromChain = isReservation ? 'ethereum' : 'bitcoin';
-  const toChain = isReservation ? 'bitcoin' : 'ethereum';
+  const fromChain = isReservation ? 'bitcoin' : 'ethereum';
+  const toChain = isReservation ? 'ethereum' : 'bitcoin';
   const asset = isReservation ? 'usdc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
@@ -72,6 +72,9 @@ export const DesktopTransactionRow = ({
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatHash(tx.transaction?.destinationTxId)}
+      </TableCell>
+      <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+        {tx.transaction?.date ? formatDate(tx.transaction.date) : ''}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">

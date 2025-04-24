@@ -8,7 +8,7 @@ import { FlorinApiService } from '@/services/Api';
 export function usePosition(positionId: string | undefined, {
   refetchInterval
 }: { refetchInterval?: number }) {
-  return useQuery<Position | undefined>({
+  return useQuery<Position | null>({
     queryKey: ['position', positionId],
     queryFn: () => FlorinApiService.getPositionById(positionId),
     enabled: !!positionId,

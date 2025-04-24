@@ -54,8 +54,8 @@ export class FlorinApiService {
   static async getPositionById(
     id: string | undefined,
     finalityFlag?: boolean
-  ): Promise<Position | undefined> {
-    if (!id) return undefined;
+  ): Promise<Position | null> {
+    if (!id) return null;
     
     const response = await fetch(`${API_BASE_URL}/positions/${id}`);
     if (!response.ok) {
@@ -64,7 +64,7 @@ export class FlorinApiService {
     const position = await response.json();
     return finalityFlag === undefined || position.finality === 'FINAL' 
       ? position 
-      : undefined;
+      : null;
   }
 
   static async getReservationsByOwner(
@@ -100,8 +100,8 @@ export class FlorinApiService {
   static async getReservationById(
     id: string | undefined,
     finalityFlag?: boolean
-  ): Promise<Reservation | undefined> {
-    if (!id) return undefined;
+  ): Promise<Reservation | null> {
+    if (!id) return null;
     
     const response = await fetch(`${API_BASE_URL}/reservations/${id}`);
     if (!response.ok) {
@@ -110,7 +110,7 @@ export class FlorinApiService {
     const reservation = await response.json();
     return finalityFlag === undefined || reservation.finality === 'FINAL' 
       ? reservation 
-      : undefined;
+      : null;
   }
 
   static async addPosition(position: Position): Promise<Position> {

@@ -4,28 +4,26 @@ import { WarningMessage } from './WarningMessage';
 import { AddressReveal } from './AddressReveal';
 import { WarningIcon } from './WarningIcon';
 import { useState, useEffect } from 'react';
-import { PositionStatus } from '@/types';
+import { ReservationStatus } from '@/types';
 interface BtcSendStepProps {
   amount: string;
-  recipientAddress: string;
+  recipientAddress?: string;
   timeLeft: {
     hours: number;
     minutes: number;
     seconds: number;
   };
   progress: number;
-  type: 'btc' | 'eth';
   isSent: boolean;
   confirmations: number;
-  state: PositionStatus;
+  state: ReservationStatus;
 }
 
 export function BtcSendStep({
   amount,
-  recipientAddress,
+  recipientAddress = 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
   timeLeft,
   progress,
-  type,
   isSent,
   confirmations,
   state,
@@ -53,7 +51,7 @@ export function BtcSendStep({
       {!isSent && (
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full md:w-[400px] gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
-          {state === PositionStatus.EXPIRED ? (
+          {state === ReservationStatus.EXPIRED ? (
             <div className="flex gap-2 bg-grey rounded-xl p-3">
               <div className="text-orange w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5 mr-2 md:mr-3">
                 <WarningIcon />
@@ -69,7 +67,6 @@ export function BtcSendStep({
               timeLeft={timeLeft}
               progress={progress}
               isReadyToSend={isReadyToSend}
-              type={type}
             />
           )}
         </Card>

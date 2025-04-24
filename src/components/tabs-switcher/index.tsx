@@ -88,7 +88,7 @@ export function TabSwitcherContainer() {
   const handleBridgeFunds = async () => {
     // TODO: Fix this type once we have the correct type for the transaction
     let transaction: Position | Reservation | undefined;
-    if (fromNetwork === 'ethereum') {
+    if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
         tokenAmount: BigInt(parseEther(fromAmount)),
         evmReceivingAddress: address!,
@@ -107,10 +107,10 @@ export function TabSwitcherContainer() {
     }
     console.log('transaction', transaction, fromNetwork);
     setTrackerData({
-      type: fromNetwork === 'bitcoin' ? 'position' : 'reservation',
+      type: fromNetwork === 'ethereum' ? 'position' : 'reservation',
       open: true,
       transactionId:
-        fromNetwork === 'bitcoin'
+        fromNetwork === 'ethereum'
           ? (transaction as Position)?.positionId
           : (transaction as Reservation)?.reservationId,
     });

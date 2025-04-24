@@ -2,21 +2,19 @@ import { Card } from '../ui/card';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { truncateAddress } from '@/lib/utils';
 
-interface CompletionCardProps {
+export interface EthCompletionCardProps {
   amount: string;
   recipientAddress: string;
   reservationTx: string;
-  type: 'btc' | 'eth';
   confirmations?: number;
 }
 
-export function CompletionCard({
+export function EthCompletionCard({
   amount,
   recipientAddress,
   reservationTx,
-  type,
   confirmations = 20,
-}: CompletionCardProps) {
+}: EthCompletionCardProps) {
   return (
     <Card className="mt-4 w-full md:w-[400px] bg-[#100D16] rounded-xl p-3 md:p-4 border-none gap-0.5 overflow-hidden">
       <div className="flex flex-col justify-between items-center gap-2">
@@ -29,7 +27,7 @@ export function CompletionCard({
         <div className="flex justify-between items-center w-full">
           <span className="text-[#888888] text-[13px]">Amount</span>
           <span className="text-white text-[14px] md:text-[16px] font-medium">
-            {amount} {type === 'btc' ? 'xBTC' : 'BTC'}
+            {amount} xBTC
           </span>
         </div>
       </div>

@@ -85,6 +85,7 @@ export function TransferForm({
           amount={toAmount}
           xbtcAmount={xbtcAmount}
           onAmountChange={handleToAmountChange}
+          readOnly={true}
         />
       </div>
 
