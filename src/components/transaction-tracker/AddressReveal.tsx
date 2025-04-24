@@ -16,7 +16,6 @@ interface AddressRevealProps {
   };
   progress: number;
   isReadyToSend?: boolean;
-  type: 'btc' | 'eth';
 }
 
 // Hook for checking if screen matches a media query
@@ -42,7 +41,6 @@ export function AddressReveal({
   timeLeft,
   progress,
   isReadyToSend,
-  type,
 }: AddressRevealProps) {
   const [showAddress, setShowAddress] = useState(isReadyToSend || false);
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -120,7 +118,7 @@ export function AddressReveal({
               </span>
               <div className="flex items-center gap-1 md:gap-2">
                 <span className="text-white text-[11px] md:text-[13px]">
-                  ~{amount} {type === 'btc' ? 'BTC' : 'XBTC'}
+                  ~{amount} BTC
                 </span>
                 <div
                   className="cursor-pointer flex items-center justify-center w-[30px] h-[30px] md:w-[33px] md:h-[35px] rounded-lg bg-[#3A3740]"
