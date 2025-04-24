@@ -26,6 +26,7 @@ interface AmountInputProps {
   amount: string;
   xbtcAmount?: string;
   onAmountChange?: (value: string) => void;
+  readOnly?: boolean;
 }
 
 export const AmountInput = ({
@@ -34,6 +35,7 @@ export const AmountInput = ({
   amount,
   xbtcAmount,
   onAmountChange,
+  readOnly,
 }: AmountInputProps) => {
   const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
 
@@ -164,7 +166,7 @@ export const AmountInput = ({
               onChange={handleAmountChange}
               className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
               placeholder="0.000"
-              readOnly={network === 'ethereum'}
+              readOnly={readOnly}
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
