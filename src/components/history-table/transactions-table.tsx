@@ -141,6 +141,9 @@ export default function TransactionsTable() {
               </div>
             </TableHead>
             <TableHead className="py-3 px-2 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
+              <span>Timestamp</span>
+            </TableHead>
+            <TableHead className="py-3 px-2 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
               <span>Status</span>
             </TableHead>
             <TableHead className="py-3 px-2 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">

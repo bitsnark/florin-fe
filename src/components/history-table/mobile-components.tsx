@@ -1,4 +1,4 @@
-import { formatHash, getChainLogo } from './utils';
+import { formatHash, getChainLogo, formatDate } from './utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -29,8 +29,8 @@ export const MobileTransactionItem = ({
   setOpenTrackerDialog?: (open: boolean) => void;
 }) => {
   const isReservation = 'reservationId' in tx;
-  const fromChain = isReservation ? 'ethereum' : 'bitcoin';
-  const toChain = isReservation ? 'bitcoin' : 'ethereum';
+  const fromChain = isReservation ? 'bitcoin' : 'ethereum';
+  const toChain = isReservation ? 'ethereum' : 'bitcoin';
   const asset = isReservation ? 'usdc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
@@ -102,6 +102,13 @@ export const MobileTransactionItem = ({
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-orange-light">
               {formatHash(tx.transaction?.destinationTxId)}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Timestamp</span>
+            <span className="text-sm text-right text-white">
+              {tx.transaction?.date ? formatDate(tx.transaction.date) : ''}
             </span>
           </div>
 
