@@ -59,7 +59,7 @@ export const DesktopTransactionRow = ({
         </div>
       </TableCell>
       <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatHash(tx?.contractRegistration)}
+        {formatHash(tx?.contractRegistrationTxHash || '')}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {tx.amount} {asset}
@@ -68,13 +68,13 @@ export const DesktopTransactionRow = ({
         {tx?.receivedAmount}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatHash(tx?.originTxId)}
+        {formatHash(tx?.originTxHash || '')}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatHash(tx?.destinationTxId)}
+        {formatHash(tx?.destinationTxHash || '')}
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx?.date ? formatDate(tx.date) : ''}
+        {tx?.createdAt ? formatDate(tx.createdAt) : ''}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">

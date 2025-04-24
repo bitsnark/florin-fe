@@ -57,7 +57,7 @@ export const positionToTransaction = (position: Position): Transaction => {
     receivedAmount,
     status,
     contractRegistration: position.tokenAddress,
-    originTxId: position?.originTxId || '',
+    originTxId: position?.originTxHash || '',
     destinationTxId: position.bitcoinAddress,
   };
 };
@@ -99,7 +99,7 @@ export const reservationToTransaction = (
     receivedAmount,
     status,
     contractRegistration: reservation?.positionId?.substring(0, 10) + '...',
-    originTxId: reservation?.originTxId || '',
+    originTxId: reservation?.originTxHash || '',
     destinationTxId: reservation.reservationId,
   };
 };

@@ -44,12 +44,12 @@ export type Position = {
   blockNumber?: number;
   blockHash?: string;
   hash: string;
-  date: string; // ISO 8601 string
+  createdAt: string; // ISO 8601 string
   receivedAmount?: string;
   status: TransactionStatus;
-  contractRegistration: string;
-  originTxId?: string;
-  destinationTxId?: string;
+  contractRegistrationTxHash: string;
+  originTxHash?: string;
+  destinationTxHash?: string;
   originTxConfirmations?: number;
   destinationsTxConfirmations?: number;
 };
@@ -67,12 +67,12 @@ export type Reservation = {
   blockNumber?: number;
   blockHash?: string;
   hash: string;
-  date: string; // ISO 8601 string
+  createdAt: string; // ISO 8601 string
   receivedAmount?: string;
   status: TransactionStatus;
-  contractRegistration: string;
-  originTxId?: string;
-  destinationTxId?: string;
+  contractRegistrationTxHash: string;
+  originTxHash?: string;
+  destinationTxHash?: string;
   originTxConfirmations?: number;
   destinationsTxConfirmations?: number;
 };

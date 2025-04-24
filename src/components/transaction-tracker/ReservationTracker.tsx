@@ -30,8 +30,8 @@ export function ReservationTracker({
     confirmations,
   } = useTrackerState({
     isActive: open,
-    hasOriginTxId: !!reservation?.originTxId,
-    hasDestinationTxId: !!reservation?.destinationTxId,
+    hasOriginTxId: !!reservation?.originTxHash,
+    hasDestinationTxId: !!reservation?.destinationTxHash,
     transactionStatus: reservation?.status,
   });
 
@@ -62,7 +62,7 @@ export function ReservationTracker({
               data={{
                 amount: reservation.amount,
                 recipientAddress: reservation.reservationId,
-                reservationTx: reservation?.hash || '',
+                reservationTx: reservation?.contractRegistrationTxHash || '',
                 confirmations: confirmations,
                 fiatAmount: '100',
               }}
@@ -90,7 +90,7 @@ export function ReservationTracker({
               <BtcTransactionCard
                 data={{
                   amount: reservation.amount,
-                  txid: reservation?.hash || '',
+                  txid: reservation?.destinationTxHash || '',
                   confirmations,
                   fiatAmount: '100',
                 }}

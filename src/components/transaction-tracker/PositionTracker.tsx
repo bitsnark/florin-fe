@@ -21,8 +21,8 @@ export function PositionTracker({
 
   const { bridgingCompleted, confirmations } = useTrackerState({
     isActive: open,
-    hasOriginTxId: !!position?.originTxId,
-    hasDestinationTxId: !!position?.destinationTxId,
+    hasOriginTxId: !!position?.originTxHash,
+    hasDestinationTxId: !!position?.destinationTxHash,
     transactionStatus: position?.status,
   });
 
@@ -47,7 +47,7 @@ export function PositionTracker({
               data={{
                 amount: position.amount,
                 recipientAddress: position.positionId,
-                reservationTx: position?.hash || '',
+                reservationTx: position?.contractRegistrationTxHash || '',
                 confirmations: confirmations,
                 fiatAmount: '100',
               }}
@@ -72,7 +72,7 @@ export function PositionTracker({
               <BtcCompletionCard
                 amount={position.amount}
                 recipientAddress={position.positionId}
-                reservationTx={position?.hash || ''}
+                reservationTx={position?.contractRegistrationTxHash || ''}
               />
             )}
           </TransactionStep>

@@ -73,7 +73,7 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Contract registration</span>
             <span className="text-sm text-right text-[#F0A719]">
-              {formatHash(tx?.contractRegistration)}
+              {formatHash(tx?.contractRegistrationTxHash)}
             </span>
           </div>
 
@@ -94,21 +94,21 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
             <span className="text-sm text-right text-orange-light">
-              {formatHash(tx?.originTxId)}
+              {formatHash(tx?.originTxHash)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-orange-light">
-              {formatHash(tx?.destinationTxId)}
+              {formatHash(tx?.destinationTxHash)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Timestamp</span>
             <span className="text-sm text-right text-white">
-              {tx?.date ? formatDate(tx.date) : ''}
+              {tx?.createdAt ? formatDate(tx.createdAt) : ''}
             </span>
           </div>
 
