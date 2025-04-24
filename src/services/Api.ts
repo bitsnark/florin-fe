@@ -1,71 +1,54 @@
-import { samplePositions, sampleReservations } from '@/lib/mock-data';
-import { stringifyWithBigInt } from '@/lib/utils';
-import { Position, Reservation, ReservationStatus } from '@/types';
+import { env } from '@/config/env';
+import { Position, Reservation } from '@/types';
 
-const POSITIONS_KEY = 'florin_positions';
-const RESERVATIONS_KEY = 'florin_reservations';
+const API_BASE_URL = env.VITE_API_BASE_URL;
 
-function withDelay<T>(result: T, delay: number = 1000): Promise<T> {
-  return new Promise((resolve) => setTimeout(() => resolve(result), delay));
-}
-
-function parseBigIntFields<T>(data: T): T {
-  return JSON.parse(JSON.stringify(data), (_, value) => {
-    if (typeof value === 'string' && /^\d+n$/.test(value)) {
-      return BigInt(value.slice(0, -1));
-    }
-    return value;
-  });
+function serializeBigInt<T>(data: T): string {
+  return JSON.stringify(data, (_, value) =>
+    typeof value === 'bigint' ? value.toString() : value
+  );
 }
 
 export class FlorinApiService {
-  private static getPositions(): Position[] {
-    const data = localStorage.getItem(POSITIONS_KEY);
-    return data ? parseBigIntFields(JSON.parse(data)) : [];
-  }
-
-  private static savePositions(positions: Position[]) {
-    localStorage.setItem(POSITIONS_KEY, JSON.stringify(positions));
-  }
-
-  private static getReservations(): Reservation[] {
-    const data = localStorage.getItem(RESERVATIONS_KEY);
-    return data ? parseBigIntFields(JSON.parse(data)) : [];
-  }
-
-  private static saveReservations(reservations: Reservation[]) {
-    localStorage.setItem(RESERVATIONS_KEY, JSON.stringify(reservations));
-  }
-
   static async getGreeting(): Promise<string> {
-    return withDelay('This is the Florin API index');
+    const response = await fetch(`${API_BASE_URL}/`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch greeting: ${response.statusText}`);
+    }
+    return response.text();
   }
 
   static async getPositionsByOwner(
     ownerId: string | undefined,
     finalityFlag?: boolean
   ): Promise<Position[]> {
-    const positions = this.getPositions();
-    return withDelay(
-      !ownerId
-        ? positions
-        : positions.filter(
-            (p) =>
-              p.ownerAddress === ownerId &&
-              (finalityFlag === undefined || p.finality === 'FINAL')
-          )
-    );
+    if (!ownerId) {
+      const response = await fetch(`${API_BASE_URL}/positions`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch positions: ${response.statusText}`);
+      }
+      return response.json();
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/positions/owner/${ownerId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch positions: ${response.statusText}`);
+    }
+    const positions = await response.json();
+    return finalityFlag === undefined 
+      ? positions 
+      : positions.filter((p: Position) => p.finality === 'FINAL');
   }
 
   static async getActivePositions(finalityFlag?: boolean): Promise<Position[]> {
-    const positions = this.getPositions();
-    return withDelay(
-      positions.filter(
-        (p) =>
-          p.state === 'ACTIVE' &&
-          (finalityFlag === undefined || p.finality === 'FINAL')
-      )
-    );
+    const response = await fetch(`${API_BASE_URL}/positions/active`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch active positions: ${response.statusText}`);
+    }
+    const positions = await response.json();
+    return finalityFlag === undefined 
+      ? positions 
+      : positions.filter((p: Position) => p.finality === 'FINAL');
   }
 
   static async getPositionById(
@@ -73,95 +56,143 @@ export class FlorinApiService {
     finalityFlag?: boolean
   ): Promise<Position | null> {
     if (!id) return null;
-    const positions = this.getPositions();
-    const position = positions.find(
-      (p) =>
-        p.positionId === id &&
-        (finalityFlag === undefined || p.finality === 'FINAL')
-    );
-    return withDelay(position || null);
+    
+    const response = await fetch(`${API_BASE_URL}/positions/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch position: ${response.statusText}`);
+    }
+    const position = await response.json();
+    return finalityFlag === undefined || position.finality === 'FINAL' 
+      ? position 
+      : null;
   }
 
   static async getReservationsByOwner(
     ownerId: string | undefined,
     finalityFlag?: boolean
   ): Promise<Reservation[]> {
-    const reservations = this.getReservations();
-    return withDelay(
-      reservations.filter((r) =>
-        !ownerId
-          ? true
-          : r.ownerAddress === ownerId &&
-            (finalityFlag === undefined || r.finality === 'FINAL')
-      )
-    );
+    if (!ownerId) {
+      const response = await fetch(`${API_BASE_URL}/reservations`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch reservations: ${response.statusText}`);
+      }
+      return response.json();
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/reservations/owner/${ownerId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch reservations: ${response.statusText}`);
+    }
+    const reservations = await response.json();
+    return finalityFlag === undefined 
+      ? reservations 
+      : reservations.filter((r: Reservation) => r.finality === 'FINAL');
   }
 
   static async getActiveReservations(): Promise<Reservation[]> {
-    const reservations = this.getReservations();
-    return withDelay(
-      reservations.filter((r) => r.state === ReservationStatus.ACTIVE)
-    );
+    const response = await fetch(`${API_BASE_URL}/reservations/active`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch active reservations: ${response.statusText}`);
+    }
+    return response.json();
   }
 
   static async getReservationById(
     id: string | undefined,
     finalityFlag?: boolean
-  ): Promise<Reservation | undefined> {
-    if (!id) return undefined;
-    const reservations = this.getReservations();
-    return withDelay(
-      reservations.find(
-        (r) =>
-          r.reservationId === id &&
-          (finalityFlag === undefined || r.finality === 'FINAL')
-      )
-    );
+  ): Promise<Reservation | null> {
+    if (!id) return null;
+    
+    const response = await fetch(`${API_BASE_URL}/reservations/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch reservation: ${response.statusText}`);
+    }
+    const reservation = await response.json();
+    return finalityFlag === undefined || reservation.finality === 'FINAL' 
+      ? reservation 
+      : null;
   }
 
   static async addPosition(position: Position): Promise<Position> {
-    console.log('addPosition', position);
-    const positions = this.getPositions();
-    //this.savePositions([...positions, position]);
-    localStorage.setItem(
-      POSITIONS_KEY,
-      stringifyWithBigInt([...positions, position])
-    );
-    return withDelay(position);
+    const response = await fetch(`${API_BASE_URL}/positions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: serializeBigInt(position),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to add position: ${response.statusText}`);
+    }
+    return response.json();
   }
 
   static async addReservation(reservation: Reservation): Promise<Reservation> {
-    console.log('addReservation', reservation);
-    const reservations = this.getReservations();
-    this.saveReservations([...reservations, reservation]);
-    return withDelay(reservation);
+    const response = await fetch(`${API_BASE_URL}/reservations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: serializeBigInt(reservation),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to add reservation: ${response.statusText}`);
+    }
+    return response.json();
   }
 
   static async getBitcoinTaprootAddress(): Promise<string> {
-    return withDelay(
-      '0x9f3c9346dd5edc74032aef79b3e4585f7a4dffb51aa3780704e63f87c4170dd3'
-    );
+    const response = await fetch(`${API_BASE_URL}/bitcoin/taproot-address`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch taproot address: ${response.statusText}`);
+    }
+    return response.text();
   }
 
   static async finPositionIdForAmount(amount: bigint): Promise<string> {
-    console.log('finPositionIdForAmount', amount);
-    const positions = this.getPositions();
-    return withDelay(positions[0].positionId);
+    const response = await fetch(`${API_BASE_URL}/positions/find-for-amount`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: serializeBigInt({ amount }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to find position: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data.positionId;
   }
 
   static async getMaxAmount(): Promise<bigint> {
-    return withDelay(BigInt(1000000));
+    const response = await fetch(`${API_BASE_URL}/positions/max-amount`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch max amount: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return BigInt(data.amount);
   }
 
   static async seed(): Promise<void> {
-    this.savePositions(samplePositions);
-    this.saveReservations(sampleReservations);
-
-    await withDelay(undefined);
+    const response = await fetch(`${API_BASE_URL}/seed`, {
+      method: 'POST',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to seed data: ${response.statusText}`);
+    }
   }
 
-  static clearAllMockData(): void {
-    localStorage.removeItem(POSITIONS_KEY);
-    localStorage.removeItem(RESERVATIONS_KEY);
+  static async clearAllMockData(): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/clear`, {
+      method: 'POST',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to clear data: ${response.statusText}`);
+    }
   }
 }

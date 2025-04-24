@@ -11,6 +11,9 @@ const envSchema = z.object({
   VITE_TOKEN_ADDRESS: z.string().min(1, {
     message: 'VITE_TOKEN_ADDRESS is required',
   }),
+  VITE_API_BASE_URL: z.string().min(1, {
+    message: 'VITE_API_BASE_URL is required',
+  }),
 });
 
 const parsed = envSchema.safeParse(import.meta.env);

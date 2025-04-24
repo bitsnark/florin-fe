@@ -36,7 +36,7 @@ export const DesktopTransactionRow = ({
   };
 
   return (
-    <TableRow key={tx?.transaction?.hash} className="hover:bg-transparent">
+    <TableRow key={tx?.hash} className="hover:bg-transparent">
       <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center">
           <div className="flex items-center gap-1">
@@ -59,22 +59,22 @@ export const DesktopTransactionRow = ({
         </div>
       </TableCell>
       <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatHash(tx?.transaction?.contractRegistration)}
+        {formatHash(tx?.contractRegistrationTxHash || '')}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {tx.amount} {asset}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.transaction?.receivedAmount}
+        {tx?.receivedAmount}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatHash(tx.transaction?.originTxId)}
+        {formatHash(tx?.originTxHash || '')}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatHash(tx.transaction?.destinationTxId)}
+        {formatHash(tx?.destinationTxHash || '')}
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.transaction?.date ? formatDate(tx.transaction.date) : ''}
+        {tx?.createdAt ? formatDate(tx.createdAt) : ''}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">

@@ -9,7 +9,7 @@ export function useReservation(
   reservationId: string | undefined,
   { refetchInterval }: { refetchInterval?: number }
 ) {
-  return useQuery<Reservation | undefined>({
+  return useQuery<Reservation | null>({
     queryKey: ['reservation', reservationId],
     queryFn: () => FlorinApiService.getReservationById(reservationId),
     enabled: !!reservationId,

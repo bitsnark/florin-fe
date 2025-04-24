@@ -7,11 +7,11 @@ import {
   PositionStatus,
   Reservation,
   ReservationStatus,
-  Transaction,
   TransactionStatus,
 } from '@/types';
 import { useState } from 'react';
 import { Address, keccak256, toBytes } from 'viem';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useExchange = () => {
   const { data: contractManager } = useContractManager();
@@ -89,13 +89,13 @@ export const useExchange = () => {
         typeof value === 'bigint' ? value.toString() : value
       );
       console.log('rJson', rJson);
-      const transaction: Transaction = {
+      const transaction = {
         hash: hash,
-        contractRegistration: hash,
+        contractRegistrationTxHash: hash,
         blockHash: receipt.receipt?.blockHash,
         blockNumber: receipt.receipt?.blockNumber,
         status: TransactionStatus.COMPLETED,
-        date: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
         receivedAmount: '0',
       };
       const newPosition: Position = {
@@ -108,10 +108,11 @@ export const useExchange = () => {
         bitcoinAddress: receipt.logs[0].args.bitcoinAddresses
           ? receipt.logs[0].args.bitcoinAddresses[0]
           : '',
-        transaction: transaction,
+
         state: PositionStatus.ACTIVE,
         finality: Finality.FINAL,
         chainId: chainId,
+        ...transaction,
       };
       //window.localStorage.setItem('receipt_position', rJson);
       await FlorinApiService.addPosition(newPosition);
@@ -167,26 +168,26 @@ export const useExchange = () => {
         console.log('sadasd', error);
       }
 
-      const transaction: Transaction = {
+      const transaction = {
         hash: receipt?.hash || '0xrandomhash',
-        contractRegistration: receipt?.hash || '0xrandomhash',
+        contractRegistrationTxHash: receipt?.hash || '0xrandomhash',
         blockHash: receipt?.receipt?.blockHash || '0xrandomhash',
         blockNumber: receipt?.receipt?.blockNumber || '1234',
         status: receipt?.receipt?.status || TransactionStatus.PENDING,
-        date: new Date().toISOString(),
         receivedAmount: '0',
       };
 
       const newReservation: Reservation = {
         positionId: positionId,
-        reservationId: receipt?.logs ? receipt.logs[0].args.reservationId : '0',
+        reservationId: receipt?.logs ? receipt.logs[0].args.reservationId : uuidv4(), //uuid random,
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         tokenAddress: receipt?.logs ? receipt.logs[0].address : '0x123',
         state: ReservationStatus.ACTIVE,
         finality: Finality.FINAL,
         chainId: chainId,
-        transaction: transaction,
+        ...transaction,
+        createdAt: new Date().toISOString(),
       };
       console.log('newReservation', newReservation);
       await FlorinApiService.addReservation(newReservation);

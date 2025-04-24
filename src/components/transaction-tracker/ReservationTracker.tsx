@@ -30,9 +30,9 @@ export function ReservationTracker({
     confirmations,
   } = useTrackerState({
     isActive: open,
-    hasOriginTxId: !!reservation?.transaction?.originTxId,
-    hasDestinationTxId: !!reservation?.transaction?.destinationTxId,
-    transactionStatus: reservation?.transaction?.status,
+    hasOriginTxId: !!reservation?.originTxHash,
+    hasDestinationTxId: !!reservation?.destinationTxHash,
+    transactionStatus: reservation?.status,
   });
 
   // Content height class for the dialog
@@ -62,7 +62,7 @@ export function ReservationTracker({
               data={{
                 amount: reservation.amount,
                 recipientAddress: reservation.reservationId,
-                reservationTx: reservation.transaction?.hash || '',
+                reservationTx: reservation?.contractRegistrationTxHash || '',
                 confirmations: confirmations,
                 fiatAmount: '100',
               }}
@@ -90,7 +90,7 @@ export function ReservationTracker({
               <BtcTransactionCard
                 data={{
                   amount: reservation.amount,
-                  txid: reservation.transaction?.hash || '',
+                  txid: reservation?.destinationTxHash || '',
                   confirmations,
                   fiatAmount: '100',
                 }}
@@ -111,7 +111,7 @@ export function ReservationTracker({
               <EthCompletionCard
                 amount={reservation.amount}
                 recipientAddress={reservation.bitcoinAddress || ''}
-                reservationTx={reservation.transaction?.hash || ''}
+                reservationTx={reservation?.hash || ''}
               />
             )}
           </TransactionStep>

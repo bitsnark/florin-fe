@@ -40,33 +40,39 @@ export type Position = {
   state: PositionStatus;
   finality: Finality;
   amount: string;
-  transaction?: Transaction;
   deadline?: number;
+  blockNumber?: number;
+  blockHash?: string;
+  hash: string;
+  createdAt: string; // ISO 8601 string
+  receivedAmount?: string;
+  status: TransactionStatus;
+  contractRegistrationTxHash: string;
+  originTxHash?: string;
+  destinationTxHash?: string;
+  originTxConfirmations?: number;
+  destinationsTxConfirmations?: number;
 };
 
 export type Reservation = {
   reservationId: string;
   ownerAddress: string;
-  positionId: string;
+  positionId?: string;
   tokenAddress: Address,
   amount: string;
   state: ReservationStatus;
   finality: Finality;
-  transaction?: Transaction;
   chainId: number;
   bitcoinAddress?: string;
-};
-
-export type Transaction = {
   blockNumber?: number;
   blockHash?: string;
   hash: string;
-  date: string; // ISO 8601 string
+  createdAt: string; // ISO 8601 string
   receivedAmount?: string;
   status: TransactionStatus;
-  contractRegistration: string;
-  originTxId?: string;
-  destinationTxId?: string;
+  contractRegistrationTxHash: string;
+  originTxHash?: string;
+  destinationTxHash?: string;
   originTxConfirmations?: number;
   destinationsTxConfirmations?: number;
 };
