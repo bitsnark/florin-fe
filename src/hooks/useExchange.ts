@@ -7,7 +7,6 @@ import {
   PositionStatus,
   Reservation,
   ReservationStatus,
-  Transaction,
   TransactionStatus,
 } from '@/types';
 import { useState } from 'react';
@@ -89,7 +88,7 @@ export const useExchange = () => {
         typeof value === 'bigint' ? value.toString() : value
       );
       console.log('rJson', rJson);
-      const transaction: Transaction = {
+      const transaction = {
         hash: hash,
         contractRegistration: hash,
         blockHash: receipt.receipt?.blockHash,
@@ -168,7 +167,7 @@ export const useExchange = () => {
         console.log('sadasd', error);
       }
 
-      const transaction: Transaction = {
+      const transaction = {
         hash: receipt?.hash || '0xrandomhash',
         contractRegistration: receipt?.hash || '0xrandomhash',
         blockHash: receipt?.receipt?.blockHash || '0xrandomhash',

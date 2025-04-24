@@ -40,8 +40,18 @@ export type Position = {
   state: PositionStatus;
   finality: Finality;
   amount: string;
-  transaction?: Transaction;
   deadline?: number;
+  blockNumber?: number;
+  blockHash?: string;
+  hash: string;
+  date: string; // ISO 8601 string
+  receivedAmount?: string;
+  status: TransactionStatus;
+  contractRegistration: string;
+  originTxId?: string;
+  destinationTxId?: string;
+  originTxConfirmations?: number;
+  destinationsTxConfirmations?: number;
 };
 
 export type Reservation = {
@@ -52,12 +62,8 @@ export type Reservation = {
   amount: string;
   state: ReservationStatus;
   finality: Finality;
-  transaction?: Transaction;
   chainId: number;
   bitcoinAddress?: string;
-};
-
-export type Transaction = {
   blockNumber?: number;
   blockHash?: string;
   hash: string;

@@ -70,7 +70,7 @@ export default function TransactionsTable() {
           <Accordion type="single" collapsible className="flex flex-col gap-3">
             {transactions.map((tx, index) => (
               <MobileTransactionItem
-                key={tx.transaction?.hash}
+                key={tx?.hash}
                 tx={tx}
                 index={index}
                 setTransactionToTrack={setTransactionToTrack}
@@ -162,7 +162,7 @@ export default function TransactionsTable() {
           ) : transactions.length > 0 ? (
             transactions.map((tx) => (
               <DesktopTransactionRow
-                key={tx.transaction?.hash}
+                key={tx?.hash}
                 tx={tx}
                 setTransactionToTrack={setTransactionToTrack}
                 setOpenTrackerDialog={setOpenTrackerDialog}
