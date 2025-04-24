@@ -47,7 +47,7 @@ export type Position = {
 export type Reservation = {
   reservationId: string;
   ownerAddress: string;
-  positionId: string;
+  positionId?: string;
   tokenAddress: Address,
   amount: string;
   state: ReservationStatus;

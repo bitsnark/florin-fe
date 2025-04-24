@@ -108,10 +108,11 @@ export const useExchange = () => {
         bitcoinAddress: receipt.logs[0].args.bitcoinAddresses
           ? receipt.logs[0].args.bitcoinAddresses[0]
           : '',
-        transaction: transaction,
+
         state: PositionStatus.ACTIVE,
         finality: Finality.FINAL,
         chainId: chainId,
+        ...transaction,
       };
       //window.localStorage.setItem('receipt_position', rJson);
       await FlorinApiService.addPosition(newPosition);
@@ -186,7 +187,7 @@ export const useExchange = () => {
         state: ReservationStatus.ACTIVE,
         finality: Finality.FINAL,
         chainId: chainId,
-        transaction: transaction,
+        ...transaction,
       };
       console.log('newReservation', newReservation);
       await FlorinApiService.addReservation(newReservation);
