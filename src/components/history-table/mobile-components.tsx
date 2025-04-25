@@ -80,14 +80,14 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Requested amount</span>
             <span className="text-sm text-right">
-              {tx?.receivedAmount} {asset}
+              {tx?.amount} {asset}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Received amount</span>
             <span className="text-sm text-right">
-              {tx?.receivedAmount}
+              {tx?.receivedAmount} {asset}
             </span>
           </div>
 

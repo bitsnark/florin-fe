@@ -45,7 +45,9 @@ export const DesktopTransactionRow = ({
               alt={fromChain}
               className="h-4 w-4"
             />
-            <span>{fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}</span>
+            <span>
+              {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
+            </span>
           </div>
           <ArrowRightIcon />
           <div className="flex items-center gap-1">
@@ -65,7 +67,7 @@ export const DesktopTransactionRow = ({
         {tx.amount} {asset}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx?.receivedAmount}
+        {tx?.receivedAmount} {asset}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatHash(tx?.originTxHash || '')}

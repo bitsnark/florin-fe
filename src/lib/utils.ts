@@ -7,6 +7,8 @@ import InjectedIcon from '@/assets/wallet-icons/Injected.svg';
 import UnisatIcon from '@/assets/wallet-icons/UniSat.svg';
 import OkxIcon from '@/assets/wallet-icons/Okx.svg';
 
+export const gasFee = 0.0013;
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
