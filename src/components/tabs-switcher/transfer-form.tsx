@@ -45,7 +45,7 @@ export function TransferForm({
   maxBtc,
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
-  console.log(bitcoinPrice);
+  
   return (
     <div
       className={`flex flex-col items-center bg-primary w-full sm:w-[400px] md:w-[440px] h-[${
