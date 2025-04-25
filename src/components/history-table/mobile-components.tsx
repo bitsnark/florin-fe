@@ -32,6 +32,8 @@ export const MobileTransactionItem = ({
   const fromChain = isReservation ? 'bitcoin' : 'ethereum';
   const toChain = isReservation ? 'ethereum' : 'bitcoin';
   const asset = isReservation ? 'xbtc' : 'btc';
+  const requestedAmountAsset = isReservation ? 'btc' : 'xbtc';
+  const receivedAmountAsset = isReservation ? 'xbtc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
     if (setOpenTrackerDialog && setTransactionToTrack) {
@@ -80,14 +82,14 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Requested amount</span>
             <span className="text-sm text-right">
-              {tx?.amount} {asset}
+              {tx?.receivedAmount} {requestedAmountAsset}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Received amount</span>
             <span className="text-sm text-right">
-              {tx?.receivedAmount} {asset}
+              {tx?.receivedAmount} {receivedAmountAsset}
             </span>
           </div>
 

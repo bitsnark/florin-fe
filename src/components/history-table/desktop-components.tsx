@@ -25,7 +25,8 @@ export const DesktopTransactionRow = ({
   const isReservation = 'reservationId' in tx;
   const fromChain = isReservation ? 'bitcoin' : 'ethereum';
   const toChain = isReservation ? 'ethereum' : 'bitcoin';
-  const asset = isReservation ? 'xbtc' : 'btc';
+  const requestedAmountAsset = isReservation ? 'btc' : 'xbtc';
+  const receivedAmountAsset = isReservation ? 'xbtc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);
@@ -48,6 +49,9 @@ export const DesktopTransactionRow = ({
             <span>
               {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
             </span>
+            <span>
+              {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
+            </span>
           </div>
           <ArrowRightIcon />
           <div className="flex items-center gap-1">
@@ -64,10 +68,10 @@ export const DesktopTransactionRow = ({
         {formatHash(tx?.contractRegistrationTxHash || '')}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.amount} {asset}
+        {tx.amount} {requestedAmountAsset}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx?.receivedAmount} {asset}
+        {tx?.receivedAmount} {receivedAmountAsset}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatHash(tx?.originTxHash || '')}
