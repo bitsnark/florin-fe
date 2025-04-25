@@ -31,7 +31,7 @@ export const MobileTransactionItem = ({
   const isReservation = 'reservationId' in tx;
   const fromChain = isReservation ? 'bitcoin' : 'ethereum';
   const toChain = isReservation ? 'ethereum' : 'bitcoin';
-  const asset = isReservation ? 'usdc' : 'btc';
+  const asset = isReservation ? 'xbtc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
     if (setOpenTrackerDialog && setTransactionToTrack) {
@@ -94,14 +94,14 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
             <span className="text-sm text-right text-orange-light">
-              {formatHash(tx?.originTxHash)}
+              {formatHash(tx?.originTxHash || '')}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-orange-light">
-              {formatHash(tx?.destinationTxHash)}
+              {formatHash(tx?.destinationTxHash || '')}
             </span>
           </div>
 

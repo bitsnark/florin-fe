@@ -161,10 +161,11 @@ export const AmountInput = ({
 
           <div className="flex flex-col items-end">
             <input
-              type="text"
+              type="number"
+              step={0.0001}
               value={amount}
               onChange={handleAmountChange}
-              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
+              className=" text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
               placeholder="0.000"
               readOnly={readOnly}
             />

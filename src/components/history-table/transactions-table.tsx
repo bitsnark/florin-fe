@@ -40,9 +40,9 @@ export default function TransactionsTable() {
   const { width } = useWindowSize();
   const isMobile = width < 768;
   const { data: positions, isLoading: isLoadingPositions } =
-    usePositionsByOwner('');
+    usePositionsByOwner(account.address);
   const { data: reservations, isLoading: isLoadingReservations } =
-    useReservationsByOwner('');
+    useReservationsByOwner(account.address);
   const transactions: (Position | Reservation)[] = [
     ...(positions || []),
     ...(reservations || []),

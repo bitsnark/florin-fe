@@ -20,7 +20,7 @@ export function TabSwitcherContainer() {
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
-  console.log({ fromNetwork, toNetwork });
+  
   const [fromCurrency, setFromCurrency] = useState<Currency>(
     fromNetwork === 'bitcoin' ? 'btc' : 'eth'
   );
@@ -90,14 +90,14 @@ export function TabSwitcherContainer() {
     let transaction: Position | Reservation | undefined;
     if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
-        tokenAmount: BigInt(parseEther(fromAmount)),
+        tokenAmount: parseEther(fromAmount),
         evmReceivingAddress: address!,
         chainId,
         owner: address!,
       });
     } else {
       transaction = await openPosition({
-        tokenAmount: BigInt(parseEther(fromAmount)),
+        tokenAmount: parseEther(fromAmount),
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress!,
         deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
@@ -105,7 +105,6 @@ export function TabSwitcherContainer() {
         chainId,
       });
     }
-    console.log('transaction', transaction, fromNetwork);
     setTrackerData({
       type: fromNetwork === 'ethereum' ? 'position' : 'reservation',
       open: true,
