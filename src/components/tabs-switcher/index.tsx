@@ -8,6 +8,7 @@ import { Address, parseEther } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
 import { TransactionTrackerDialog } from '../transaction-tracker';
 import { Position, Reservation } from '@/types';
+import { useMaxBtc } from '@/hooks/queries/useMaxBtc';
 
 type TrackerData = {
   type: 'position' | 'reservation';
@@ -35,6 +36,7 @@ export function TabSwitcherContainer() {
     undefined
   );
   const { openPosition, reservePosition, loading } = useExchange();
+  const { data: maxBtc } = useMaxBtc();
   // TODO: Fix this type once we have the correct type for the transaction
   const [trackerData, setTrackerData] = useState<TrackerData>({
     type: 'position',
@@ -155,6 +157,7 @@ export function TabSwitcherContainer() {
             setTermsAccepted={setTermsAccepted}
             handleBridgeFunds={handleBridgeFunds}
             loading={loading}
+            maxBtc={maxBtc || BigInt(0)}
           />
         ) : (
           <HistoryTab />
