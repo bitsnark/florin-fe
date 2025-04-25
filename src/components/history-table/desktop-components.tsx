@@ -37,7 +37,7 @@ export const DesktopTransactionRow = ({
 
   return (
     <TableRow key={tx?.hash} className="hover:bg-transparent">
-      <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <TableCell className="w-fit min-w-[200px] border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center">
           <div className="flex items-center gap-1">
             <img
@@ -45,7 +45,7 @@ export const DesktopTransactionRow = ({
               alt={fromChain}
               className="h-4 w-4"
             />
-            <span>{fromChain}</span>
+            <span>{fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}</span>
           </div>
           <ArrowRightIcon />
           <div className="flex items-center gap-1">
@@ -54,7 +54,7 @@ export const DesktopTransactionRow = ({
               alt={toChain}
               className="h-4 w-4"
             />
-            <span>{toChain}</span>
+            <span>{toChain.charAt(0).toUpperCase() + toChain.slice(1)}</span>
           </div>
         </div>
       </TableCell>
