@@ -69,7 +69,11 @@ export function ReservationTracker({
                 amount: reservation.amount,
                 recipientAddress: reservation.reservationId,
                 reservationTx: reservation?.contractRegistrationTxHash || '',
-                confirmations: !reservation.originTxHash ? confirmations : 20,
+                confirmations:
+                  reservation.state !== ReservationStatus.EXPIRED &&
+                  !reservation.originTxHash
+                    ? confirmations
+                    : 20,
                 fiatAmount: '100',
               }}
             />
