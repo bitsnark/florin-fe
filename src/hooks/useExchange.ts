@@ -84,9 +84,9 @@ export const useExchange = () => {
         contractAddress
       );
       const receipt = await wait();
-      const rJson = JSON.stringify(receipt, (_, value) =>
+      /* const rJson = JSON.stringify(receipt, (_, value) =>
         typeof value === 'bigint' ? value.toString() : value
-      );
+      ); */
       const transaction = {
         hash: hash,
         contractRegistrationTxHash: hash,
