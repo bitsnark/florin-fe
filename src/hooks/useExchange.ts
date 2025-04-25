@@ -84,11 +84,9 @@ export const useExchange = () => {
         contractAddress
       );
       const receipt = await wait();
-      console.log('receipt', receipt);
       const rJson = JSON.stringify(receipt, (_, value) =>
         typeof value === 'bigint' ? value.toString() : value
       );
-      console.log('rJson', rJson);
       const transaction = {
         hash: hash,
         contractRegistrationTxHash: hash,
@@ -141,13 +139,9 @@ export const useExchange = () => {
     try {
       if (!contractManager) throw new Error('contractManager not available');
       setLoading(true);
-      /* const positionReceit = JSON.parse(
-        window.localStorage.getItem('receipt_position') || ''
-      ); */
-
+      
       const positionId = '1234'; //positionReceit?.logs[0].args?.positionId;
       const rIdb32 = keccak256(toBytes(positionId)) as `0x${string}`;
-      console.log('positionReceit', positionId);
       let writeReceipt;
       let receipt;
       try {
@@ -159,13 +153,12 @@ export const useExchange = () => {
           { value: 0n }
         );
         receipt = await writeReceipt.wait();
-        console.log('receipt', receipt);
         const rJson = JSON.stringify(receipt, (_, value) =>
           typeof value === 'bigint' ? value.toString() : value
         );
         window.localStorage.setItem('receitp_reservation', rJson);
       } catch (error) {
-        console.log('sadasd', error);
+        console.log('error', error);
       }
 
       const transaction = {
@@ -189,7 +182,6 @@ export const useExchange = () => {
         ...transaction,
         createdAt: new Date().toISOString(),
       };
-      console.log('newReservation', newReservation);
       await FlorinApiService.addReservation(newReservation);
 
       setLoading(false);

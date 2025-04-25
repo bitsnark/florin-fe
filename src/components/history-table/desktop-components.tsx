@@ -25,7 +25,7 @@ export const DesktopTransactionRow = ({
   const isReservation = 'reservationId' in tx;
   const fromChain = isReservation ? 'bitcoin' : 'ethereum';
   const toChain = isReservation ? 'ethereum' : 'bitcoin';
-  const asset = isReservation ? 'usdc' : 'btc';
+  const asset = isReservation ? 'xbtc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);

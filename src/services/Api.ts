@@ -1,5 +1,6 @@
 import { env } from '@/config/env';
 import { Position, Reservation } from '@/types';
+import { formatEther } from 'viem';
 
 const API_BASE_URL = env.VITE_API_BASE_URL;
 
@@ -30,14 +31,20 @@ export class FlorinApiService {
       return response.json();
     }
     
-    const response = await fetch(`${API_BASE_URL}/positions/owner/${ownerId}`);
+    const response = await fetch(`${API_BASE_URL}/positions?ownerId=${ownerId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch positions: ${response.statusText}`);
     }
     const positions = await response.json();
+    const normalizedPositions = positions.map((p: Position) => ({
+      ...p,
+      amount: formatEther(BigInt(p.amount)),
+      receivedAmount: formatEther(BigInt(p.receivedAmount || '0')),
+    }));
+
     return finalityFlag === undefined 
-      ? positions 
-      : positions.filter((p: Position) => p.finality === 'FINAL');
+      ? normalizedPositions 
+      : normalizedPositions.filter((p: Position) => p.finality === 'FINAL');
   }
 
   static async getActivePositions(finalityFlag?: boolean): Promise<Position[]> {
@@ -62,8 +69,13 @@ export class FlorinApiService {
       throw new Error(`Failed to fetch position: ${response.statusText}`);
     }
     const position = await response.json();
+    const normalizedPosition = {
+      ...position,
+      amount: formatEther(BigInt(position.amount)),
+      receivedAmount: formatEther(BigInt(position.receivedAmount || '0')),
+    };
     return finalityFlag === undefined || position.finality === 'FINAL' 
-      ? position 
+      ? normalizedPosition 
       : null;
   }
 
@@ -79,14 +91,19 @@ export class FlorinApiService {
       return response.json();
     }
     
-    const response = await fetch(`${API_BASE_URL}/reservations/owner/${ownerId}`);
+    const response = await fetch(`${API_BASE_URL}/reservations?ownerId=${ownerId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch reservations: ${response.statusText}`);
     }
     const reservations = await response.json();
+    const normalizedReservations = reservations.map((r: Reservation) => ({
+      ...r,
+      amount: formatEther(BigInt(r.amount)),
+      receivedAmount: formatEther(BigInt(r.receivedAmount || '0')),
+    }));
     return finalityFlag === undefined 
-      ? reservations 
-      : reservations.filter((r: Reservation) => r.finality === 'FINAL');
+      ? normalizedReservations 
+      : normalizedReservations.filter((r: Reservation) => r.finality === 'FINAL');
   }
 
   static async getActiveReservations(): Promise<Reservation[]> {
@@ -108,8 +125,13 @@ export class FlorinApiService {
       throw new Error(`Failed to fetch reservation: ${response.statusText}`);
     }
     const reservation = await response.json();
+    const normalizedReservation = {
+      ...reservation,
+      amount: formatEther(BigInt(reservation.amount)),
+      receivedAmount: formatEther(BigInt(reservation.receivedAmount || '0')),
+    };
     return finalityFlag === undefined || reservation.finality === 'FINAL' 
-      ? reservation 
+      ? normalizedReservation 
       : null;
   }
 
