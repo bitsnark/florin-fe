@@ -90,7 +90,7 @@ export function TransferTab({
             isAnimating={isAnimating}
             variant="orange"
             size="custom"
-            disabled={!termsAccepted || loading}
+            disabled={!termsAccepted || loading || !bitcoinAddress}
           >
             {'Bridge funds'}
           </Button>
