@@ -88,18 +88,21 @@ export function TabSwitcherContainer() {
   };
 
   const handleBridgeFunds = async () => {
+    // Convert comma to dot for parseEther
+    const normalizedAmount = fromAmount.replace(',', '.');
+    
     // TODO: Fix this type once we have the correct type for the transaction
     let transaction: Position | Reservation | undefined;
     if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
-        tokenAmount: parseEther(fromAmount),
+        tokenAmount: parseEther(normalizedAmount),
         evmReceivingAddress: address!,
         chainId,
         owner: address!,
       });
     } else {
       transaction = await openPosition({
-        tokenAmount: parseEther(fromAmount),
+        tokenAmount: parseEther(normalizedAmount),
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress!,
         deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
