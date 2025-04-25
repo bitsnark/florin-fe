@@ -1,4 +1,4 @@
-import { ReservationStatus } from '@/types';
+import { Reservation, ReservationStatus } from '@/types';
 import { useTimer } from './TimerLogic';
 import { TransactionStep } from './TransactionStep';
 import { BtcTransactionCard } from './BtcTransactionCard';
@@ -7,6 +7,7 @@ import { EthCompletionCard } from './EthCompletionCard';
 import { BaseTransactionTracker } from './BaseTransactionTracker';
 import { useTrackerState } from './useTrackerState';
 import { useReservation } from '@/hooks/queries/useReservation';
+import { Button } from '../ui/button';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -28,11 +29,16 @@ export function ReservationTracker({
     btcTransactionDetected,
     bridgingCompleted,
     confirmations,
+    handlePassToStepThree,
+    handleExpireReservation,
+    handleCompleteStepThree,
+    handleCompleteStepFour,
   } = useTrackerState({
     isActive: open,
     hasOriginTxId: !!reservation?.originTxHash,
     hasDestinationTxId: !!reservation?.destinationTxHash,
     transactionStatus: reservation?.status,
+    reservation: reservation as Reservation,
   });
 
   // Content height class for the dialog
@@ -63,7 +69,7 @@ export function ReservationTracker({
                 amount: reservation.amount,
                 recipientAddress: reservation.reservationId,
                 reservationTx: reservation?.contractRegistrationTxHash || '',
-                confirmations: confirmations,
+                confirmations: !reservation.originTxHash ? confirmations : 20,
                 fiatAmount: '100',
               }}
             />
@@ -77,6 +83,9 @@ export function ReservationTracker({
             isSent={sendBtcStepCompleted}
             confirmations={confirmations}
             state={reservation.state as ReservationStatus}
+            reservation={reservation}
+            handlePassToStepThree={handlePassToStepThree}
+            handleExpireReservation={handleExpireReservation}
           />
 
           {/* Step 3 - BTC Transaction Detected */}
@@ -91,12 +100,20 @@ export function ReservationTracker({
                 data={{
                   amount: reservation.amount,
                   txid: reservation?.destinationTxHash || '',
-                  confirmations,
+                  confirmations: 20,
                   fiatAmount: '100',
                 }}
                 isStepThree={true}
               />
             )}
+            <Button
+              variant="orange"
+              size="sm"
+              onClick={handleCompleteStepThree}
+              className="mt-3"
+            >
+              Complete step
+            </Button>
           </TransactionStep>
 
           {/* Step 4 - Transaction Complete */}
@@ -111,9 +128,19 @@ export function ReservationTracker({
               <EthCompletionCard
                 amount={reservation.amount}
                 recipientAddress={reservation.bitcoinAddress || ''}
-                reservationTx={reservation?.hash || ''}
+                reservationTx={
+                  reservation?.hash || reservation?.destinationTxHash || ''
+                }
               />
             )}
+            <Button
+              variant="orange"
+              size="sm"
+              onClick={handleCompleteStepFour}
+              className="mt-3"
+            >
+              Complete step
+            </Button>
           </TransactionStep>
         </>
       )}

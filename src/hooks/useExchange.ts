@@ -172,7 +172,9 @@ export const useExchange = () => {
 
       const newReservation: Reservation = {
         positionId: positionId,
-        reservationId: receipt?.logs ? receipt.logs[0].args.reservationId : uuidv4(), //uuid random,
+        reservationId: receipt?.logs
+          ? receipt.logs[0].args.reservationId
+          : uuidv4(), //uuid random,
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         tokenAddress: receipt?.logs ? receipt.logs[0].address : '0x123',
