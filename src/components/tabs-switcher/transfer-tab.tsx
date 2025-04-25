@@ -25,6 +25,7 @@ interface TransferTabProps {
   setTermsAccepted: (value: boolean) => void;
   handleBridgeFunds: () => void;
   loading: boolean;
+  maxBtc: bigint;
 }
 
 export function TransferTab({
@@ -47,6 +48,7 @@ export function TransferTab({
   setTermsAccepted,
   handleBridgeFunds,
   loading,
+  maxBtc,
 }: TransferTabProps) {
   return (
     <>
@@ -66,6 +68,7 @@ export function TransferTab({
         handleFromAmountChange={handleFromAmountChange}
         handleToAmountChange={handleToAmountChange}
         setBitcoinAddress={setBitcoinAddress}
+        maxBtc={maxBtc}
       />
       <FeeCard toCurrency={toCurrency} isAnimating={isAnimating} />
       {isWalletConnected && (

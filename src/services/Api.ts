@@ -195,7 +195,8 @@ export class FlorinApiService {
       throw new Error(`Failed to fetch max amount: ${response.statusText}`);
     }
     const data = await response.json();
-    return BigInt(data.amount);
+    
+    return BigInt(data.maxAmount);
   }
 
   static async seed(): Promise<void> {

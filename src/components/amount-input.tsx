@@ -27,6 +27,7 @@ interface AmountInputProps {
   xbtcAmount?: string;
   onAmountChange?: (value: string) => void;
   readOnly?: boolean;
+  maxBtc?: bigint;
 }
 
 export const AmountInput = ({
@@ -36,6 +37,7 @@ export const AmountInput = ({
   xbtcAmount,
   onAmountChange,
   readOnly,
+  maxBtc,
 }: AmountInputProps) => {
   const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
 
@@ -80,7 +82,7 @@ export const AmountInput = ({
     const value = e.target.value;
     // Only allow numbers and a single decimal point
     if (/^[0-9]*\.?[0-9]*$/.test(value) || value === '') {
-      onAmountChange?.(value);
+      onAmountChange?.(Math.min(parseFloat(value), maxBtc ? Number(maxBtc) : 0).toString());
     }
   };
 
@@ -154,7 +156,7 @@ export const AmountInput = ({
             </div>
             {network === 'bitcoin' && (
               <span className="font-inter font-normal text-[11px] sm:text-[13px] leading-[100%] tracking-[0%] text-label-text whitespace-nowrap">
-                min 0.0004 {currencySymbol} / max 3 {currencySymbol}
+                min 0.0004 {currencySymbol} / max {maxBtc} {currencySymbol}
               </span>
             )}
           </div>
@@ -168,6 +170,7 @@ export const AmountInput = ({
               className=" text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
               placeholder="0.000"
               readOnly={readOnly}
+              max={network === 'bitcoin' ? maxBtc?.toString() : undefined}
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
