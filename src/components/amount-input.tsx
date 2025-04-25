@@ -4,6 +4,7 @@ import bitcoinLogo from '@/assets/bitcoin-logo.png';
 import ethLogo from '@/assets/eth-logo.png';
 import xbtcLogo from '@/assets/xbtc-logo.svg';
 import { cn } from '@/lib/utils';
+import { useMemo } from 'react';
 
 const ASSETS = {
   BITCOIN_LOGO: bitcoinLogo,
@@ -28,6 +29,7 @@ interface AmountInputProps {
   onAmountChange?: (value: string) => void;
   readOnly?: boolean;
   maxBtc?: bigint;
+  bitcoinPrice?: number;
 }
 
 export const AmountInput = ({
@@ -38,6 +40,7 @@ export const AmountInput = ({
   onAmountChange,
   readOnly,
   maxBtc,
+  bitcoinPrice,
 }: AmountInputProps) => {
   const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
 
@@ -65,10 +68,10 @@ export const AmountInput = ({
   const cardBorderClass =
     network === 'ethereum' ? 'border border-input-border' : 'border-none';
 
-  const calculateUsdValue = (() => {
+  const calculateUsdValue = useMemo(() => {
     const rates = {
-      btc: 83400,
-      eth: 3200,
+      btc: bitcoinPrice,
+      eth: bitcoinPrice,
       xbtc: 83400,
     };
 
@@ -76,7 +79,7 @@ export const AmountInput = ({
     const rate = rates[currency] || 0;
 
     return (numericAmount * rate).toFixed(2);
-  })();
+  }, [amount, bitcoinPrice, currency]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
