@@ -9,7 +9,7 @@ export function usePositionsByOwner(ownerAddress: string | undefined) {
   return useQuery<Position[]>({
     queryKey: ['positions', 'owner', ownerAddress],
     queryFn: () => FlorinApiService.getPositionsByOwner(ownerAddress),
-
-    //enabled: !!ownerAddress,
+    enabled: !!ownerAddress,
+    staleTime: 1000 * 60 * 1, //1 minutes
   });
 }

@@ -4,31 +4,37 @@ import { WarningMessage } from './WarningMessage';
 import { AddressReveal } from './AddressReveal';
 import { WarningIcon } from './WarningIcon';
 import { useState, useEffect } from 'react';
-import { PositionStatus } from '@/types';
+import { ReservationStatus, Reservation } from '@/types';
+import { Button } from '../ui/button';
+
 interface BtcSendStepProps {
   amount: string;
-  recipientAddress: string;
+  recipientAddress?: string;
   timeLeft: {
     hours: number;
     minutes: number;
     seconds: number;
   };
   progress: number;
-  type: 'btc' | 'eth';
   isSent: boolean;
   confirmations: number;
-  state: PositionStatus;
+  state: ReservationStatus;
+  reservation: Reservation;
+  handlePassToStepThree: () => void;
+  handleExpireReservation: () => void;
 }
 
 export function BtcSendStep({
   amount,
-  recipientAddress,
+  recipientAddress = 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
   timeLeft,
   progress,
-  type,
   isSent,
   confirmations,
   state,
+  reservation,
+  handlePassToStepThree,
+  handleExpireReservation,
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
   const [isReadyToSend, setIsReadyToSend] = useState(false);
@@ -47,13 +53,15 @@ export function BtcSendStep({
     <TransactionStep
       title="Send BTC"
       description={descriptionMessage}
-      status={isReadyToSend ? 'completed' : 'current'}
-      completed={isReadyToSend}
+      status={
+        reservation.originTxHash || isReadyToSend ? 'completed' : 'current'
+      }
+      completed={!!reservation.originTxHash || isReadyToSend}
     >
       {!isSent && (
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full md:w-[400px] gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
-          {state === PositionStatus.EXPIRED ? (
+          {state === ReservationStatus.EXPIRED ? (
             <div className="flex gap-2 bg-grey rounded-xl p-3">
               <div className="text-orange w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5 mr-2 md:mr-3">
                 <WarningIcon />
@@ -69,11 +77,29 @@ export function BtcSendStep({
               timeLeft={timeLeft}
               progress={progress}
               isReadyToSend={isReadyToSend}
-              type={type}
             />
           )}
         </Card>
       )}
+      <div className="flex gap-2">
+        <Button
+          variant="orange"
+          size="sm"
+          className="mt-3"
+          onClick={handleExpireReservation}
+        >
+          Expire reservation
+        </Button>
+        <Button
+          variant="orange"
+          size="sm"
+          className="mt-3"
+          onClick={handlePassToStepThree}
+          disabled={reservation.state === ReservationStatus.EXPIRED}
+        >
+          Complete step
+        </Button>
+      </div>
     </TransactionStep>
   );
 }

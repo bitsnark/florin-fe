@@ -1,6 +1,6 @@
 //TODO: Once we have a real API, we can remove this hook
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface UseConfirmationsSimulatorProps {
   isActive: boolean;
@@ -28,47 +28,48 @@ export function useConfirmationsSimulator({
   initialDelay = 1500,
 }: UseConfirmationsSimulatorProps) {
   const [confirmations, setConfirmations] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Clear the timeout when the hook is unmounted or when isActive changes
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
-
-    if (isActive) {
-      const simulateNextConfirmation = () => {
-        setConfirmations((prev) => {
-          const newValue = prev + 1;
-          if (newValue >= maxConfirmations) {
-            return maxConfirmations;
-          }
-
-          // Schedule next confirmation with random delay
-          const randomDelay =
-            Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
-          intervalId = setTimeout(simulateNextConfirmation, randomDelay);
-
-          return newValue;
-        });
-      };
-
-      // Start the simulation with initial delay
-      intervalId = setTimeout(simulateNextConfirmation, initialDelay);
-    }
-
     // Reset confirmations when simulation is deactivated
-    if (!isActive && confirmations > 0) {
+    if (!isActive) {
       setConfirmations(0);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      return;
     }
 
-    return () => {
-      if (intervalId) clearTimeout(intervalId);
+    const simulateNextConfirmation = () => {
+      setConfirmations((prev) => {
+        const newValue = prev + 1;
+        if (newValue >= maxConfirmations) {
+          return maxConfirmations;
+        }
+
+        // Schedule next confirmation with random delay
+        const randomDelay =
+          Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
+        timeoutRef.current = setTimeout(simulateNextConfirmation, randomDelay);
+
+        return newValue;
+      });
     };
-  }, [
-    isActive,
-    maxConfirmations,
-    minDelay,
-    maxDelay,
-    initialDelay,
-    confirmations,
-  ]);
+
+    // Start the simulation with initial delay
+    timeoutRef.current = setTimeout(simulateNextConfirmation, initialDelay);
+
+    // Cleanup function that will be called when the component unmounts
+    // or when isActive, maxConfirmations, minDelay, maxDelay, or initialDelay changes
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, [isActive, maxConfirmations, minDelay, maxDelay, initialDelay]);
 
   return confirmations;
 }

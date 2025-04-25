@@ -8,6 +8,7 @@ import { Address, parseEther } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
 import { TransactionTrackerDialog } from '../transaction-tracker';
 import { Position, Reservation } from '@/types';
+import { useMaxBtc } from '@/hooks/queries/useMaxBtc';
 
 type TrackerData = {
   type: 'position' | 'reservation';
@@ -20,7 +21,7 @@ export function TabSwitcherContainer() {
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
-  console.log({ fromNetwork, toNetwork });
+  
   const [fromCurrency, setFromCurrency] = useState<Currency>(
     fromNetwork === 'bitcoin' ? 'btc' : 'eth'
   );
@@ -35,6 +36,7 @@ export function TabSwitcherContainer() {
     undefined
   );
   const { openPosition, reservePosition, loading } = useExchange();
+  const { data: maxBtc } = useMaxBtc();
   // TODO: Fix this type once we have the correct type for the transaction
   const [trackerData, setTrackerData] = useState<TrackerData>({
     type: 'position',
@@ -88,16 +90,16 @@ export function TabSwitcherContainer() {
   const handleBridgeFunds = async () => {
     // TODO: Fix this type once we have the correct type for the transaction
     let transaction: Position | Reservation | undefined;
-    if (fromNetwork === 'ethereum') {
+    if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
-        tokenAmount: BigInt(parseEther(fromAmount)),
+        tokenAmount: parseEther(fromAmount),
         evmReceivingAddress: address!,
         chainId,
         owner: address!,
       });
     } else {
       transaction = await openPosition({
-        tokenAmount: BigInt(parseEther(fromAmount)),
+        tokenAmount: parseEther(fromAmount),
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress!,
         deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
@@ -105,12 +107,11 @@ export function TabSwitcherContainer() {
         chainId,
       });
     }
-    console.log('transaction', transaction, fromNetwork);
     setTrackerData({
-      type: fromNetwork === 'bitcoin' ? 'position' : 'reservation',
+      type: fromNetwork === 'ethereum' ? 'position' : 'reservation',
       open: true,
       transactionId:
-        fromNetwork === 'bitcoin'
+        fromNetwork === 'ethereum'
           ? (transaction as Position)?.positionId
           : (transaction as Reservation)?.reservationId,
     });
@@ -156,6 +157,7 @@ export function TabSwitcherContainer() {
             setTermsAccepted={setTermsAccepted}
             handleBridgeFunds={handleBridgeFunds}
             loading={loading}
+            maxBtc={maxBtc || BigInt(0)}
           />
         ) : (
           <HistoryTab />

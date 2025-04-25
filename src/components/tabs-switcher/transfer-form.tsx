@@ -5,6 +5,7 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import switchArrows from '@/assets/switch-arrows.svg';
 import { cn } from '@/lib/utils';
 import { Address } from 'viem';
+import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 
 interface TransferFormProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -22,6 +23,7 @@ interface TransferFormProps {
   handleFromAmountChange: (value: string) => void;
   handleToAmountChange: (value: string) => void;
   setBitcoinAddress: (value: Address | undefined) => void;
+  maxBtc: bigint;
 }
 
 export function TransferForm({
@@ -40,7 +42,10 @@ export function TransferForm({
   handleFromAmountChange,
   handleToAmountChange,
   setBitcoinAddress,
+  maxBtc,
 }: TransferFormProps) {
+  const { data: bitcoinPrice } = useBitcoinPrice();
+  
   return (
     <div
       className={`flex flex-col items-center bg-primary w-full sm:w-[400px] md:w-[440px] h-[${
@@ -60,6 +65,8 @@ export function TransferForm({
           amount={fromAmount}
           xbtcAmount={xbtcAmount}
           onAmountChange={handleFromAmountChange}
+          maxBtc={maxBtc}
+          bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
         />
       </div>
       <div
@@ -85,6 +92,8 @@ export function TransferForm({
           amount={toAmount}
           xbtcAmount={xbtcAmount}
           onAmountChange={handleToAmountChange}
+          readOnly={true}
+          maxBtc={maxBtc}
         />
       </div>
 

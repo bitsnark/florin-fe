@@ -9,8 +9,8 @@ export function useReservationsByOwner(ownerAddress: string | undefined) {
   return useQuery<Reservation[]>({
     queryKey: ['reservations', 'owner', ownerAddress],
     queryFn: async () => {return await FlorinApiService.getReservationsByOwner(ownerAddress)},
-    staleTime: Infinity,
+    //staleTime: 1000 * 60, //1 minutes
     gcTime: 0,
-    //enabled: !!ownerAddress,
+    enabled: !!ownerAddress,
   });
 }

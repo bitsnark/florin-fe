@@ -40,9 +40,9 @@ export default function TransactionsTable() {
   const { width } = useWindowSize();
   const isMobile = width < 768;
   const { data: positions, isLoading: isLoadingPositions } =
-    usePositionsByOwner('');
+    usePositionsByOwner(account.address);
   const { data: reservations, isLoading: isLoadingReservations } =
-    useReservationsByOwner('');
+    useReservationsByOwner(account.address);
   const transactions: (Position | Reservation)[] = [
     ...(positions || []),
     ...(reservations || []),
@@ -70,7 +70,7 @@ export default function TransactionsTable() {
           <Accordion type="single" collapsible className="flex flex-col gap-3">
             {transactions.map((tx, index) => (
               <MobileTransactionItem
-                key={tx.transaction?.hash}
+                key={tx?.hash}
                 tx={tx}
                 index={index}
                 setTransactionToTrack={setTransactionToTrack}
@@ -141,6 +141,9 @@ export default function TransactionsTable() {
               </div>
             </TableHead>
             <TableHead className="py-3 px-2 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
+              <span>Timestamp</span>
+            </TableHead>
+            <TableHead className="py-3 px-2 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
               <span>Status</span>
             </TableHead>
             <TableHead className="py-3 px-2 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
@@ -159,7 +162,7 @@ export default function TransactionsTable() {
           ) : transactions.length > 0 ? (
             transactions.map((tx) => (
               <DesktopTransactionRow
-                key={tx.transaction?.hash}
+                key={tx?.hash}
                 tx={tx}
                 setTransactionToTrack={setTransactionToTrack}
                 setOpenTrackerDialog={setOpenTrackerDialog}

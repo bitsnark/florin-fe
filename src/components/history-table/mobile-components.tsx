@@ -1,4 +1,4 @@
-import { formatHash, getChainLogo } from './utils';
+import { formatHash, getChainLogo, formatDate } from './utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -29,9 +29,9 @@ export const MobileTransactionItem = ({
   setOpenTrackerDialog?: (open: boolean) => void;
 }) => {
   const isReservation = 'reservationId' in tx;
-  const fromChain = isReservation ? 'ethereum' : 'bitcoin';
-  const toChain = isReservation ? 'bitcoin' : 'ethereum';
-  const asset = isReservation ? 'usdc' : 'btc';
+  const fromChain = isReservation ? 'bitcoin' : 'ethereum';
+  const toChain = isReservation ? 'ethereum' : 'bitcoin';
+  const asset = isReservation ? 'xbtc' : 'btc';
 
   const handleOpenTrackerDialog = () => {
     if (setOpenTrackerDialog && setTransactionToTrack) {
@@ -73,35 +73,42 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Contract registration</span>
             <span className="text-sm text-right text-[#F0A719]">
-              {formatHash(tx.transaction?.contractRegistration)}
+              {formatHash(tx?.contractRegistrationTxHash)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Requested amount</span>
             <span className="text-sm text-right">
-              {tx.transaction?.receivedAmount} {asset}
+              {tx?.receivedAmount} {asset}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Received amount</span>
             <span className="text-sm text-right">
-              {tx.transaction?.receivedAmount}
+              {tx?.receivedAmount}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
             <span className="text-sm text-right text-orange-light">
-              {formatHash(tx.transaction?.originTxId)}
+              {formatHash(tx?.originTxHash || '')}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-orange-light">
-              {formatHash(tx.transaction?.destinationTxId)}
+              {formatHash(tx?.destinationTxHash || '')}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <span className="text-sm">Timestamp</span>
+            <span className="text-sm text-right text-white">
+              {tx?.createdAt ? formatDate(tx.createdAt) : ''}
             </span>
           </div>
 
