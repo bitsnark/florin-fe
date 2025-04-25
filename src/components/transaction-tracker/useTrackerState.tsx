@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Reservation, ReservationStatus, TransactionStatus } from '@/types';
 import { useConfirmationsSimulator } from './useConfirmationsSimulator';
 import { useUpdateReservation } from '@/hooks/mutations/useUpdateReservation';
+import { gasFee } from '@/lib/utils';
 
 interface UseTrackerStateProps {
   isActive: boolean;
@@ -64,7 +65,7 @@ export function useTrackerState({
     updateReservation(
       {
         ...reservation,
-        originTxHash: '0xrandomhash',
+        originTxHash: '0xoriginRandomHash',
       } as Reservation,
       {
         onSuccess: () => {
@@ -85,7 +86,7 @@ export function useTrackerState({
   function handleCompleteStepThree() {
     updateReservation({
       ...reservation,
-      destinationTxHash: '0xrandomhash',
+      destinationTxHash: '0xdestinationRandomHash',
     } as Reservation);
     setStepThreeCompleted(true);
     setBtcTransactionDetected(true);
@@ -95,6 +96,7 @@ export function useTrackerState({
     updateReservation({
       ...reservation,
       state: ReservationStatus.COMPLETED,
+      receivedAmount: (Number(reservation?.amount) - gasFee).toString(),
       bitcoinAddress: 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
     } as Reservation);
   }

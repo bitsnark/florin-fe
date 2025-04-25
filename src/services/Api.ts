@@ -1,6 +1,6 @@
 import { env } from '@/config/env';
 import { Position, Reservation } from '@/types';
-import { formatEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 
 const API_BASE_URL = env.VITE_API_BASE_URL;
 
@@ -93,7 +93,11 @@ export class FlorinApiService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: serializeBigInt(position),
+        body: serializeBigInt({
+          ...position,
+          amount: parseEther(position.amount),
+          receivedAmount: parseEther(position.receivedAmount || '0'),
+        }),
       }
     );
 
@@ -191,7 +195,11 @@ export class FlorinApiService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: serializeBigInt(reservation),
+        body: serializeBigInt({
+          ...reservation,
+          amount: parseEther(reservation.amount),
+          receivedAmount: parseEther(reservation.receivedAmount || '0'),
+        }),
       }
     );
 

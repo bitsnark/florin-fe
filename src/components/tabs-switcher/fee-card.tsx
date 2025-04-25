@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { cn } from '@/lib/utils';
+import { cn, gasFee } from '@/lib/utils';
 
 interface FeeCardProps {
   toCurrency: 'btc' | 'eth' | 'xbtc';
@@ -28,7 +28,7 @@ export function FeeCard({ toCurrency, isAnimating }: FeeCardProps) {
           <div className="flex items-center gap-1 text-text-secondary text-[13px]">
             Network fee <InfoCircledIcon />
           </div>
-          <div className="text-white text-right text-[13px]">~0.0013 ETH</div>
+          <div className="text-white text-right text-[13px]">~{gasFee} ETH</div>
         </div>
         <div className="flex justify-between items-center">
           <div className="text-text-secondary text-[13px]">Bridge fee</div>

@@ -7,6 +7,7 @@ import { usePosition } from '@/hooks/queries/usePosition';
 import { useEffect, useState, useRef } from 'react';
 import { Position, PositionStatus } from '@/types';
 import { useUpdatePosition } from '@/hooks/mutations/useUpdatePosition';
+import { gasFee } from '@/lib/utils';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -54,7 +55,10 @@ export function PositionTracker({
       updatePosition.mutate(
         {
           ...position,
+          originTxHash: '0xoriginRandomHash',
+          destinationTxHash: '0xdestinationRandomHash',
           state: PositionStatus.COMPLETED,
+          receivedAmount: (Number(position.amount) - gasFee).toString(),
         } as Position,
         {
           onSuccess: () => setBridgeCompleted(true),

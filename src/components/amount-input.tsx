@@ -170,7 +170,7 @@ export const AmountInput = ({
               step={0.0001}
               value={amount}
               onChange={handleAmountChange}
-              className=" text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
+              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
               placeholder="0.000"
               readOnly={readOnly}
               max={network === 'bitcoin' ? maxBtc?.toString() : undefined}

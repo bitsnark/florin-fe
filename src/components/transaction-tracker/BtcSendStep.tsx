@@ -54,9 +54,15 @@ export function BtcSendStep({
       title="Send BTC"
       description={descriptionMessage}
       status={
-        reservation.originTxHash || isReadyToSend ? 'completed' : 'current'
+        reservation.state !== ReservationStatus.EXPIRED &&
+        (reservation.originTxHash || isReadyToSend)
+          ? 'completed'
+          : 'current'
       }
-      completed={!!reservation.originTxHash || isReadyToSend}
+      completed={
+        reservation.state !== ReservationStatus.EXPIRED &&
+        !!reservation.originTxHash
+      }
     >
       {!isSent && (
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full md:w-[400px] gap-2">
