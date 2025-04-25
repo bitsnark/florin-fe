@@ -1,46 +1,51 @@
 import { useEffect, useState } from 'react';
-import { TransactionStatus } from '@/types';
+import { Reservation, ReservationStatus, TransactionStatus } from '@/types';
 import { useConfirmationsSimulator } from './useConfirmationsSimulator';
+import { useUpdateReservation } from '@/hooks/mutations/useUpdateReservation';
 
 interface UseTrackerStateProps {
   isActive: boolean;
   hasOriginTxId: boolean;
   hasDestinationTxId: boolean;
   transactionStatus: TransactionStatus | undefined;
+  reservation?: Reservation;
 }
 
 export function useTrackerState({
   isActive,
-  hasOriginTxId,
-  hasDestinationTxId,
   transactionStatus,
+  reservation,
 }: UseTrackerStateProps) {
-  const [sendBtcStepCompleted, setSendBtcStepCompleted] = useState(false);
-  const [stepThreeCompleted, setStepThreeCompleted] = useState(false);
-  const [btcTransactionDetected, setBtcTransactionDetected] = useState(false);
-  const [bridgingCompleted, setBridgingCompleted] = useState(false);
+  const { mutate: updateReservation } = useUpdateReservation();
+
+  // Initialize states based on reservation data
+  const [sendBtcStepCompleted, setSendBtcStepCompleted] = useState(
+    !!reservation?.originTxHash
+  );
+  const [stepThreeCompleted, setStepThreeCompleted] = useState(
+    !!reservation?.originTxHash
+  );
+  const [btcTransactionDetected, setBtcTransactionDetected] = useState(
+    !!reservation?.destinationTxHash
+  );
+  const [bridgingCompleted, setBridgingCompleted] = useState(
+    reservation?.state === ReservationStatus.COMPLETED
+  );
+
+  // Update states when reservation changes
+  useEffect(() => {
+    if (reservation) {
+      setSendBtcStepCompleted(!!reservation.originTxHash);
+      setStepThreeCompleted(!!reservation.originTxHash);
+      setBtcTransactionDetected(!!reservation.destinationTxHash);
+      setBridgingCompleted(reservation.state === ReservationStatus.COMPLETED);
+    }
+  }, [reservation]);
 
   const confirmations = useConfirmationsSimulator({
     isActive,
     maxConfirmations: 20,
   });
-
-  useEffect(() => {
-    if (confirmations === 20 && hasOriginTxId) {
-      setTimeout(() => {
-        setSendBtcStepCompleted(true);
-        setStepThreeCompleted(true);
-      }, 10000);
-    }
-  }, [confirmations, hasOriginTxId]);
-
-  useEffect(() => {
-    if (sendBtcStepCompleted && stepThreeCompleted && hasDestinationTxId) {
-      setTimeout(() => {
-        setBtcTransactionDetected(true);
-      }, 10000);
-    }
-  }, [sendBtcStepCompleted, stepThreeCompleted, hasDestinationTxId]);
 
   useEffect(() => {
     if (
@@ -53,11 +58,56 @@ export function useTrackerState({
     }
   }, [btcTransactionDetected, transactionStatus]);
 
+  // function to update the states of a reservation
+
+  function handlePassToStepThree() {
+    updateReservation(
+      {
+        ...reservation,
+        originTxHash: '0xrandomhash',
+      } as Reservation,
+      {
+        onSuccess: () => {
+          setSendBtcStepCompleted(true);
+          setStepThreeCompleted(true);
+        },
+      }
+    );
+  }
+
+  function handleExpireReservation() {
+    updateReservation({
+      ...reservation,
+      state: ReservationStatus.EXPIRED,
+    } as Reservation);
+  }
+
+  function handleCompleteStepThree() {
+    updateReservation({
+      ...reservation,
+      destinationTxHash: '0xrandomhash',
+    } as Reservation);
+    setStepThreeCompleted(true);
+    setBtcTransactionDetected(true);
+  }
+
+  function handleCompleteStepFour() {
+    updateReservation({
+      ...reservation,
+      state: ReservationStatus.COMPLETED,
+      bitcoinAddress: 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
+    } as Reservation);
+  }
+
   return {
     sendBtcStepCompleted,
     stepThreeCompleted,
     btcTransactionDetected,
     bridgingCompleted,
     confirmations,
+    handleExpireReservation,
+    handlePassToStepThree,
+    handleCompleteStepThree,
+    handleCompleteStepFour,
   };
 }

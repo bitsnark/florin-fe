@@ -46,7 +46,7 @@ export function AddressReveal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedAmount, setCopiedAmount] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  // Update showAddress if isReadyToSend changes
+
   useEffect(() => {
     if (isReadyToSend) {
       setShowAddress(true);

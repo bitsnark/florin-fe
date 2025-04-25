@@ -181,6 +181,26 @@ export class FlorinApiService {
       : null;
   }
 
+  static async updateReservation(
+    reservation: Reservation
+  ): Promise<Reservation> {
+    const response = await fetch(
+      `${API_BASE_URL}/reservations/${reservation.reservationId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: serializeBigInt(reservation),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update reservation: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
   static async addReservation(reservation: Reservation): Promise<Reservation> {
     const response = await fetch(`${API_BASE_URL}/reservations`, {
       method: 'POST',
