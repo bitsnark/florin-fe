@@ -82,12 +82,33 @@ export const AmountInput = ({
   }, [amount, bitcoinPrice, currency]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Only allow numbers and a single decimal point
-    if (/^[0-9]*\.?[0-9]*$/.test(value) || value === '') {
-      onAmountChange?.(Math.min(parseFloat(value), maxBtc ? Number(maxBtc) : 0).toString());
+    const value = e.target.value.replace(',', '.');
+    
+    if (value === '') {
+      onAmountChange?.('');
+      return;
+    }
+
+    if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+      // If the value ends with a dot, keep it as is
+      if (value.endsWith('.')) {
+        onAmountChange?.(value);
+        return;
+      }
+
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        if (maxBtc && numValue > Number(maxBtc)) {
+          onAmountChange?.(maxBtc.toString());
+        } else {
+          onAmountChange?.(value);
+        }
+      }
     }
   };
+
+  // Convert the amount to use dot as decimal separator for display
+  const normalizedAmount = amount.replace(',', '.');
 
   return (
     <Card
@@ -166,11 +187,12 @@ export const AmountInput = ({
 
           <div className="flex flex-col items-end">
             <input
-              type="number"
-              step={0.0001}
-              value={amount}
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*[.]?[0-9]*"
+              value={normalizedAmount}
               onChange={handleAmountChange}
-              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full"
+              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0.000"
               readOnly={readOnly}
               max={network === 'bitcoin' ? maxBtc?.toString() : undefined}
