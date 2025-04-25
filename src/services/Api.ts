@@ -19,6 +19,7 @@ export class FlorinApiService {
     return response.text();
   }
 
+  // Position methods
   static async getPositionsByOwner(
     ownerId: string | undefined,
     finalityFlag?: boolean
@@ -30,8 +31,10 @@ export class FlorinApiService {
       }
       return response.json();
     }
-    
-    const response = await fetch(`${API_BASE_URL}/positions?ownerId=${ownerId}`);
+
+    const response = await fetch(
+      `${API_BASE_URL}/positions?ownerId=${ownerId}`
+    );
     if (!response.ok) {
       throw new Error(`Failed to fetch positions: ${response.statusText}`);
     }
@@ -42,19 +45,21 @@ export class FlorinApiService {
       receivedAmount: formatEther(BigInt(p.receivedAmount || '0')),
     }));
 
-    return finalityFlag === undefined 
-      ? normalizedPositions 
+    return finalityFlag === undefined
+      ? normalizedPositions
       : normalizedPositions.filter((p: Position) => p.finality === 'FINAL');
   }
 
   static async getActivePositions(finalityFlag?: boolean): Promise<Position[]> {
     const response = await fetch(`${API_BASE_URL}/positions/active`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch active positions: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch active positions: ${response.statusText}`
+      );
     }
     const positions = await response.json();
-    return finalityFlag === undefined 
-      ? positions 
+    return finalityFlag === undefined
+      ? positions
       : positions.filter((p: Position) => p.finality === 'FINAL');
   }
 
@@ -63,7 +68,7 @@ export class FlorinApiService {
     finalityFlag?: boolean
   ): Promise<Position | null> {
     if (!id) return null;
-    
+
     const response = await fetch(`${API_BASE_URL}/positions/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch position: ${response.statusText}`);
@@ -74,11 +79,46 @@ export class FlorinApiService {
       amount: formatEther(BigInt(position.amount)),
       receivedAmount: formatEther(BigInt(position.receivedAmount || '0')),
     };
-    return finalityFlag === undefined || position.finality === 'FINAL' 
-      ? normalizedPosition 
+    return finalityFlag === undefined || position.finality === 'FINAL'
+      ? normalizedPosition
       : null;
   }
 
+  static async updatePosition(position: Position): Promise<Position> {
+    console.log('Updating position', position);
+    const response = await fetch(
+      `${API_BASE_URL}/positions/${position.positionId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: serializeBigInt(position),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update position: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
+  static async addPosition(position: Position): Promise<Position> {
+    const response = await fetch(`${API_BASE_URL}/positions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: serializeBigInt(position),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add position: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
+  // Reservation methods
   static async getReservationsByOwner(
     ownerId: string | undefined,
     finalityFlag?: boolean
@@ -90,8 +130,10 @@ export class FlorinApiService {
       }
       return response.json();
     }
-    
-    const response = await fetch(`${API_BASE_URL}/reservations?ownerId=${ownerId}`);
+
+    const response = await fetch(
+      `${API_BASE_URL}/reservations?ownerId=${ownerId}`
+    );
     if (!response.ok) {
       throw new Error(`Failed to fetch reservations: ${response.statusText}`);
     }
@@ -101,15 +143,19 @@ export class FlorinApiService {
       amount: formatEther(BigInt(r.amount)),
       receivedAmount: formatEther(BigInt(r.receivedAmount || '0')),
     }));
-    return finalityFlag === undefined 
-      ? normalizedReservations 
-      : normalizedReservations.filter((r: Reservation) => r.finality === 'FINAL');
+    return finalityFlag === undefined
+      ? normalizedReservations
+      : normalizedReservations.filter(
+          (r: Reservation) => r.finality === 'FINAL'
+        );
   }
 
   static async getActiveReservations(): Promise<Reservation[]> {
     const response = await fetch(`${API_BASE_URL}/reservations/active`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch active reservations: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch active reservations: ${response.statusText}`
+      );
     }
     return response.json();
   }
@@ -119,7 +165,7 @@ export class FlorinApiService {
     finalityFlag?: boolean
   ): Promise<Reservation | null> {
     if (!id) return null;
-    
+
     const response = await fetch(`${API_BASE_URL}/reservations/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch reservation: ${response.statusText}`);
@@ -130,24 +176,9 @@ export class FlorinApiService {
       amount: formatEther(BigInt(reservation.amount)),
       receivedAmount: formatEther(BigInt(reservation.receivedAmount || '0')),
     };
-    return finalityFlag === undefined || reservation.finality === 'FINAL' 
-      ? normalizedReservation 
+    return finalityFlag === undefined || reservation.finality === 'FINAL'
+      ? normalizedReservation
       : null;
-  }
-
-  static async addPosition(position: Position): Promise<Position> {
-    const response = await fetch(`${API_BASE_URL}/positions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: serializeBigInt(position),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Failed to add position: ${response.statusText}`);
-    }
-    return response.json();
   }
 
   static async addReservation(reservation: Reservation): Promise<Reservation> {
@@ -158,17 +189,20 @@ export class FlorinApiService {
       },
       body: serializeBigInt(reservation),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to add reservation: ${response.statusText}`);
     }
     return response.json();
   }
 
+  // Bitcoin methods
   static async getBitcoinTaprootAddress(): Promise<string> {
     const response = await fetch(`${API_BASE_URL}/bitcoin/taproot-address`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch taproot address: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch taproot address: ${response.statusText}`
+      );
     }
     return response.text();
   }
@@ -181,7 +215,7 @@ export class FlorinApiService {
       },
       body: serializeBigInt({ amount }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to find position: ${response.statusText}`);
     }
@@ -195,7 +229,7 @@ export class FlorinApiService {
       throw new Error(`Failed to fetch max amount: ${response.statusText}`);
     }
     const data = await response.json();
-    
+
     return BigInt(data.maxAmount);
   }
 
@@ -203,7 +237,7 @@ export class FlorinApiService {
     const response = await fetch(`${API_BASE_URL}/seed`, {
       method: 'POST',
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to seed data: ${response.statusText}`);
     }
@@ -213,7 +247,7 @@ export class FlorinApiService {
     const response = await fetch(`${API_BASE_URL}/clear`, {
       method: 'POST',
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to clear data: ${response.statusText}`);
     }

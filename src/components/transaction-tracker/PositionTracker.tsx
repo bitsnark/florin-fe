@@ -1,10 +1,12 @@
-import { TransactionStatus } from '@/types';
 import { TransactionStep } from './TransactionStep';
 import { EthTransactionCard } from './EthTransactionCard';
 import { BtcCompletionCard } from './BtcCompletionCard';
 import { BaseTransactionTracker } from './BaseTransactionTracker';
 import { useTrackerState } from './useTrackerState';
 import { usePosition } from '@/hooks/queries/usePosition';
+import { useEffect, useState, useRef } from 'react';
+import { Position, PositionStatus } from '@/types';
+import { useUpdatePosition } from '@/hooks/mutations/useUpdatePosition';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -18,13 +20,60 @@ export function PositionTracker({
   id,
 }: PositionTrackerProps) {
   const { data: position, isLoading, error } = usePosition(id, {});
+  const updatePosition = useUpdatePosition();
+  const hasUpdatedPosition = useRef(false);
 
-  const { bridgingCompleted, confirmations } = useTrackerState({
+  const { confirmations } = useTrackerState({
     isActive: open,
     hasOriginTxId: !!position?.originTxHash,
     hasDestinationTxId: !!position?.destinationTxHash,
     transactionStatus: position?.status,
   });
+
+  const isPositionCompleted = position?.state === PositionStatus.COMPLETED;
+  const [bridgeCompleted, setBridgeCompleted] = useState(isPositionCompleted);
+
+  // Update bridge status when position is completed
+  useEffect(() => {
+    if (isPositionCompleted) {
+      setBridgeCompleted(true);
+    }
+  }, [isPositionCompleted]);
+
+  // Update position status when confirmations reach threshold
+  useEffect(() => {
+    const shouldUpdatePosition =
+      confirmations === 20 &&
+      position &&
+      !hasUpdatedPosition.current &&
+      !bridgeCompleted;
+
+    if (shouldUpdatePosition) {
+      hasUpdatedPosition.current = true;
+
+      updatePosition.mutate(
+        {
+          ...position,
+          state: PositionStatus.COMPLETED,
+        } as Position,
+        {
+          onSuccess: () => setBridgeCompleted(true),
+          onError: (error) => console.error('Error updating position:', error),
+        }
+      );
+    }
+  }, [confirmations, position, updatePosition, bridgeCompleted]);
+
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setBridgeCompleted(false);
+      hasUpdatedPosition.current = false;
+    }
+  }, [open]);
+
+  // Display confirmations based on position state
+  const displayConfirmations = isPositionCompleted ? 20 : confirmations;
 
   return (
     <BaseTransactionTracker
@@ -48,7 +97,7 @@ export function PositionTracker({
                 amount: position.amount,
                 recipientAddress: position.positionId,
                 reservationTx: position?.contractRegistrationTxHash || '',
-                confirmations: confirmations,
+                confirmations: displayConfirmations,
                 fiatAmount: '100',
               }}
             />
@@ -58,17 +107,11 @@ export function PositionTracker({
           <TransactionStep
             title="Bridging complete"
             description="Funds (BTC) are in your wallet now"
-            status={
-              position?.status === TransactionStatus.COMPLETED
-                ? 'completed'
-                : 'pending'
-            }
-            completed={
-              position?.status === TransactionStatus.COMPLETED
-            }
+            status={bridgeCompleted ? 'completed' : 'pending'}
+            completed={bridgeCompleted}
             isLastStep={true}
           >
-            {bridgingCompleted && (
+            {bridgeCompleted && (
               <BtcCompletionCard
                 amount={position.amount}
                 recipientAddress={position.positionId}
