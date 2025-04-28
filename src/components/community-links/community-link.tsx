@@ -26,7 +26,7 @@ export function CommunityLink({ href, label, community }: CommunityLinkProps) {
       className="block w-[359px] md:w-[215px] no-underline"
     >
       <Card className="bg-grey pt-2 pr-8 pb-2 pl-2 h-[88px] rounded-xl backdrop-blur-lg border-none flex flex-row items-center gap-5 cursor-pointer">
-        <div className="w-[72px] h-[72px] flex items-center justify-center rounded-xl bg-primary">
+        <div className="w-[72px] h-[72px] flex items-center justify-center rounded-xl bg-card">
           <img
             src={logoMap[community]}
             alt={`${community} logo`}

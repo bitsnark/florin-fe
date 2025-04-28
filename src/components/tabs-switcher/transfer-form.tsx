@@ -51,7 +51,7 @@ export function TransferForm({
 
   return (
     <div
-      className={`flex flex-col items-center bg-primary w-full sm:w-[400px] md:w-[440px] h-[${
+      className={`flex flex-col items-center bg-card w-full sm:w-[400px] md:w-[440px] h-[${
         toCurrency === 'btc' ? '506px' : '414px'
       }] py-5 px-4 rounded-xl transition-all duration-300 ease-in-out`}
     >
