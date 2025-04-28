@@ -199,8 +199,7 @@ export const AmountInput = ({
               className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0.000"
               readOnly={readOnly}
-              //max={network === 'bitcoin' ? maxBtc?.toString() : undefined}
-              //min={network === 'bitcoin' ? minBtc?.toString() : undefined}
+              
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
