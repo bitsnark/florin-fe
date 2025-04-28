@@ -24,7 +24,7 @@ export function BaseTransactionTracker({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`bg-[#1E1C21] border-none rounded-xl overflow-y-auto w-full md:w-[585px] ${maxHeight} pt-4 md:pt-6 px-4 md:pr-6 md:pl-6 pb-6 md:pb-9`}
+        className={`bg-[#1E1C21] border-none rounded-xl overflow-y-auto scrollbar-hide w-full md:w-[585px] ${maxHeight} pt-4 md:pt-6 px-4 md:pr-6 md:pl-6 pb-6 md:pb-9`}
       >
         <h3 className="font-semibold text-base">{title}</h3>
         {isLoading ? (
