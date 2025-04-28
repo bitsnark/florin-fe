@@ -54,7 +54,7 @@ export function TransferTab({
 }: TransferTabProps) {
 
   // TODO: REFACTOR, validate form using zod
-  const disabled = !termsAccepted || loading || (!bitcoinAddress && fromNetwork === 'ethereum') || (!fromAmount || !toAmount);
+  const disabled = !termsAccepted || loading || (!bitcoinAddress && fromNetwork === 'ethereum') || (Number(fromAmount) < minBtc || Number(fromAmount) > maxBtc);
   
   return (
     <>
