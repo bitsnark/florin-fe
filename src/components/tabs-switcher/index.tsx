@@ -21,7 +21,7 @@ export function TabSwitcherContainer() {
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
-  
+
   const [fromCurrency, setFromCurrency] = useState<Currency>(
     fromNetwork === 'bitcoin' ? 'btc' : 'eth'
   );
@@ -83,14 +83,16 @@ export function TabSwitcherContainer() {
 
   const handleToAmountChange = (value: string) => {
     setToAmount(value);
-    // If you want bidirectional syncing, uncomment this:
-    // setFromAmount(value);
+    // When transferring from xBTC to BTC, also update fromAmount (xBTC) when BTC amount changes
+    if (fromCurrency === 'xbtc' && toCurrency === 'btc') {
+      setFromAmount(value);
+    }
   };
 
   const handleBridgeFunds = async () => {
     // Convert comma to dot for parseEther
     const normalizedAmount = fromAmount.replace(',', '.');
-    
+
     // TODO: Fix this type once we have the correct type for the transaction
     let transaction: Position | Reservation | undefined;
     if (fromNetwork === 'bitcoin') {

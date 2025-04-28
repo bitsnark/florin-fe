@@ -45,7 +45,10 @@ export function TransferForm({
   maxBtc,
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
-  
+
+  // Determine which input should be editable
+  const isFromXbtcToBtc = fromCurrency === 'xbtc' && toCurrency === 'btc';
+
   return (
     <div
       className={`flex flex-col items-center bg-primary w-full sm:w-[400px] md:w-[440px] h-[${
@@ -67,6 +70,7 @@ export function TransferForm({
           onAmountChange={handleFromAmountChange}
           maxBtc={maxBtc}
           bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
+          readOnly={isFromXbtcToBtc}
         />
       </div>
       <div
@@ -92,8 +96,9 @@ export function TransferForm({
           amount={toAmount}
           xbtcAmount={xbtcAmount}
           onAmountChange={handleToAmountChange}
-          readOnly={true}
+          readOnly={!isFromXbtcToBtc}
           maxBtc={maxBtc}
+          bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
         />
       </div>
 
