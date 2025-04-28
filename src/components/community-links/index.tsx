@@ -13,22 +13,18 @@ export function CommunityLinks() {
       </span>
       <div className="flex flex-col md:flex-row gap-4 mt-10 w-full justify-center">
         <CommunityLink
-          href="https://discord.com/invite/grail"
+          href="https://discord.com/invite/bitcoinos"
           label="Discord"
           community="discord"
         />
         <CommunityLink
-          href="https://t.me/grailbridge"
+          href="https://t.me/BitcoinOS_Build"
           label="Telegram"
           community="telegram"
         />
+        <CommunityLink href="https://x.com/BTC_OS" label="X" community="x" />
         <CommunityLink
-          href="https://x.com/grailbridge"
-          label="X"
-          community="x"
-        />
-        <CommunityLink
-          href="https://github.com/grailbridge"
+          href="https://github.com/BitcoinOS-Build"
           label="GitHub"
           community="github"
         />

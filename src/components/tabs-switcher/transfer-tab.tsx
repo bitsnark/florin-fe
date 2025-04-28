@@ -4,6 +4,7 @@ import { TermsSection } from './terms-section';
 import { ConnectButton } from './connect-button';
 import { Address } from 'viem';
 import { Button } from '../ui/button';
+import { isValidBitcoinAddress } from '@/lib/utils';
 
 interface TransferTabProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -50,6 +51,11 @@ export function TransferTab({
   loading,
   maxBtc,
 }: TransferTabProps) {
+  const isBitcoinAddressValid =
+    fromNetwork === 'ethereum' && toCurrency === 'btc'
+      ? isValidBitcoinAddress(bitcoinAddress as string)
+      : true;
+
   return (
     <>
       <TransferForm
@@ -70,7 +76,11 @@ export function TransferTab({
         setBitcoinAddress={setBitcoinAddress}
         maxBtc={maxBtc}
       />
-      <FeeCard toCurrency={toCurrency} isAnimating={isAnimating} />
+      <FeeCard
+        toCurrency={toCurrency}
+        isAnimating={isAnimating}
+        amount={fromAmount}
+      />
       {isWalletConnected && (
         <TermsSection
           termsAccepted={termsAccepted}
@@ -93,7 +103,8 @@ export function TransferTab({
             disabled={
               !termsAccepted ||
               loading ||
-              (!bitcoinAddress && fromNetwork === 'ethereum')
+              (fromNetwork === 'ethereum' &&
+                (!bitcoinAddress || !isBitcoinAddressValid))
             }
           >
             {'Bridge funds'}

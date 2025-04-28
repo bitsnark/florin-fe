@@ -7,18 +7,20 @@ export function FaqContainer() {
         <Faq
           faq={[
             {
-              question: 'Is it accessible?',
-              answer: 'Yes. It adheres to the WAI-ARIA design pattern.',
+              question: 'What is Grail?',
+              answer:
+                'Grail is a technology for trustlessly bridging bitcoin to other blockchains using zero-knowledge cryptography. BOS verified the first ZK proof on Bitcoin in July 2024, finally demonstrating that this long-awaited, key technical unlock was possible for the most popular chain.',
             },
             {
-              question: 'Is it styled?',
+              question: 'What blockchains can I bridge my BTC into with Grail?',
               answer:
-                'Yes. It comes with default styles that matches the other components&apos; aesthetic.',
+                'Currently, Grail is only available on Ethereum. We are working on adding support for more chains in the future.',
             },
             {
-              question: 'Is it animated?',
+              question:
+                'Bitcoin bridges already exist. What makes Grail special?',
               answer:
-                'Yes. It&apos;s animated by default, but you can disable it if you prefer.',
+                'Bitcoin bridges already exist. What makes Grail special is that it is the first to use zero-knowledge cryptography to prove that a user has a valid bitcoin transaction, without revealing the transaction details. This allows users to bridge their BTC to other chains without revealing their private keys.',
             },
           ]}
         />

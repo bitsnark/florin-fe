@@ -1,32 +1,46 @@
 import { Card } from '@/components/ui/card';
-import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { cn, gasFee } from '@/lib/utils';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 interface FeeCardProps {
   toCurrency: 'btc' | 'eth' | 'xbtc';
   isAnimating: boolean;
+  amount: string;
 }
 
-export function FeeCard({ toCurrency, isAnimating }: FeeCardProps) {
+export function FeeCard({ toCurrency, isAnimating, amount }: FeeCardProps) {
+  const amountNumber = parseFloat(amount) || 0;
+  const receiveAmount = Math.max(0, amountNumber - gasFee).toFixed(6);
+
   return (
     <Card
       className={cn(
-        'bg-card border-none w-full sm:w-[400px] md:w-[440px] h-[104px] py-5 px-4 rounded-xl mt-3 transition-all duration-300 ease-in-out',
+        'bg-[#100D16] border-none w-full sm:w-[400px] md:w-[440px] h-[104px] py-5 px-4 rounded-xl mt-3 transition-all duration-300 ease-in-out',
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}
     >
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-1 text-text-secondary text-[13px]">
-            You'll receive <InfoCircledIcon />
+            You'll receive
+            <InfoTooltip
+              message={`You'll receive the ${toCurrency === 'btc' ? 'BTC' : 'xBTC'} you sent, minus the network fee.`}
+              position="bottom"
+              align="center"
+            />
           </div>
           <div className="text-white text-right text-[13px]">
-            0 {toCurrency === 'btc' ? 'BTC' : 'xBTC'}
+            {receiveAmount} {toCurrency === 'btc' ? 'BTC' : 'xBTC'}
           </div>
         </div>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-1 text-text-secondary text-[13px]">
-            Network fee <InfoCircledIcon />
+            Network fee
+            <InfoTooltip
+              message="The cost of gas to fund your transaction, paid in ETH. This fee may vary, and is estimated at the moment of your transaction."
+              position="bottom"
+              align="center"
+            />
           </div>
           <div className="text-white text-right text-[13px]">~{gasFee} ETH</div>
         </div>

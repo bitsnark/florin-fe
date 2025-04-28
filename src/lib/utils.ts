@@ -36,3 +36,33 @@ export function stringifyWithBigInt(obj: any): string {
     typeof value === 'bigint' ? value.toString() : value
   );
 }
+
+/**
+ * Validates a Bitcoin address
+ * Supports P2PKH, P2SH, Bech32 (SegWit) addresses
+ * @param address Bitcoin address to validate
+ * @returns true if the address is valid, false otherwise
+ */
+export function isValidBitcoinAddress(address: string | undefined): boolean {
+  if (!address) return false;
+
+  // P2PKH addresses (Legacy) - start with 1
+  const p2pkhRegex = /^1[a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+
+  // P2SH addresses - start with 3
+  const p2shRegex = /^3[a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+
+  // Bech32 (SegWit) addresses - start with bc1
+  const bech32Regex = /^bc1[a-z0-9]{39,59}$/;
+
+  // Testnet addresses
+  const testnetRegex = /^(m|n|tb1)[a-zA-HJ-NP-Z1-9]{25,59}$/;
+
+  // Check if address matches any valid Bitcoin address format
+  return (
+    p2pkhRegex.test(address) ||
+    p2shRegex.test(address) ||
+    bech32Regex.test(address) ||
+    testnetRegex.test(address)
+  );
+}
