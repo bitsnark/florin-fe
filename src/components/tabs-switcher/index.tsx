@@ -8,7 +8,7 @@ import { Address, parseEther } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
 import { TransactionTrackerDialog } from '../transaction-tracker';
 import { Position, Reservation } from '@/types';
-import { useMaxBtc } from '@/hooks/queries/useMaxBtc';
+import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 
 type TrackerData = {
   type: 'position' | 'reservation';
@@ -36,7 +36,9 @@ export function TabSwitcherContainer() {
     undefined
   );
   const { openPosition, reservePosition, loading } = useExchange();
-  const { data: maxBtc } = useMaxBtc();
+  const { data } = useMaxMinBtc();
+  const maxBtc = data?.maxAmount;
+  const minBtc = data?.minAmount;
   // TODO: Fix this type once we have the correct type for the transaction
   const [trackerData, setTrackerData] = useState<TrackerData>({
     type: 'position',
@@ -162,7 +164,8 @@ export function TabSwitcherContainer() {
             setTermsAccepted={setTermsAccepted}
             handleBridgeFunds={handleBridgeFunds}
             loading={loading}
-            maxBtc={maxBtc || BigInt(0)}
+            maxBtc={maxBtc || 0}
+            minBtc={minBtc || 0}
           />
         ) : (
           <HistoryTab />
