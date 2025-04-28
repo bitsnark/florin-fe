@@ -3,7 +3,7 @@ import { Faq } from './faq';
 export function FaqContainer() {
   return (
     <div className="flex justify-center pb-10">
-      <div className="bg-primary rounded-xl py-8 px-4 w-full sm:w-[400px] md:w-[440px]">
+      <div className="bg-card rounded-xl py-8 px-4 w-full sm:w-[400px] md:w-[440px]">
         <Faq
           faq={[
             {

@@ -58,7 +58,7 @@ export default function TransactionsTable() {
   // Render mobile view
   if (isMobile) {
     return (
-      <div className="bg-primary p-4 rounded-xl w-full max-w-[359px] mx-auto overflow-y-auto">
+      <div className="bg-card p-4 rounded-xl w-full max-w-[359px] mx-auto overflow-y-auto">
         {!isWalletConnected ? (
           <MobileWalletNotConnectedState />
         ) : isLoading ? (
@@ -93,7 +93,7 @@ export default function TransactionsTable() {
 
   // Render desktop table view
   return (
-    <div className="bg-primary p-6 rounded-xl overflow-hidden w-full">
+    <div className="bg-card p-6 rounded-xl overflow-hidden w-full">
       <Table
         style={{
           borderCollapse: 'separate',

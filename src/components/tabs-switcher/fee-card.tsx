@@ -11,7 +11,7 @@ export function FeeCard({ toCurrency, isAnimating }: FeeCardProps) {
   return (
     <Card
       className={cn(
-        'bg-primary border-none w-full sm:w-[400px] md:w-[440px] h-[104px] py-5 px-4 rounded-xl mt-3 transition-all duration-300 ease-in-out',
+        'bg-card border-none w-full sm:w-[400px] md:w-[440px] h-[104px] py-5 px-4 rounded-xl mt-3 transition-all duration-300 ease-in-out',
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}
     >
