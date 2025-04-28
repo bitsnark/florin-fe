@@ -21,7 +21,7 @@ export function TabSwitcherContainer() {
   const [activeTab, setActiveTab] = useState(0);
   const [fromNetwork, setFromNetwork] = useState<Network>('bitcoin');
   const [toNetwork, setToNetwork] = useState<Network>('ethereum');
-  
+
   const [fromCurrency, setFromCurrency] = useState<Currency>(
     fromNetwork === 'bitcoin' ? 'btc' : 'eth'
   );
@@ -83,23 +83,28 @@ export function TabSwitcherContainer() {
 
   const handleToAmountChange = (value: string) => {
     setToAmount(value);
-    // If you want bidirectional syncing, uncomment this:
-    // setFromAmount(value);
+    // When transferring from xBTC to BTC, also update fromAmount (xBTC) when BTC amount changes
+    if (fromCurrency === 'xbtc' && toCurrency === 'btc') {
+      setFromAmount(value);
+    }
   };
 
   const handleBridgeFunds = async () => {
+    // Convert comma to dot for parseEther
+    const normalizedAmount = fromAmount.replace(',', '.');
+
     // TODO: Fix this type once we have the correct type for the transaction
     let transaction: Position | Reservation | undefined;
     if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
-        tokenAmount: parseEther(fromAmount),
+        tokenAmount: parseEther(normalizedAmount),
         evmReceivingAddress: address!,
         chainId,
         owner: address!,
       });
     } else {
       transaction = await openPosition({
-        tokenAmount: parseEther(fromAmount),
+        tokenAmount: parseEther(normalizedAmount),
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress!,
         deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
@@ -125,7 +130,7 @@ export function TabSwitcherContainer() {
         onTabChange={setActiveTab}
         variant={variant}
         size={size}
-        className="gap-2.5 bg-primary border-none"
+        className="gap-2.5 bg-[#100D16] border-none"
       />
       <TransactionTrackerDialog
         open={trackerData?.open}

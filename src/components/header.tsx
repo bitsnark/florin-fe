@@ -6,9 +6,21 @@ import { EvmWalletConnect } from './evm-wallet-connector';
 import logo from '@/assets/bos-bridge-logo.png';
 // Define the navigation items
 const navigationItems = [
-  { to: '/', label: 'About BitcoinOS' },
-  { to: '/history', label: 'Grail Bridge' },
-  { to: '/design-system', label: 'Whitepaper' },
+  {
+    to: 'https://www.bitcoinos.build/',
+    label: 'About BitcoinOS',
+    external: true,
+  },
+  {
+    to: 'https://whitepaper.bitcoinos.build/',
+    label: 'Whitepaper',
+    external: true,
+  },
+  {
+    to: 'https://app-florin.netlify.app/',
+    label: 'How it works',
+    external: true,
+  },
 ];
 
 export function Header() {

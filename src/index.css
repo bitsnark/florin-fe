@@ -11,13 +11,14 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
 :root {
   font-family: 'Inter', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  color-scheme: dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #1e1c21;
 
@@ -79,7 +80,6 @@
 
 a {
   font-weight: 500;
-  color: #ffffff;
   text-decoration: inherit;
 }
 a:hover {
@@ -136,19 +136,6 @@ button:not([data-slot='button']) {
 button:focus,
 button:focus-visible {
   outline: none;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #ffffff;
-    background-color: #1e1c21;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button:not([data-slot='button']) {
-    background-color: #f9f9f9;
-  }
 }
 
 @theme inline {
@@ -263,13 +250,13 @@ button:focus-visible {
 }
 
 /* Hide number input arrows */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }

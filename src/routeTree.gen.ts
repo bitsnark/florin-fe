@@ -10,10 +10,9 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root';
-import { Route as HistoryImport } from './routes/history';
-import { Route as DesignSystemImport } from './routes/design-system';
-import { Route as IndexImport } from './routes/index';
+import { Route as rootRoute } from './routes/__root'
+import { Route as HistoryImport } from './routes/history'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
@@ -21,93 +20,75 @@ const HistoryRoute = HistoryImport.update({
   id: '/history',
   path: '/history',
   getParentRoute: () => rootRoute,
-} as any);
-
-const DesignSystemRoute = DesignSystemImport.update({
-  id: '/design-system',
-  path: '/design-system',
-  getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    '/design-system': {
-      id: '/design-system';
-      path: '/design-system';
-      fullPath: '/design-system';
-      preLoaderRoute: typeof DesignSystemImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
     '/history': {
-      id: '/history';
-      path: '/history';
-      fullPath: '/history';
-      preLoaderRoute: typeof HistoryImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/design-system': typeof DesignSystemRoute;
-  '/history': typeof HistoryRoute;
+  '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/design-system': typeof DesignSystemRoute;
-  '/history': typeof HistoryRoute;
+  '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  '/': typeof IndexRoute;
-  '/design-system': typeof DesignSystemRoute;
-  '/history': typeof HistoryRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/design-system' | '/history';
-  fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/design-system' | '/history';
-  id: '__root__' | '/' | '/design-system' | '/history';
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/history'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/history'
+  id: '__root__' | '/' | '/history'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  DesignSystemRoute: typeof DesignSystemRoute;
-  HistoryRoute: typeof HistoryRoute;
+  IndexRoute: typeof IndexRoute
+  HistoryRoute: typeof HistoryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DesignSystemRoute: DesignSystemRoute,
   HistoryRoute: HistoryRoute,
-};
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -116,15 +97,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/design-system",
         "/history"
       ]
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/design-system": {
-      "filePath": "design-system.tsx"
     },
     "/history": {
       "filePath": "history.tsx"

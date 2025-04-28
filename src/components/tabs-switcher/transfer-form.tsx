@@ -1,11 +1,11 @@
 import { AmountInput } from '@/components/amount-input';
 import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
-import { InfoCircledIcon } from '@radix-ui/react-icons';
 import switchArrows from '@/assets/switch-arrows.svg';
 import { cn } from '@/lib/utils';
 import { Address } from 'viem';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 interface TransferFormProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -45,10 +45,13 @@ export function TransferForm({
   maxBtc,
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
-  
+
+  // Determine which input should be editable
+  const isFromXbtcToBtc = fromCurrency === 'xbtc' && toCurrency === 'btc';
+
   return (
     <div
-      className={`flex flex-col items-center bg-primary w-full sm:w-[400px] md:w-[440px] h-[${
+      className={`flex flex-col items-center bg-[#100D16] w-full sm:w-[400px] md:w-[440px] h-[${
         toCurrency === 'btc' ? '506px' : '414px'
       }] py-5 px-4 rounded-xl transition-all duration-300 ease-in-out`}
     >
@@ -67,6 +70,7 @@ export function TransferForm({
           onAmountChange={handleFromAmountChange}
           maxBtc={maxBtc}
           bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
+          readOnly={isFromXbtcToBtc}
         />
       </div>
       <div
@@ -92,8 +96,9 @@ export function TransferForm({
           amount={toAmount}
           xbtcAmount={xbtcAmount}
           onAmountChange={handleToAmountChange}
-          readOnly={true}
+          readOnly={!isFromXbtcToBtc}
           maxBtc={maxBtc}
+          bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
         />
       </div>
 
@@ -108,7 +113,10 @@ export function TransferForm({
           className="text-xs text-text-secondary font-bold flex flex-row gap-1"
         >
           Ethereum sending address
-          <InfoCircledIcon />
+          <InfoTooltip
+            message="The sending amount is calculated in BTC. Ethereum token X, Y, Z can be used for transfer"
+            position="bottom"
+          />
         </Label>
         <Input
           id="wallet-address"
@@ -131,7 +139,10 @@ export function TransferForm({
             className="text-xs text-text-secondary font-bold flex flex-row gap-1"
           >
             Bitcoin receiving address
-            <InfoCircledIcon />
+            <InfoTooltip
+              message="Enter the Bitcoin address where you want to receive your BTC."
+              position="bottom"
+            />
           </Label>
           <Input
             id="bitcoin-address"
