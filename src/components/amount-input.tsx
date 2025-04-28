@@ -68,6 +68,9 @@ export const AmountInput = ({
   const cardBorderClass =
     network === 'ethereum' ? 'border border-input-border' : 'border-none';
 
+  // Add a disabled style when readOnly is true, especially for xBTC
+  const disabledCardClass = readOnly && currency === 'xbtc' ? 'opacity-70' : '';
+
   const calculateUsdValue = useMemo(() => {
     const rates = {
       btc: bitcoinPrice,
@@ -83,7 +86,7 @@ export const AmountInput = ({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(',', '.');
-    
+
     if (value === '') {
       onAmountChange?.('');
       return;
@@ -115,7 +118,8 @@ export const AmountInput = ({
       className={cn(
         'w-full max-w-[408px] h-auto min-h-[116px] p-[10px_16px_16px_16px] rounded-2xl shadow-sm mb-0',
         cardBgClass,
-        cardBorderClass
+        cardBorderClass,
+        disabledCardClass
       )}
     >
       <div className="flex flex-col justify-between h-full gap-2.5">
@@ -192,7 +196,10 @@ export const AmountInput = ({
               pattern="[0-9]*[.]?[0-9]*"
               value={normalizedAmount}
               onChange={handleAmountChange}
-              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className={cn(
+                'text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                readOnly && 'opacity-60'
+              )}
               placeholder="0.000"
               readOnly={readOnly}
               max={network === 'bitcoin' ? maxBtc?.toString() : undefined}
