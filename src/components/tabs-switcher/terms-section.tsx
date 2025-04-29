@@ -54,14 +54,23 @@ export function TermsSection({
             )}
           </div>
           <div className="flex items-center">
-            <label
-              htmlFor="terms"
-              className="text-[13px] font-medium leading-none"
-            >
-              I agree to{' '}
-              <span className="text-orange-light">Terms & Conditions</span> and
-              understand the risks
-            </label>
+            <span className="text-[13px] font-medium leading-none flex items-center">
+              <label htmlFor="terms" className="cursor-pointer">
+                I agree to
+              </label>{' '}
+              <a
+                href="https://app-florin.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-orange-light hover:underline mx-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Terms & Conditions
+              </a>{' '}
+              <label htmlFor="terms" className="cursor-pointer">
+                and understand the risks
+              </label>
+            </span>
           </div>
         </div>
       </div>

@@ -81,6 +81,7 @@ export function TransferTab({
         isWalletConnected={isWalletConnected}
         ethWalletAddress={ethWalletAddress}
         bitcoinAddress={bitcoinAddress}
+        bitcoinAddressValid={isBitcoinAddressValid}
         handleSwitchNetworks={handleSwitchNetworks}
         handleFromAmountChange={handleFromAmountChange}
         handleToAmountChange={handleToAmountChange}

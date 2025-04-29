@@ -102,7 +102,7 @@ export const AmountInput = ({
       if (!isNaN(numValue)) {
         if (maxBtc && numValue >= Number(maxBtc)) {
           onAmountChange?.(maxBtc.toString());
-        } else if (minBtc && numValue <= Number(minBtc)) {
+        } else if (minBtc && numValue !== 0 && numValue <= Number(minBtc)) {
           onAmountChange?.(minBtc.toString());
         } else {
           onAmountChange?.(value);
