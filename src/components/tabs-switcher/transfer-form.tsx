@@ -19,6 +19,7 @@ interface TransferFormProps {
   isWalletConnected: boolean;
   ethWalletAddress?: Address;
   bitcoinAddress?: Address;
+  bitcoinAddressValid?: boolean;
   handleSwitchNetworks: () => void;
   handleFromAmountChange: (value: string) => void;
   handleToAmountChange: (value: string) => void;
@@ -39,6 +40,7 @@ export function TransferForm({
   isWalletConnected,
   ethWalletAddress,
   bitcoinAddress,
+  bitcoinAddressValid = true,
   handleSwitchNetworks,
   handleFromAmountChange,
   handleToAmountChange,
@@ -152,6 +154,11 @@ export function TransferForm({
             placeholder="Paste your Bitcoin receiving address"
             value={bitcoinAddress}
             onChange={(e) => setBitcoinAddress(e.target.value as Address)}
+            className={cn(
+              bitcoinAddress &&
+                !bitcoinAddressValid &&
+                'border-red-400 focus-visible:ring-red-400'
+            )}
           />
         </div>
       )}
