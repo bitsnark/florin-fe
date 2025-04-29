@@ -132,7 +132,7 @@ export function TabSwitcherContainer() {
         onTabChange={setActiveTab}
         variant={variant}
         size={size}
-        className="gap-2.5 bg-card border-none"
+        className="gap-2.5 bg-[#100D16] border-none"
       />
       <TransactionTrackerDialog
         open={trackerData?.open}

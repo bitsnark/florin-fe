@@ -13,6 +13,15 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant light (&:is(.light *));
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 :root {
   font-family: 'Inter', sans-serif;
   line-height: 1.5;
@@ -80,7 +89,6 @@
 
 a {
   font-weight: 500;
-  color: #ffffff;
   text-decoration: inherit;
 }
 a:hover {
@@ -251,13 +259,13 @@ button:focus-visible {
 }
 
 /* Hide number input arrows */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }

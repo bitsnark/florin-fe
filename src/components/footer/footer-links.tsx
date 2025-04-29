@@ -34,18 +34,22 @@ export function FooterLinks() {
         >
           COMPANY
         </span>
-        <Link
+        <a
           className="text-[18px] font-medium text-white md:text-[#939097]"
-          to="/"
+          href="https://www.bitcoinos.build/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           About
-        </Link>
-        <Link
+        </a>
+        <a
           className="text-[18px] font-medium text-white md:text-[#939097]"
-          to="/"
+          href="https://bitcoinos.build/whitepaper"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Whitepaper
-        </Link>
+        </a>
         <Link
           className="text-[18px] font-medium text-white md:text-[#939097]"
           to="/"
@@ -62,24 +66,30 @@ export function FooterLinks() {
         >
           CONTACT
         </span>
-        <Link
+        <a
           className="text-[18px] font-medium text-white md:text-[#939097]"
-          to="/"
+          href="https://t.me/BitcoinOS_Build"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Telegram
-        </Link>
-        <Link
+        </a>
+        <a
           className="text-[18px] font-medium text-white md:text-[#939097]"
-          to="/"
+          href="https://x.com/BTC_OS"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           X
-        </Link>
-        <Link
+        </a>
+        <a
           className="text-[18px] font-medium text-white md:text-[#939097]"
-          to="/"
+          href="https://discord.com/invite/bitcoinos"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Discord
-        </Link>
+        </a>
       </div>
     </div>
   );

@@ -85,7 +85,7 @@ export const AmountInput = ({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(',', '.');
-    
+
     if (value === '') {
       onAmountChange?.('');
       return;

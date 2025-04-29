@@ -4,6 +4,7 @@ import { TermsSection } from './terms-section';
 import { ConnectButton } from './connect-button';
 import { Address } from 'viem';
 import { Button } from '../ui/button';
+import { isValidBitcoinAddress } from '@/lib/utils';
 
 interface TransferTabProps {
   fromNetwork: 'bitcoin' | 'ethereum';
@@ -52,10 +53,20 @@ export function TransferTab({
   maxBtc,
   minBtc,
 }: TransferTabProps) {
-
   // TODO: REFACTOR, validate form using zod
-  const disabled = !termsAccepted || loading || (!bitcoinAddress && fromNetwork === 'ethereum') || (Number(fromAmount) < minBtc || Number(fromAmount) > maxBtc);
-  
+  const isBitcoinAddressValid =
+    fromNetwork === 'ethereum' && toCurrency === 'btc'
+      ? isValidBitcoinAddress(bitcoinAddress as string)
+      : true;
+
+  const disabled =
+    !termsAccepted ||
+    loading ||
+    (fromNetwork === 'ethereum' &&
+      (!bitcoinAddress || !isBitcoinAddressValid)) ||
+    Number(fromAmount) < minBtc ||
+    Number(fromAmount) > maxBtc;
+
   return (
     <>
       <TransferForm
@@ -77,7 +88,11 @@ export function TransferTab({
         maxBtc={maxBtc}
         minBtc={minBtc}
       />
-      <FeeCard toCurrency={toCurrency} isAnimating={isAnimating} />
+      <FeeCard
+        toCurrency={toCurrency}
+        isAnimating={isAnimating}
+        amount={fromAmount}
+      />
       {isWalletConnected && (
         <TermsSection
           termsAccepted={termsAccepted}
