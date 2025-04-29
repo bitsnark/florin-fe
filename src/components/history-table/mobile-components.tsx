@@ -1,4 +1,9 @@
-import { formatHash, getChainLogo, formatDate } from './utils';
+import {
+  formatHash,
+  getChainLogo,
+  formatDate,
+  formatReceivedAmount,
+} from './utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -12,6 +17,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Position, Reservation, ReservationStatus } from '@/types';
+import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
@@ -34,6 +40,7 @@ export const MobileTransactionItem = ({
   const asset = isReservation ? 'xbtc' : 'btc';
   const requestedAmountAsset = isReservation ? 'btc' : 'xbtc';
   const receivedAmountAsset = isReservation ? 'xbtc' : 'btc';
+  const { data } = useMaxMinBtc();
 
   const handleOpenTrackerDialog = () => {
     if (setOpenTrackerDialog && setTransactionToTrack) {
@@ -89,7 +96,8 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Received amount</span>
             <span className="text-sm text-right">
-              {tx?.receivedAmount} {receivedAmountAsset}
+              {formatReceivedAmount(tx?.receivedAmount, data?.minAmount)}{' '}
+              {receivedAmountAsset}
             </span>
           </div>
 
