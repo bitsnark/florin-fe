@@ -8,6 +8,8 @@ import { BaseTransactionTracker } from './BaseTransactionTracker';
 import { useTrackerState } from './useTrackerState';
 import { useReservation } from '@/hooks/queries/useReservation';
 import { Button } from '../ui/button';
+import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
+import { useMemo } from 'react';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -22,6 +24,14 @@ export function ReservationTracker({
 }: ReservationTrackerProps) {
   const { timeLeft, progress } = useTimer(open);
   const { data: reservation, isLoading, error } = useReservation(id, {});
+  const { data: bitcoinPrice } = useBitcoinPrice();
+
+  const fiatAmount = useMemo(() => {
+    if (!reservation?.amount || !bitcoinPrice?.bitcoin?.usd) return '0';
+    const btcAmount = parseFloat(reservation.amount);
+    const usdValue = btcAmount * bitcoinPrice.bitcoin.usd;
+    return usdValue.toFixed(2);
+  }, [reservation?.amount, bitcoinPrice?.bitcoin?.usd]);
 
   const {
     sendBtcStepCompleted,
@@ -72,9 +82,11 @@ export function ReservationTracker({
                 confirmations:
                   reservation.state !== ReservationStatus.EXPIRED &&
                   !reservation.originTxHash
-                    ? confirmations
+                    ? parseFloat(fiatAmount) <= 100 // when we finally have this info we should replace this with the actual real data...
+                      ? 20
+                      : confirmations
                     : 20,
-                fiatAmount: '100',
+                fiatAmount: fiatAmount,
               }}
             />
           </TransactionStep>
@@ -105,7 +117,7 @@ export function ReservationTracker({
                   amount: reservation.amount,
                   txid: reservation?.destinationTxHash || '',
                   confirmations: 20,
-                  fiatAmount: '100',
+                  fiatAmount: fiatAmount,
                 }}
                 isStepThree={true}
               />

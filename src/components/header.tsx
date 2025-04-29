@@ -1,9 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
-import { Icon } from './ui/icon';
-import { ICON_PATHS } from './ui/icons';
 import { EvmWalletConnect } from './evm-wallet-connector';
 import logo from '@/assets/bos-bridge-logo.png';
+import { MenuIcon } from './ui/menu-icon';
 // Define the navigation items
 const navigationItems = [
   {
@@ -95,39 +94,13 @@ export function Header() {
 
       {/* Mobile Header */}
       <div className="w-full md:hidden">
-        <div className="flex justify-between items-center px-4 py-4">
-          <div className="flex items-center gap-2">
-            <img
-              src={logo}
-              alt="Grail Bridge Logo"
-              className="w-[40px] h-[40px]"
-            />
-            <span className="text-white font-bold text-sm">Grail Bridge</span>
+        <div className="flex justify-between items-center px-4 py-3">
+          <div className="flex items-center">
+            <span className="text-white font-bold text-xl">Grail Bridge</span>
           </div>
-          <div className="flex">
+          <div className="flex items-center gap-3">
             <EvmWalletConnect />
-            <button
-              className="text-white p-2 z-50 relative"
-              onClick={toggleMenu}
-            >
-              {isMenuOpen ? (
-                <Icon
-                  path={ICON_PATHS.CLOSE}
-                  stroke="white"
-                  width={24}
-                  height={24}
-                  className="transition-transform duration-300 rotate-90 scale-110"
-                />
-              ) : (
-                <Icon
-                  path={ICON_PATHS.MENU}
-                  stroke="white"
-                  width={24}
-                  height={24}
-                  className="transition-transform duration-300 rotate-0"
-                />
-              )}
-            </button>
+            <MenuIcon isOpen={isMenuOpen} onClick={toggleMenu} />
           </div>
         </div>
 
