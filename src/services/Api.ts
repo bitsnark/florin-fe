@@ -251,14 +251,17 @@ export class FlorinApiService {
     return data.positionId;
   }
 
-  static async getMaxAmount(): Promise<bigint> {
-    const response = await fetch(`${API_BASE_URL}/positions/max-amount`);
+  static async getMaxAmount(): Promise<{ maxAmount: number; minAmount: number }> {
+    const response = await fetch(`${API_BASE_URL}/positions/max-min-amount`);
     if (!response.ok) {
       throw new Error(`Failed to fetch max amount: ${response.statusText}`);
     }
     const data = await response.json();
 
-    return BigInt(data.maxAmount);
+    return {
+      maxAmount: Number(data.maxAmount),
+      minAmount: Number(data.minAmount),
+    };
   }
 
   static async seed(): Promise<void> {

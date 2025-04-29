@@ -28,7 +28,8 @@ interface AmountInputProps {
   xbtcAmount?: string;
   onAmountChange?: (value: string) => void;
   readOnly?: boolean;
-  maxBtc?: bigint;
+  maxBtc?: number;
+  minBtc?: number;
   bitcoinPrice?: number;
 }
 
@@ -40,6 +41,7 @@ export const AmountInput = ({
   onAmountChange,
   readOnly,
   maxBtc,
+  minBtc,
   bitcoinPrice,
 }: AmountInputProps) => {
   const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
@@ -95,11 +97,13 @@ export const AmountInput = ({
         onAmountChange?.(value);
         return;
       }
-
       const numValue = parseFloat(value);
+      
       if (!isNaN(numValue)) {
-        if (maxBtc && numValue > Number(maxBtc)) {
+        if (maxBtc && numValue >= Number(maxBtc)) {
           onAmountChange?.(maxBtc.toString());
+        } else if (minBtc && numValue <= Number(minBtc)) {
+          onAmountChange?.(minBtc.toString());
         } else {
           onAmountChange?.(value);
         }
@@ -195,7 +199,7 @@ export const AmountInput = ({
               className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0.000"
               readOnly={readOnly}
-              max={network === 'bitcoin' ? maxBtc?.toString() : undefined}
+              
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}

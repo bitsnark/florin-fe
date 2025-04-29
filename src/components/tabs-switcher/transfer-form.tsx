@@ -23,7 +23,8 @@ interface TransferFormProps {
   handleFromAmountChange: (value: string) => void;
   handleToAmountChange: (value: string) => void;
   setBitcoinAddress: (value: Address | undefined) => void;
-  maxBtc: bigint;
+  maxBtc: number;
+  minBtc: number;
 }
 
 export function TransferForm({
@@ -43,6 +44,7 @@ export function TransferForm({
   handleToAmountChange,
   setBitcoinAddress,
   maxBtc,
+  minBtc,
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
 
@@ -69,6 +71,7 @@ export function TransferForm({
           xbtcAmount={xbtcAmount}
           onAmountChange={handleFromAmountChange}
           maxBtc={maxBtc}
+          minBtc={minBtc}
           bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
           readOnly={isFromXbtcToBtc}
         />
