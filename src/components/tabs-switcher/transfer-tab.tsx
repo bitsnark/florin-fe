@@ -26,7 +26,8 @@ interface TransferTabProps {
   setTermsAccepted: (value: boolean) => void;
   handleBridgeFunds: () => void;
   loading: boolean;
-  maxBtc: bigint;
+  maxBtc: number;
+  minBtc: number;
 }
 
 export function TransferTab({
@@ -50,11 +51,21 @@ export function TransferTab({
   handleBridgeFunds,
   loading,
   maxBtc,
+  minBtc,
 }: TransferTabProps) {
+  // TODO: REFACTOR, validate form using zod
   const isBitcoinAddressValid =
     fromNetwork === 'ethereum' && toCurrency === 'btc'
       ? isValidBitcoinAddress(bitcoinAddress as string)
       : true;
+
+  const disabled =
+    !termsAccepted ||
+    loading ||
+    (fromNetwork === 'ethereum' &&
+      (!bitcoinAddress || !isBitcoinAddressValid)) ||
+    Number(fromAmount) < minBtc ||
+    Number(fromAmount) > maxBtc;
 
   return (
     <>
@@ -75,6 +86,7 @@ export function TransferTab({
         handleToAmountChange={handleToAmountChange}
         setBitcoinAddress={setBitcoinAddress}
         maxBtc={maxBtc}
+        minBtc={minBtc}
       />
       <FeeCard
         toCurrency={toCurrency}
@@ -100,12 +112,7 @@ export function TransferTab({
             isAnimating={isAnimating}
             variant="orange"
             size="custom"
-            disabled={
-              !termsAccepted ||
-              loading ||
-              (fromNetwork === 'ethereum' &&
-                (!bitcoinAddress || !isBitcoinAddressValid))
-            }
+            disabled={disabled}
           >
             {'Bridge funds'}
           </Button>
