@@ -1,4 +1,9 @@
-import { formatHash, getChainLogo, formatDate } from './utils';
+import {
+  formatHash,
+  getChainLogo,
+  formatDate,
+  formatReceivedAmount,
+} from './utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   ArrowRightIcon,
@@ -7,6 +12,7 @@ import {
 } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
 import { Position, PositionStatus, Reservation } from '@/types';
+import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 
 interface DesktopTransactionRowProps {
   tx: Reservation | Position;
@@ -27,6 +33,7 @@ export const DesktopTransactionRow = ({
   const toChain = isReservation ? 'ethereum' : 'bitcoin';
   const requestedAmountAsset = isReservation ? 'btc' : 'xbtc';
   const receivedAmountAsset = isReservation ? 'xbtc' : 'btc';
+  const { data } = useMaxMinBtc();
 
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);
@@ -71,7 +78,8 @@ export const DesktopTransactionRow = ({
         {tx.amount} {requestedAmountAsset}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx?.receivedAmount} {receivedAmountAsset}
+        {formatReceivedAmount(tx?.receivedAmount, data?.minAmount)}{' '}
+        {receivedAmountAsset}
       </TableCell>
       <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
         {formatHash(tx?.originTxHash || '')}

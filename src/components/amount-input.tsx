@@ -98,7 +98,7 @@ export const AmountInput = ({
         return;
       }
       const numValue = parseFloat(value);
-      
+
       if (!isNaN(numValue)) {
         if (maxBtc && numValue >= Number(maxBtc)) {
           onAmountChange?.(maxBtc.toString());
@@ -154,7 +154,11 @@ export const AmountInput = ({
                 alt="Wallet"
                 className="w-4 h-4 sm:w-5 sm:h-5"
               />
-              <span className="text-text-primary font-medium text-xs sm:text-[14px]">
+              <span
+                className={`text-text-primary font-medium text-xs sm:text-[14px] ${
+                  currency === 'xbtc' ? 'opacity-50 text-gray-400' : ''
+                }`}
+              >
                 {xbtcAmount ?? '0'} xBTC
               </span>
             </div>
@@ -177,7 +181,11 @@ export const AmountInput = ({
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-text-primary text-xl sm:text-2xl font-bold">
+                <span
+                  className={`text-text-primary text-xl sm:text-2xl font-bold ${
+                    currency === 'xbtc' ? 'opacity-50 text-gray-400' : ''
+                  }`}
+                >
                   {currencySymbol}
                 </span>
               </div>
@@ -196,10 +204,12 @@ export const AmountInput = ({
               pattern="[0-9]*[.]?[0-9]*"
               value={normalizedAmount}
               onChange={handleAmountChange}
-              className="text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className={`text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                currency === 'xbtc' ? 'opacity-50 text-gray-400' : ''
+              }`}
               placeholder="0.000"
               readOnly={readOnly}
-              
+              disabled={currency === 'xbtc'}
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
