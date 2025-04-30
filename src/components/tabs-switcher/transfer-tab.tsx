@@ -67,6 +67,17 @@ export function TransferTab({
     Number(fromAmount) < minBtc ||
     Number(fromAmount) > maxBtc;
 
+  const handleBridgeAndReset = () => {
+    handleBridgeFunds();
+    // Reset form after bridge operation
+    handleFromAmountChange('');
+    handleToAmountChange('');
+    if (fromNetwork === 'ethereum') {
+      setBitcoinAddress(undefined);
+    }
+    setTermsAccepted(false);
+  };
+
   return (
     <>
       <TransferForm
@@ -109,7 +120,7 @@ export function TransferTab({
         />
         {isWalletConnected && (
           <Button
-            onClick={handleBridgeFunds}
+            onClick={handleBridgeAndReset}
             isAnimating={isAnimating}
             variant="orange"
             size="custom"

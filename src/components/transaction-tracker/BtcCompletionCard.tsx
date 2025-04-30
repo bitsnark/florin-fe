@@ -16,7 +16,7 @@ export function BtcCompletionCard({
   confirmations = 20,
 }: BtcCompletionCardProps) {
   return (
-    <Card className="mt-4 w-full md:w-[400px] bg-[#100D16] rounded-xl p-3 md:p-4 border-none gap-0.5 overflow-hidden">
+    <Card className="mt-4 w-full bg-[#100D16] rounded-xl p-3 md:p-4 border-none gap-0.5 overflow-hidden">
       <div className="flex flex-col justify-between items-center gap-2">
         <div className="flex items-center gap-2 w-full p-3 rounded-xl bg-grey">
           <CheckCircledIcon className="w-4 h-4 text-green-500" />
