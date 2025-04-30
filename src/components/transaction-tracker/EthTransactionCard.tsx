@@ -57,7 +57,7 @@ export function EthTransactionCard({
   );
 
   return (
-    <Card className="mt-4 min-w-[300px] md:w-[400px] h-auto md:h-[127px] bg-[#100D16] rounded-xl p-3 md:p-4 border-none gap-0.5 overflow-hidden">
+    <Card className="mt-4 w-full bg-[#100D16] rounded-xl p-3 md:p-4 border-none gap-0.5 overflow-hidden">
       <InfoField label="Amount" value={renderAmount()} />
       <InfoField label="Recipient address" value={renderAddress()} />
       <InfoField label="Reservation TX" value={renderReservationTx()} />

@@ -2,7 +2,7 @@ import { CommunityLink } from './community-link';
 
 export function CommunityLinks() {
   return (
-    <div className="flex flex-col items-center justify-center py-10 px-4 md:px-0">
+    <div className="flex flex-col items-center justify-center py-10 px-[0px] md:px-0">
       <span
         className="text-[#939097] text-[16px] font-bold leading-[120%] tracking-[1%]"
         style={{
@@ -11,7 +11,7 @@ export function CommunityLinks() {
       >
         COMMUNITY LINKS
       </span>
-      <div className="flex flex-col md:flex-row gap-4 mt-10 w-full justify-center">
+      <div className="flex flex-col md:flex-row gap-4 mt-10 w-full justify-center items-center">
         <CommunityLink
           href="https://discord.com/invite/bitcoinos"
           label="Discord"

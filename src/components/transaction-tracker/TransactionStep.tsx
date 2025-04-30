@@ -21,7 +21,7 @@ export function TransactionStep({
   isStepOne = false,
 }: TransactionStepProps) {
   return (
-    <div className="flex mb-6 md:mb-8 relative">
+    <div className="flex mb-6 md:mb-8 relative w-full">
       {!isLastStep && (
         <div
           className={`absolute left-[14px] top-[30px] w-[3px] h-[calc(100%)] ${
@@ -37,7 +37,7 @@ export function TransactionStep({
       <div className="flex-shrink-0 z-10">
         <StatusIcon status={status} />
       </div>
-      <div className="ml-3 md:ml-4 max-w-full md:max-w-[457px]">
+      <div className="ml-3 md:ml-4 w-full">
         <h3 className="font-semibold text-sm md:text-base">{title}</h3>
         <p className="text-[#888888] text-xs md:text-sm">{description}</p>
 

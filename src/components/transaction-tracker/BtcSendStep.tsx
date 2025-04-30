@@ -65,7 +65,7 @@ export function BtcSendStep({
       }
     >
       {!isSent && (
-        <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full md:w-[400px] gap-2">
+        <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
           {state === ReservationStatus.EXPIRED ? (
             <div className="flex gap-2 bg-grey rounded-xl p-3">
