@@ -102,6 +102,7 @@ export function ReservationTracker({
             reservation={reservation}
             handlePassToStepThree={handlePassToStepThree}
             handleExpireReservation={handleExpireReservation}
+            fiatAmount={fiatAmount}
           />
 
           {/* Step 3 - BTC Transaction Detected */}

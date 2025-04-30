@@ -22,6 +22,7 @@ interface BtcSendStepProps {
   reservation: Reservation;
   handlePassToStepThree: () => void;
   handleExpireReservation: () => void;
+  fiatAmount: string;
 }
 
 export function BtcSendStep({
@@ -35,13 +36,16 @@ export function BtcSendStep({
   reservation,
   handlePassToStepThree,
   handleExpireReservation,
+  fiatAmount,
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
   const [isReadyToSend, setIsReadyToSend] = useState(false);
 
   const descriptionMessage = isSent
     ? 'You initiated transaction in your wallet to send BTC.'
-    : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address.';
+    : parseFloat(fiatAmount) > 100
+      ? 'Your Bitcoin transaction has been detected. You need to send BTC from your bitcoin wallet to a specified address. If your transaction is $100+ in BTC, you must to wait for at least 6 confirmations before sending BTC. Make sure to send BTC within 12 hours.'
+      : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address. Make sure to send BTC within 12 hours.';
 
   useEffect(() => {
     if (confirmations === 20) {
