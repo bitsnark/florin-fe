@@ -4,7 +4,7 @@ import bitcoinLogo from '@/assets/bitcoin-logo.png';
 import ethLogo from '@/assets/eth-logo.png';
 import xbtcLogo from '@/assets/xbtc-logo.svg';
 import { cn } from '@/lib/utils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const ASSETS = {
   BITCOIN_LOGO: bitcoinLogo,
@@ -44,6 +44,8 @@ export const AmountInput = ({
   minBtc,
   bitcoinPrice,
 }: AmountInputProps) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
 
   const logoSrc = ASSETS.CURRENCY_LOGOS[currency];
@@ -88,6 +90,7 @@ export const AmountInput = ({
 
     if (value === '') {
       onAmountChange?.('');
+      setErrorMessage(null);
       return;
     }
 
@@ -102,10 +105,13 @@ export const AmountInput = ({
       if (!isNaN(numValue)) {
         if (maxBtc && numValue >= Number(maxBtc)) {
           onAmountChange?.(maxBtc.toString());
-        } else if (minBtc && numValue !== 0 && numValue <= Number(minBtc)) {
-          onAmountChange?.(minBtc.toString());
+          setErrorMessage(null);
+        } else if (minBtc && numValue !== 0 && numValue < Number(minBtc)) {
+          onAmountChange?.(value);
+          setErrorMessage(`Minimum value: ${minBtc} ${currencySymbol}`);
         } else {
           onAmountChange?.(value);
+          setErrorMessage(null);
         }
       }
     }
@@ -192,7 +198,7 @@ export const AmountInput = ({
             </div>
             {network === 'bitcoin' && (
               <span className="font-inter font-normal text-[11px] sm:text-[13px] leading-[100%] tracking-[0%] text-label-text whitespace-nowrap">
-                min 0.0004 {currencySymbol} / max {maxBtc} {currencySymbol}
+                min {minBtc} {currencySymbol} / max {maxBtc} {currencySymbol}
               </span>
             )}
           </div>
@@ -214,6 +220,11 @@ export const AmountInput = ({
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
             </span>
+            {errorMessage && (
+              <span className="font-inter font-normal text-[11px] sm:text-[12px] leading-[100%] tracking-[0%] text-right text-red-500 mt-1">
+                {errorMessage}
+              </span>
+            )}
           </div>
         </div>
       </div>
