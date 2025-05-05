@@ -71,7 +71,7 @@ export const DesktopTransactionRow = ({
           </div>
         </div>
       </TableCell>
-      <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
+      <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
         {formatHash(tx?.contractRegistrationTxHash || '')}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
@@ -81,10 +81,10 @@ export const DesktopTransactionRow = ({
         {formatReceivedAmount(tx?.receivedAmount, data?.minAmount)}{' '}
         {receivedAmountAsset}
       </TableCell>
-      <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
+      <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
         {formatHash(tx?.originTxHash || '')}
       </TableCell>
-      <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
+      <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
         {formatHash(tx?.destinationTxHash || '')}
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
@@ -101,13 +101,13 @@ export const DesktopTransactionRow = ({
               <SymbolIcon />
             </div>
           )}
-          {tx.state}
+          {tx.state.charAt(0).toUpperCase() + tx.state.slice(1).toLowerCase()}
         </div>
       </TableCell>
 
       <TableCell
         onClick={handleOpenTrackerDialog}
-        className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap"
+        className="text-xs text-center text-[#FFAA2E] cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap"
       >
         Track
       </TableCell>
@@ -126,7 +126,7 @@ export const SkeletonRow = () => (
         <Skeleton className="h-4 w-16" />
       </div>
     </TableCell>
-    <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+    <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <Skeleton className="h-4 w-24 mx-auto" />
     </TableCell>
     <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
@@ -135,10 +135,10 @@ export const SkeletonRow = () => (
     <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <Skeleton className="h-4 w-16 ml-auto" />
     </TableCell>
-    <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+    <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <Skeleton className="h-4 w-24" />
     </TableCell>
-    <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+    <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <Skeleton className="h-4 w-24" />
     </TableCell>
     <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
@@ -147,7 +147,7 @@ export const SkeletonRow = () => (
         <Skeleton className="h-4 w-16" />
       </div>
     </TableCell>
-    <TableCell className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+    <TableCell className="text-xs text-center text-[#FFAA2E] cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <Skeleton className="h-4 w-12 mx-auto" />
     </TableCell>
   </TableRow>

@@ -1,12 +1,15 @@
 import { Card } from '../ui/card';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { truncateAddress } from '@/lib/utils';
+import bitcoinLogo from '@/assets/bitcoin-logo.png';
+import ethLogo from '@/assets/eth-logo.png';
 
 export interface EthCompletionCardProps {
   amount: string;
   recipientAddress: string;
   reservationTx: string;
   confirmations?: number;
+  type?: 'position' | 'reservation';
 }
 
 export function EthCompletionCard({
@@ -14,7 +17,10 @@ export function EthCompletionCard({
   recipientAddress,
   reservationTx,
   confirmations = 20,
+  type = 'reservation',
 }: EthCompletionCardProps) {
+  const logoSrc = type === 'position' ? bitcoinLogo : ethLogo;
+
   return (
     <Card className="mt-4 w-full bg-[#100D16] rounded-xl p-3 md:p-4 border-none gap-0.5 overflow-hidden">
       <div className="flex flex-col justify-between items-center gap-2">
@@ -33,13 +39,18 @@ export function EthCompletionCard({
       </div>
       <div className="flex justify-between items-center w-full">
         <span className="text-[#888888] text-[13px]">Recipient address</span>
-        <span className="text-orange-light text-[12px] font-medium">
+        <span className="text-[#FFAA2E] text-[12px] font-medium">
           {truncateAddress(recipientAddress)}
         </span>
       </div>
       <div className="flex justify-between items-center w-full">
         <span className="text-[#888888] text-[13px]">TXID</span>
-        <span className="text-orange-light text-[12px] font-medium cursor-pointer">
+        <span className="text-[#FFAA2E] text-[12px] font-medium cursor-pointer flex items-center gap-1">
+          <img
+            src={logoSrc}
+            alt={type === 'position' ? 'BTC' : 'ETH'}
+            className="w-4 h-4 inline"
+          />
           {truncateAddress(reservationTx)}
         </span>
       </div>

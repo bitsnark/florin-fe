@@ -34,7 +34,7 @@ export function CommunityLink({ href, label, community }: CommunityLinkProps) {
           />
         </div>
         <div>
-          <span className="text-white font-semibold text-lg">{label}</span>
+          <span className="text-white font-medium text-lg">{label}</span>
         </div>
       </Card>
     </a>

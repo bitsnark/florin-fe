@@ -148,6 +148,7 @@ export function ReservationTracker({
                 reservationTx={
                   reservation?.hash || reservation?.destinationTxHash || ''
                 }
+                type="reservation"
               />
             )}
             <Button
