@@ -120,6 +120,7 @@ export function PositionTracker({
                 amount={position.amount}
                 recipientAddress={position.positionId}
                 reservationTx={position?.contractRegistrationTxHash || ''}
+                type="position"
               />
             )}
           </TransactionStep>

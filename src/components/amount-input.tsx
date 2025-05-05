@@ -72,6 +72,9 @@ export const AmountInput = ({
   const cardBorderClass =
     network === 'ethereum' ? 'border border-input-border' : 'border-none';
 
+  const xbtcCardClass =
+    currency === 'xbtc' ? 'bg-[#2A273080] border border-[#27292C]' : '';
+
   const calculateUsdValue = useMemo(() => {
     const rates = {
       btc: bitcoinPrice,
@@ -125,7 +128,8 @@ export const AmountInput = ({
       className={cn(
         'w-full max-w-[408px] h-auto min-h-[116px] p-[10px_16px_16px_16px] rounded-2xl shadow-sm mb-0',
         cardBgClass,
-        cardBorderClass
+        cardBorderClass,
+        xbtcCardClass
       )}
     >
       <div className="flex flex-col justify-between h-full gap-2.5">
@@ -211,7 +215,7 @@ export const AmountInput = ({
               value={normalizedAmount}
               onChange={handleAmountChange}
               className={`text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                currency === 'xbtc' ? 'opacity-50 text-gray-400' : ''
+                currency === 'xbtc' ? 'text-[#2A273080]' : ''
               }`}
               placeholder="0.000"
               readOnly={readOnly}

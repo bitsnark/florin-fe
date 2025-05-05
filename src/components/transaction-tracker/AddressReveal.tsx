@@ -74,7 +74,7 @@ export function AddressReveal({
 
   return (
     <Card
-      className={`w-full p-3 cursor-pointer border-none bg-grey flex flex-col items-center justify-center gap-2 ${
+      className={`w-full p-3 cursor-pointer border-none bg-[#2A2730] flex flex-col items-center justify-center gap-2 ${
         !showAddress
           ? 'h-[100px] md:h-[116px] justify-center'
           : 'h-[330px] md:h-[360px]'
@@ -135,7 +135,7 @@ export function AddressReveal({
                 Bitcoin address
               </span>
               <div className="flex items-center gap-1 md:gap-2">
-                <span className="text-orange-light text-[10px] md:text-[13px] truncate max-w-[100px] md:max-w-none">
+                <span className="text-[#FFAA2E] text-[10px] md:text-[13px] truncate max-w-[100px] md:max-w-none">
                   {isDesktop ? truncateAddress(address) : address}
                 </span>
                 <div

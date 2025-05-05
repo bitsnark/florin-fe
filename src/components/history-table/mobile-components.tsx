@@ -103,14 +103,14 @@ export const MobileTransactionItem = ({
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
-            <span className="text-sm text-right text-orange-light underline">
+            <span className="text-sm text-right text-[#FFAA2E] underline">
               {formatHash(tx?.originTxHash || '')}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
-            <span className="text-sm text-right text-orange-light underline">
+            <span className="text-sm text-right text-[#FFAA2E] underline">
               {formatHash(tx?.destinationTxHash || '')}
             </span>
           </div>

@@ -42,7 +42,7 @@ export function EthTransactionCard({
   );
 
   const renderAddress = () => (
-    <span className="text-orange-light text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px]">
+    <span className="text-[#FFAA2E] text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px]">
       {data.recipientAddress && truncateAddress(data.recipientAddress)}
     </span>
   );
@@ -50,7 +50,7 @@ export function EthTransactionCard({
   const renderReservationTx = () => (
     <div className="flex items-center">
       <img src={EthLogo} alt="Ethereum Logo" className="w-4 h-4 inline mr-1" />
-      <span className="text-orange-light text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px] pt-0.5">
+      <span className="text-[#FFAA2E] text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px] pt-0.5">
         {data.reservationTx && truncateAddress(data.reservationTx)}
       </span>
     </div>

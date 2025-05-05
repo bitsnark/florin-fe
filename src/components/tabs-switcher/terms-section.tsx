@@ -62,7 +62,7 @@ export function TermsSection({
                 href="https://app-florin.netlify.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-light hover:underline mx-1"
+                className="text-[#FFAA2E] hover:underline mx-1"
                 onClick={(e) => e.stopPropagation()}
               >
                 Terms & Conditions
