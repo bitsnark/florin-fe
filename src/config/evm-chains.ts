@@ -59,7 +59,7 @@ export const localhost = defineChain({
   },
 });
 
-export const supportedChains = [sepolia, baseSepolia, localhost] as const;
+export const supportedChains = [sepolia, baseSepolia] as const;
 
 export const AIRDROP_API_MAP: Record<number, string> = {
   [ChainId.Sepolia]: 'https://sepolia.airdroper.bitcoinos.build',

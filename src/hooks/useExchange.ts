@@ -1,4 +1,3 @@
-import { env } from '@/config/env';
 //import { useContractManager } from '@/hooks/useContractManager';
 import { FlorinApiService } from '@/services/Api';
 import {
@@ -10,15 +9,14 @@ import {
   TransactionStatus,
 } from '@/types';
 import { useState } from 'react';
-import { Address, /* keccak256, toBytes */ } from 'viem';
+import { Address /* keccak256, toBytes */ } from 'viem';
 import { v4 as uuidv4 } from 'uuid';
+import { CONTRACTS_ADDRESS } from '@/constants/contracts';
+import { ContractManager } from '@/services/ContractManager';
 
 export const useExchange = () => {
-  //const { data: contractManager } = useContractManager();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  //const contractAddress = env.VITE_EXCHANGE_CONTRACT_ADDRESS as Address;
-  const tokenAddress = env.VITE_TOKEN_ADDRESS as Address; // Asegurate de definir esto
 
   const openPosition = async ({
     tokenAmount,
@@ -36,26 +34,42 @@ export const useExchange = () => {
     chainId: number;
   }) => {
     try {
-      // if (!contractManager) throw new Error('contractManager not available');
-
       setLoading(true);
-      
-      // Mock transaction data
-      const mockHash = `0x${Math.random().toString(16).slice(2)}`;
+     
+
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+      const tokenAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].erc20BitSnark as Address;
+
       const mockBlockNumber = Math.floor(Math.random() * 1000000);
 
-      /* // Get nonce from token
+      //get erc20BitSnark token name
+      const tokenName = await contractManager.readContract(
+        'ERC20BitSnark',
+        'name',
+        [],
+        tokenAddress
+      );
+
+      console.log('tokenName', tokenName);
+      // Get nonce from token
       const nonce = await contractManager.readContract(
         'ERC20BitSnark',
         'nonces',
         [owner],
         tokenAddress
       );
+      console.log('nonce', nonce);
       const domain = {
-        name: 'BitSnark',
+        name: tokenName,
         version: '1',
         verifyingContract: tokenAddress,
       };
+      console.log('domain', domain);
 
       const types = {
         Permit: [
@@ -81,27 +95,58 @@ export const useExchange = () => {
         primaryType: 'Permit',
         message,
       });
+
+      console.log('signature', signature);
+      
       const { r, s, v } = contractManager.getRSV(signature);
+      // Convert bech32 address to a valid bytes32 value
+      const encoder = new TextEncoder();
+      const bytes = encoder.encode(bitcoinAddresses);
+      const bytes32 = `0x${Array.from(bytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
+        .slice(0, 64)
+        .padEnd(64, '0')}`;
+      
+      console.log('Parameters being sent to contract:', {
+        tokenAmount: tokenAmount.toString(),
+        exchangeRate: exchangeRate.toString(),
+        bytes32,
+        deadline: deadline.toString(),
+        v,
+        r,
+        s
+      });
+
       const { hash, wait } = await contractManager.writeContract(
         'AMMExchange',
         'openPosition',
-        [tokenAmount, exchangeRate, bitcoinAddresses, deadline, v, r, s],
+        [
+          tokenAmount, // bigint
+          BigInt(exchangeRate), // convert to bigint for uint64
+          bytes32 as `0x${string}`, // bytes32
+          BigInt(deadline), // convert to bigint
+          v, // uint8
+          r, // bytes32
+          s // bytes32
+        ],
         contractAddress
       );
-      const receipt = await wait(); */
-      
+      console.log('hash', hash);
+      const receipt = await wait();
+      console.log('receipt', receipt);
       const transaction = {
-        hash: mockHash, // hash
-        contractRegistrationTxHash: mockHash, // hash
+        hash, // hash
+        contractRegistrationTxHash: hash, // hash
         blockHash: `0x${Math.random().toString(16).slice(2)}`, // receipt.receipt?.blockHash
         blockNumber: mockBlockNumber, // receipt.receipt?.blockNumber
-        status: TransactionStatus.COMPLETED,
+        status: TransactionStatus.PENDING,
         createdAt: new Date().toISOString(),
         receivedAmount: '0',
       };
 
       const newPosition: Position = {
-        positionId: mockHash, // receipt.logs[0].args.positionId
+        positionId: hash, // receipt.logs[0].args.positionId
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         deadline: deadline,
@@ -138,9 +183,11 @@ export const useExchange = () => {
   }) => {
     console.log('reservePosition', evmReceivingAddress);
     try {
-      // if (!contractManager) throw new Error('contractManager not available');
       setLoading(true);
-      
+      const contractManager = await ContractManager.getInstance();
+      const tokenAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].erc20BitSnark as Address;
       // Mock data
       const mockHash = `0x${Math.random().toString(16).slice(2)}`;
       const mockBlockNumber = Math.floor(Math.random() * 1000000);
@@ -187,7 +234,7 @@ export const useExchange = () => {
         ...transaction,
         createdAt: new Date().toISOString(),
       };
-      
+
       await FlorinApiService.addReservation(newReservation);
       console.log('reservation created (mocked)!!!');
       setLoading(false);

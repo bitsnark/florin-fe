@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Reservation, ReservationStatus, TransactionStatus } from '@/types';
-import { useConfirmationsSimulator } from './useConfirmationsSimulator';
+import { useConfirmationsSimulator } from '../../hooks/useConfirmationsSimulator';
 import { useUpdateReservation } from '@/hooks/mutations/useUpdateReservation';
 import { gasFee } from '@/lib/utils';
 

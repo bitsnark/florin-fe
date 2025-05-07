@@ -7,6 +7,7 @@ import {
   http,
   PublicClient,
   WalletClient,
+  custom,
 } from 'viem';
 import { getConnectorClient } from '@wagmi/core';
 import { AMMEXCHANGE_ABI, ERC20_BITSNARK_ABI } from '@/constants/abis';
@@ -45,7 +46,7 @@ export class ContractManager {
     const connectorClient = await getConnectorClient(wagmiConfig);
     instance.publicClient = createPublicClient({
       chain: connectorClient.chain,
-      transport: http(),
+      transport: http(env.VITE_RPC_URL),
     });
 
     if (connectorClient) {
@@ -53,7 +54,7 @@ export class ContractManager {
         instance.walletClient = createWalletClient({
           account: connectorClient.account,
           chain: connectorClient.chain,
-          transport: http(env.VITE_RPC_URL),
+          transport: custom(connectorClient.transport),
         });
       } catch (error) {
         console.error('Error creating wallet client:', error);
@@ -125,6 +126,13 @@ export class ContractManager {
 
     try {
       const abi = this.getABI(contractName);
+      console.log('Simulating contract call with params:', {
+        address,
+        method,
+        args,
+        options,
+        account: this.walletClient.account,
+      });
 
       const { request } = await this.publicClient.simulateContract({
         address,
@@ -135,19 +143,23 @@ export class ContractManager {
         value: options?.value || 0n,
       });
 
+      console.log('Simulation successful, sending transaction...');
       const txRequest = {
         ...request,
         ...options,
       };
       const hash = await this.walletClient.writeContract(txRequest);
+      console.log('Transaction sent with hash:', hash);
 
       return {
         hash,
         wait: async () => {
+          console.log('Waiting for transaction receipt...');
           const receipt = await this.publicClient.waitForTransactionReceipt({
             hash,
             confirmations: 1,
           });
+          console.log('Transaction receipt received:', receipt);
 
           // Parse logs from the receipt
           const logs = receipt.logs
@@ -163,6 +175,7 @@ export class ContractManager {
         },
       };
     } catch (error) {
+      console.error('Contract write error:', error);
       const parsed = parseContractError(error);
       throw new ContractError(
         `Failed to write to contract ${contractName}: ${parsed}`
