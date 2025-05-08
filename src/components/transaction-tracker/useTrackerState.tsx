@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Reservation, ReservationStatus, TransactionStatus } from '@/types';
-import { useConfirmationsSimulator } from '../../hooks/useConfirmationsSimulator';
 import { useUpdateReservation } from '@/hooks/mutations/useUpdateReservation';
 import { gasFee } from '@/lib/utils';
 
@@ -43,10 +42,7 @@ export function useTrackerState({
     }
   }, [reservation]);
 
-  const confirmations = useConfirmationsSimulator({
-    isActive,
-    maxConfirmations: 20,
-  });
+ 
 
   useEffect(() => {
     if (
@@ -106,7 +102,6 @@ export function useTrackerState({
     stepThreeCompleted,
     btcTransactionDetected,
     bridgingCompleted,
-    confirmations,
     handleExpireReservation,
     handlePassToStepThree,
     handleCompleteStepThree,

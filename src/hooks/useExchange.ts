@@ -1,4 +1,3 @@
-//import { useContractManager } from '@/hooks/useContractManager';
 import { FlorinApiService } from '@/services/Api';
 import {
   Finality,
@@ -7,12 +6,15 @@ import {
   Reservation,
   ReservationStatus,
   TransactionStatus,
+  EVMPosition,
+  EVMReservation,
 } from '@/types';
 import { useState } from 'react';
-import { Address /* keccak256, toBytes */ } from 'viem';
-import { v4 as uuidv4 } from 'uuid';
+import { Address } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
 import { ContractManager } from '@/services/ContractManager';
+import { bech32ToBytes32 } from '@/lib/utils';
+import { DEFAULT_POSITION_ID } from '@/constants';
 
 export const useExchange = () => {
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,6 @@ export const useExchange = () => {
   }) => {
     try {
       setLoading(true);
-     
 
       const contractManager = await ContractManager.getInstance();
       const contractAddress = CONTRACTS_ADDRESS[
@@ -45,9 +46,6 @@ export const useExchange = () => {
         chainId as keyof typeof CONTRACTS_ADDRESS
       ].erc20BitSnark as Address;
 
-      const mockBlockNumber = Math.floor(Math.random() * 1000000);
-
-      //get erc20BitSnark token name
       const tokenName = await contractManager.readContract(
         'ERC20BitSnark',
         'name',
@@ -55,21 +53,17 @@ export const useExchange = () => {
         tokenAddress
       );
 
-      console.log('tokenName', tokenName);
-      // Get nonce from token
       const nonce = await contractManager.readContract(
         'ERC20BitSnark',
         'nonces',
         [owner],
         tokenAddress
       );
-      console.log('nonce', nonce);
       const domain = {
         name: tokenName,
         version: '1',
         verifyingContract: tokenAddress,
       };
-      console.log('domain', domain);
 
       const types = {
         Permit: [
@@ -96,57 +90,35 @@ export const useExchange = () => {
         message,
       });
 
-      console.log('signature', signature);
-      
       const { r, s, v } = contractManager.getRSV(signature);
-      // Convert bech32 address to a valid bytes32 value
-      const encoder = new TextEncoder();
-      const bytes = encoder.encode(bitcoinAddresses);
-      const bytes32 = `0x${Array.from(bytes)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('')
-        .slice(0, 64)
-        .padEnd(64, '0')}`;
-      
-      console.log('Parameters being sent to contract:', {
-        tokenAmount: tokenAmount.toString(),
-        exchangeRate: exchangeRate.toString(),
-        bytes32,
-        deadline: deadline.toString(),
-        v,
-        r,
-        s
-      });
+      const bytes32 = bech32ToBytes32(bitcoinAddresses);
 
       const { hash, wait } = await contractManager.writeContract(
         'AMMExchange',
         'openPosition',
         [
-          tokenAmount, // bigint
-          BigInt(exchangeRate), // convert to bigint for uint64
-          bytes32 as `0x${string}`, // bytes32
-          BigInt(deadline), // convert to bigint
-          v, // uint8
-          r, // bytes32
-          s // bytes32
+          tokenAmount,
+          BigInt(exchangeRate),
+          bytes32 as `0x${string}`,
+          BigInt(deadline),
+          v,
+          r,
+          s,
         ],
         contractAddress
       );
-      console.log('hash', hash);
       const receipt = await wait();
-      console.log('receipt', receipt);
       const transaction = {
-        hash, // hash
-        contractRegistrationTxHash: hash, // hash
-        blockHash: `0x${Math.random().toString(16).slice(2)}`, // receipt.receipt?.blockHash
-        blockNumber: mockBlockNumber, // receipt.receipt?.blockNumber
+        hash,
+        contractRegistrationTxHash: hash,
+        blockHash: `0x${Math.random().toString(16).slice(2)}`,
+        blockNumber: receipt.receipt?.blockNumber,
         status: TransactionStatus.PENDING,
         createdAt: new Date().toISOString(),
         receivedAmount: '0',
       };
-
       const newPosition: Position = {
-        positionId: hash, // receipt.logs[0].args.positionId
+        positionId: receipt?.logs ? receipt?.logs[0].args.positionId : '',
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         deadline: deadline,
@@ -160,7 +132,6 @@ export const useExchange = () => {
       };
 
       await FlorinApiService.addPosition(newPosition);
-      console.log('position created (mocked)!!!');
       setLoading(false);
       return newPosition;
     } catch (error) {
@@ -181,50 +152,45 @@ export const useExchange = () => {
     chainId: number;
     owner: Address;
   }) => {
-    console.log('reservePosition', evmReceivingAddress);
     try {
       setLoading(true);
       const contractManager = await ContractManager.getInstance();
       const tokenAddress = CONTRACTS_ADDRESS[
         chainId as keyof typeof CONTRACTS_ADDRESS
       ].erc20BitSnark as Address;
-      // Mock data
-      const mockHash = `0x${Math.random().toString(16).slice(2)}`;
-      const mockBlockNumber = Math.floor(Math.random() * 1000000);
-      const positionId = '1234';
 
-      /* const rIdb32 = keccak256(toBytes(positionId)) as `0x${string}`;
-      let writeReceipt;
-      let receipt;
-      try {
-        writeReceipt = await contractManager.writeContract(
-          'AMMExchange',
-          'reservePosition',
-          [rIdb32, positionId, evmReceivingAddress, tokenAmount],
-          contractAddress,
-          { value: 0n }
-        );
-        receipt = await writeReceipt.wait();
-        const rJson = JSON.stringify(receipt, (_, value) =>
-          typeof value === 'bigint' ? value.toString() : value
-        );
-        window.localStorage.setItem('receitp_reservation', rJson);
-      } catch (error) {
-        console.log('error', error);
-      } */
+      const positionId = DEFAULT_POSITION_ID;
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const {hash, wait} = await contractManager.writeContract(
+        'AMMExchange',
+        'reservePosition',
+        [positionId, evmReceivingAddress, tokenAmount],
+        contractAddress,
+        { value: 0n }
+      );
+      const receipt = await wait();
 
       const transaction = {
-        hash: mockHash,
-        contractRegistrationTxHash: mockHash,
-        blockHash: `0x${Math.random().toString(16).slice(2)}`,
-        blockNumber: mockBlockNumber,
+        hash: hash,
+        contractRegistrationTxHash: hash,
+        blockHash: receipt.receipt?.blockHash,
+        blockNumber: receipt.receipt?.blockNumber,
         status: TransactionStatus.COMPLETED,
         receivedAmount: '0',
       };
 
+      const reservationId = receipt?.logs
+        ? receipt?.logs[0].args.reservationId
+        : '';
+      if (!reservationId) {
+        throw new Error('Reservation ID not found');
+      }
       const newReservation: Reservation = {
         positionId: positionId,
-        reservationId: uuidv4(),
+        reservationId: reservationId,
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         tokenAddress: tokenAddress,
@@ -236,7 +202,6 @@ export const useExchange = () => {
       };
 
       await FlorinApiService.addReservation(newReservation);
-      console.log('reservation created (mocked)!!!');
       setLoading(false);
       return newReservation;
     } catch (error) {
@@ -246,10 +211,72 @@ export const useExchange = () => {
     }
   };
 
+  const getPosition = async ({
+    positionId,
+    chainId,
+  }: {
+    positionId: string;
+    chainId: number;
+  }): Promise<EVMPosition> => {
+    try {
+      setLoading(true);
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const position = (await contractManager.readContract(
+        'AMMExchange',
+        'getPosition',
+        [positionId],
+        contractAddress
+      )) as unknown as EVMPosition;
+      setLoading(false);
+      return position;
+    } catch (error) {
+      setLoading(false);
+      setError((error as Error).message);
+      console.error('getPosition error:', error);
+      throw error;
+    }
+  };
+
+  const getReservation = async ({
+    reservationId,
+    chainId,
+  }: {
+    reservationId: string;
+    chainId: number;
+  }): Promise<EVMReservation> => {
+    try {
+      setLoading(true);
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const reservation = (await contractManager.readContract(
+        'AMMExchange',
+        'getReservation',
+        [reservationId],
+        contractAddress
+      )) as unknown as EVMReservation;
+      setLoading(false);
+      return reservation;
+    } catch (error) {
+      setLoading(false);
+      setError((error as Error).message);
+      console.error('getReservation error:', error);
+      throw error;
+    }
+  };
+
   return {
     loading,
     error,
     openPosition,
     reservePosition,
+    getPosition,
+    getReservation,
   };
 };

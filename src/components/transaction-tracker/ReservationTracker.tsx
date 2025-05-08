@@ -10,6 +10,9 @@ import { useReservation } from '@/hooks/queries/useReservation';
 import { Button } from '../ui/button';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 import { useMemo } from 'react';
+import { useTxConfirmations } from '@/hooks/useTxConfirmations';
+import { useEVMReservationPolling } from '@/hooks/useEVMReservationPolling';
+import { useChainId } from 'wagmi';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -38,7 +41,6 @@ export function ReservationTracker({
     stepThreeCompleted,
     btcTransactionDetected,
     bridgingCompleted,
-    confirmations,
     handlePassToStepThree,
     handleExpireReservation,
     handleCompleteStepThree,
@@ -49,6 +51,21 @@ export function ReservationTracker({
     hasDestinationTxId: !!reservation?.destinationTxHash,
     transactionStatus: reservation?.status,
     reservation: reservation as Reservation,
+  });
+
+  const chainId = useChainId();
+
+  const {evmReservation} = useEVMReservationPolling({
+    reservationId: reservation?.reservationId || '',
+    chainId: chainId || 0,
+    isActive: open,
+  });
+
+  console.log('evmReservation', evmReservation);
+  const confirmations = useTxConfirmations({
+    isActive: open,
+    maxConfirmations: 20,
+    transactionHash: reservation?.contractRegistrationTxHash,
   });
 
   // Content height class for the dialog

@@ -66,3 +66,18 @@ export function isValidBitcoinAddress(address: string | undefined): boolean {
     testnetRegex.test(address)
   );
 }
+
+/**
+ * Converts a Bitcoin address to a bytes32 value
+ * @param address Bitcoin address to convert
+ * @returns bytes32 value as a hex string
+ */
+export function bech32ToBytes32(address: string): `0x${string}` {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(address);
+  return `0x${Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+    .slice(0, 64)
+    .padEnd(64, '0')}` as `0x${string}`;
+}

@@ -166,7 +166,9 @@ export class ContractManager {
             .map((log) => {
               try {
                 return decodeEventLog({ abi, ...log });
-              } catch {
+              } catch(error) {
+                console.log('Error decoding event log:', log);
+                console.log('Error:', error);
                 return null;
               }
             })

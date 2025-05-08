@@ -84,6 +84,11 @@ export const AMMEXCHANGE_ABI = [
   },
   {
     inputs: [],
+    name: 'MMPositionNotActive',
+    type: 'error',
+  },
+  {
+    inputs: [],
     name: 'NotOpReturn',
     type: 'error',
   },
@@ -115,6 +120,11 @@ export const AMMEXCHANGE_ABI = [
   {
     inputs: [],
     name: 'PositionNotPaused',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ReservationAlreadyExists',
     type: 'error',
   },
   {
@@ -167,7 +177,7 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
@@ -186,7 +196,7 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
@@ -205,7 +215,7 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
@@ -224,7 +234,7 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
@@ -267,7 +277,7 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
@@ -286,13 +296,13 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: 'address',
         name: 'ownerAddress',
         type: 'address',
@@ -311,19 +321,19 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'reservationId',
         type: 'bytes32',
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'positionId',
         type: 'bytes32',
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: 'address',
         name: 'ownerAddress',
         type: 'address',
@@ -337,7 +347,7 @@ export const AMMEXCHANGE_ABI = [
       {
         indexed: false,
         internalType: 'bool',
-        name: 'partialSettlement',
+        name: 'isInscription',
         type: 'bool',
       },
       {
@@ -366,7 +376,7 @@ export const AMMEXCHANGE_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'bytes32',
         name: 'reservationId',
         type: 'bytes32',
@@ -447,6 +457,40 @@ export const AMMEXCHANGE_ABI = [
     ],
     name: 'cancelReservation',
     outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_tokenAmount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint64',
+        name: '_exchangeRate',
+        type: 'uint64',
+      },
+      {
+        internalType: 'bytes32',
+        name: '_bitcoinAddresses',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bool',
+        name: '_partialSettlement',
+        type: 'bool',
+      },
+    ],
+    name: 'createPosition',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -672,42 +716,18 @@ export const AMMEXCHANGE_ABI = [
     outputs: [
       {
         internalType: 'bool',
-        name: '',
+        name: 'isValid',
         type: 'bool',
-      },
-    ],
-    stateMutability: 'pure',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes',
-        name: '_transactionData',
-        type: 'bytes',
       },
       {
         internalType: 'uint256',
-        name: '_outputIndex',
+        name: 'amount',
         type: 'uint256',
       },
       {
         internalType: 'bytes32',
-        name: '_bitcoinAddress',
+        name: 'bitcoinAddress',
         type: 'bytes32',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'isExpectedP2TROutput',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
       },
     ],
     stateMutability: 'pure',
@@ -778,6 +798,19 @@ export const AMMEXCHANGE_ABI = [
   {
     inputs: [],
     name: 'nextPositionId',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'nextReservationId',
     outputs: [
       {
         internalType: 'uint256',
@@ -1030,11 +1063,6 @@ export const AMMEXCHANGE_ABI = [
     inputs: [
       {
         internalType: 'bytes32',
-        name: '_reservationId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
         name: '_positionId',
         type: 'bytes32',
       },
@@ -1065,11 +1093,6 @@ export const AMMEXCHANGE_ABI = [
       {
         internalType: 'bytes32',
         name: '_positionId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
-        name: '_reservationId',
         type: 'bytes32',
       },
       {
@@ -1858,369 +1881,369 @@ export const ERC20_BITSNARK_ABI = [
 
 export const FORWARDER_ABI = [
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
     ],
-    "name": "AddressInsufficientBalance",
-    "type": "error"
+    name: 'AddressInsufficientBalance',
+    type: 'error',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint48",
-        "name": "deadline",
-        "type": "uint48"
-      }
+        internalType: 'uint48',
+        name: 'deadline',
+        type: 'uint48',
+      },
     ],
-    "name": "ERC2771ForwarderExpiredRequest",
-    "type": "error"
+    name: 'ERC2771ForwarderExpiredRequest',
+    type: 'error',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "signer",
-        "type": "address"
+        internalType: 'address',
+        name: 'signer',
+        type: 'address',
       },
       {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      }
+        internalType: 'address',
+        name: 'from',
+        type: 'address',
+      },
     ],
-    "name": "ERC2771ForwarderInvalidSigner",
-    "type": "error"
+    name: 'ERC2771ForwarderInvalidSigner',
+    type: 'error',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "requestedValue",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'requestedValue',
+        type: 'uint256',
       },
       {
-        "internalType": "uint256",
-        "name": "msgValue",
-        "type": "uint256"
-      }
+        internalType: 'uint256',
+        name: 'msgValue',
+        type: 'uint256',
+      },
     ],
-    "name": "ERC2771ForwarderMismatchedValue",
-    "type": "error"
+    name: 'ERC2771ForwarderMismatchedValue',
+    type: 'error',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
+        internalType: 'address',
+        name: 'target',
+        type: 'address',
       },
       {
-        "internalType": "address",
-        "name": "forwarder",
-        "type": "address"
-      }
+        internalType: 'address',
+        name: 'forwarder',
+        type: 'address',
+      },
     ],
-    "name": "ERC2771UntrustfulTarget",
-    "type": "error"
+    name: 'ERC2771UntrustfulTarget',
+    type: 'error',
   },
   {
-    "inputs": [],
-    "name": "FailedInnerCall",
-    "type": "error"
+    inputs: [],
+    name: 'FailedInnerCall',
+    type: 'error',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
       },
       {
-        "internalType": "uint256",
-        "name": "currentNonce",
-        "type": "uint256"
-      }
+        internalType: 'uint256',
+        name: 'currentNonce',
+        type: 'uint256',
+      },
     ],
-    "name": "InvalidAccountNonce",
-    "type": "error"
+    name: 'InvalidAccountNonce',
+    type: 'error',
   },
   {
-    "inputs": [],
-    "name": "InvalidShortString",
-    "type": "error"
+    inputs: [],
+    name: 'InvalidShortString',
+    type: 'error',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "string",
-        "name": "str",
-        "type": "string"
-      }
+        internalType: 'string',
+        name: 'str',
+        type: 'string',
+      },
     ],
-    "name": "StringTooLong",
-    "type": "error"
+    name: 'StringTooLong',
+    type: 'error',
   },
   {
-    "anonymous": false,
-    "inputs": [],
-    "name": "EIP712DomainChanged",
-    "type": "event"
+    anonymous: false,
+    inputs: [],
+    name: 'EIP712DomainChanged',
+    type: 'event',
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "signer",
-        "type": "address"
+        indexed: true,
+        internalType: 'address',
+        name: 'signer',
+        type: 'address',
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
+        indexed: false,
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256',
       },
       {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "success",
-        "type": "bool"
-      }
+        indexed: false,
+        internalType: 'bool',
+        name: 'success',
+        type: 'bool',
+      },
     ],
-    "name": "ExecutedForwardRequest",
-    "type": "event"
+    name: 'ExecutedForwardRequest',
+    type: 'event',
   },
   {
-    "inputs": [],
-    "name": "eip712Domain",
-    "outputs": [
+    inputs: [],
+    name: 'eip712Domain',
+    outputs: [
       {
-        "internalType": "bytes1",
-        "name": "fields",
-        "type": "bytes1"
+        internalType: 'bytes1',
+        name: 'fields',
+        type: 'bytes1',
       },
       {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
+        internalType: 'string',
+        name: 'name',
+        type: 'string',
       },
       {
-        "internalType": "string",
-        "name": "version",
-        "type": "string"
+        internalType: 'string',
+        name: 'version',
+        type: 'string',
       },
       {
-        "internalType": "uint256",
-        "name": "chainId",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'chainId',
+        type: 'uint256',
       },
       {
-        "internalType": "address",
-        "name": "verifyingContract",
-        "type": "address"
+        internalType: 'address',
+        name: 'verifyingContract',
+        type: 'address',
       },
       {
-        "internalType": "bytes32",
-        "name": "salt",
-        "type": "bytes32"
+        internalType: 'bytes32',
+        name: 'salt',
+        type: 'bytes32',
       },
       {
-        "internalType": "uint256[]",
-        "name": "extensions",
-        "type": "uint256[]"
-      }
+        internalType: 'uint256[]',
+        name: 'extensions',
+        type: 'uint256[]',
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "components": [
+        components: [
           {
-            "internalType": "address",
-            "name": "from",
-            "type": "address"
+            internalType: 'address',
+            name: 'from',
+            type: 'address',
           },
           {
-            "internalType": "address",
-            "name": "to",
-            "type": "address"
+            internalType: 'address',
+            name: 'to',
+            type: 'address',
           },
           {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
           },
           {
-            "internalType": "uint256",
-            "name": "gas",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'gas',
+            type: 'uint256',
           },
           {
-            "internalType": "uint48",
-            "name": "deadline",
-            "type": "uint48"
+            internalType: 'uint48',
+            name: 'deadline',
+            type: 'uint48',
           },
           {
-            "internalType": "bytes",
-            "name": "data",
-            "type": "bytes"
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
           },
           {
-            "internalType": "bytes",
-            "name": "signature",
-            "type": "bytes"
-          }
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
-        "internalType": "struct ERC2771Forwarder.ForwardRequestData",
-        "name": "request",
-        "type": "tuple"
-      }
+        internalType: 'struct ERC2771Forwarder.ForwardRequestData',
+        name: 'request',
+        type: 'tuple',
+      },
     ],
-    "name": "execute",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    name: 'execute',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "components": [
+        components: [
           {
-            "internalType": "address",
-            "name": "from",
-            "type": "address"
+            internalType: 'address',
+            name: 'from',
+            type: 'address',
           },
           {
-            "internalType": "address",
-            "name": "to",
-            "type": "address"
+            internalType: 'address',
+            name: 'to',
+            type: 'address',
           },
           {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
           },
           {
-            "internalType": "uint256",
-            "name": "gas",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'gas',
+            type: 'uint256',
           },
           {
-            "internalType": "uint48",
-            "name": "deadline",
-            "type": "uint48"
+            internalType: 'uint48',
+            name: 'deadline',
+            type: 'uint48',
           },
           {
-            "internalType": "bytes",
-            "name": "data",
-            "type": "bytes"
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
           },
           {
-            "internalType": "bytes",
-            "name": "signature",
-            "type": "bytes"
-          }
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
-        "internalType": "struct ERC2771Forwarder.ForwardRequestData[]",
-        "name": "requests",
-        "type": "tuple[]"
+        internalType: 'struct ERC2771Forwarder.ForwardRequestData[]',
+        name: 'requests',
+        type: 'tuple[]',
       },
       {
-        "internalType": "address payable",
-        "name": "refundReceiver",
-        "type": "address"
-      }
+        internalType: 'address payable',
+        name: 'refundReceiver',
+        type: 'address',
+      },
     ],
-    "name": "executeBatch",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    name: 'executeBatch',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
     ],
-    "name": "nonces",
-    "outputs": [
+    name: 'nonces',
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "components": [
+        components: [
           {
-            "internalType": "address",
-            "name": "from",
-            "type": "address"
+            internalType: 'address',
+            name: 'from',
+            type: 'address',
           },
           {
-            "internalType": "address",
-            "name": "to",
-            "type": "address"
+            internalType: 'address',
+            name: 'to',
+            type: 'address',
           },
           {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
           },
           {
-            "internalType": "uint256",
-            "name": "gas",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'gas',
+            type: 'uint256',
           },
           {
-            "internalType": "uint48",
-            "name": "deadline",
-            "type": "uint48"
+            internalType: 'uint48',
+            name: 'deadline',
+            type: 'uint48',
           },
           {
-            "internalType": "bytes",
-            "name": "data",
-            "type": "bytes"
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
           },
           {
-            "internalType": "bytes",
-            "name": "signature",
-            "type": "bytes"
-          }
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
-        "internalType": "struct ERC2771Forwarder.ForwardRequestData",
-        "name": "request",
-        "type": "tuple"
-      }
+        internalType: 'struct ERC2771Forwarder.ForwardRequestData',
+        name: 'request',
+        type: 'tuple',
+      },
     ],
-    "name": "verify",
-    "outputs": [
+    name: 'verify',
+    outputs: [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
+    stateMutability: 'view',
+    type: 'function',
+  },
+];

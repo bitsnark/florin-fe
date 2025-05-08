@@ -2,10 +2,11 @@ import { sepolia } from '@/config/evm-chains';
 
 export const CONTRACTS_ADDRESS = {
   [sepolia.id]: {
-    ammExchange: '0x106F56E4E0D457a4E26fe11831A5e84a4636607B',
+    //ammExchange: '0x106F56E4E0D457a4E26fe11831A5e84a4636607B',
+    ammExchange: '0xbdDa832E79acA473cb779b194bFa4a2D7ae92F27',
     marketMakerProxy: '0xaa271Fa831caE56176eC26EdCF34e177f8BE1D0C',
     florinForwarder: '0xA9274e1dB149ba154a165E6Dc1979f4CF128B664',
-    erc20BitSnark: '0xEc4824D3Ab3dFaff6f64af78ae6DF6FeC229683c',
+    erc20BitSnark: '0xc341E4c88755150F0799e7b10C35b3a28BfA3D63',
     contractRegistry: '0x6b9dB8c3d74D0AF424E450Ab3b76D0E3578e29C6',
   },
   31337: {

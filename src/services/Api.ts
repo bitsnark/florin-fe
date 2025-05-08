@@ -85,7 +85,6 @@ export class FlorinApiService {
   }
 
   static async updatePosition(position: Position): Promise<Position> {
-    console.log('Updating position', position);
     const response = await fetch(
       `${API_BASE_URL}/positions/${position.positionId}`,
       {

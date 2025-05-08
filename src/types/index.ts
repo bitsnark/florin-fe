@@ -77,6 +77,30 @@ export type Reservation = {
   destinationsTxConfirmations?: number;
 };
 
+export type EVMPosition = {
+  positionId: string;
+  ownerAddress: Address;
+  bitcoinAddress: string[];
+  originalAmount: bigint;
+  availableAmount: bigint;
+  settledAmount: bigint;
+  withdrawnAmount: bigint;
+  exchangeRate: bigint;
+  partialSettlement: boolean;
+  status: number;
+};
+
+export type EVMReservation = {
+  reservationId: string;
+  positionId: string;
+  ownerAddress: Address;
+  tokenAmount: bigint;
+  depositAmount: bigint;
+  createdAtBlock: bigint;
+  status: number;
+  bitcoinAddress: string;
+};
+
 export interface ContractManagerConfig {
   chain: Chain;
   network: {

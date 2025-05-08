@@ -31,7 +31,6 @@ export function useTxConfirmations({
         const receipt = await contractManager.publicClient.getTransactionReceipt({
           hash: transactionHash as `0x${string}`,
         });
-
         if (receipt) {
           const currentBlock = await contractManager.publicClient.getBlockNumber();
           const confirmations = Number(currentBlock - receipt.blockNumber);
@@ -49,9 +48,9 @@ export function useTxConfirmations({
       }
     };
 
-    // Check immediately and then every 12 seconds
+    // Check immediately and then every 5 seconds
     checkConfirmations();
-    intervalRef.current = setInterval(checkConfirmations, 12000);
+    intervalRef.current = setInterval(checkConfirmations, 5000);
 
     return () => {
       if (intervalRef.current) {

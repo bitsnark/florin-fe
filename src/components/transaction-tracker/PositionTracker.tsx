@@ -8,6 +8,9 @@ import { useEffect, useState, useRef } from 'react';
 import { Position, PositionStatus } from '@/types';
 import { useUpdatePosition } from '@/hooks/mutations/useUpdatePosition';
 import { gasFee } from '@/lib/utils';
+import { useTxConfirmations } from '@/hooks/useTxConfirmations';
+import { useEVMPositionPolling } from '@/hooks/useEVMPositionPolling';
+import { useChainId } from 'wagmi';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -23,12 +26,26 @@ export function PositionTracker({
   const { data: position, isLoading, error } = usePosition(id, {});
   const updatePosition = useUpdatePosition();
   const hasUpdatedPosition = useRef(false);
+  const chainId = useChainId();
+  
+  const { evmPosition } = useEVMPositionPolling({
+    positionId: position?.positionId || '',
+    chainId: chainId || 0,
+    isActive: open,
+  });
 
-  const { confirmations } = useTrackerState({
+  console.log('evmPosition', position?.positionId, evmPosition);
+  useTrackerState({
     isActive: open,
     hasOriginTxId: !!position?.originTxHash,
     hasDestinationTxId: !!position?.destinationTxHash,
     transactionStatus: position?.status,
+  });
+
+  const confirmations = useTxConfirmations({
+    isActive: open,
+    maxConfirmations: 20,
+    transactionHash: position?.contractRegistrationTxHash,
   });
 
   const isPositionCompleted = position?.state === PositionStatus.COMPLETED;
