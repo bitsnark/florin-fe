@@ -4,7 +4,6 @@ import { useUpdateReservation } from '@/hooks/mutations/useUpdateReservation';
 import { gasFee } from '@/lib/utils';
 
 interface UseTrackerStateProps {
-  isActive: boolean;
   hasOriginTxId: boolean;
   hasDestinationTxId: boolean;
   transactionStatus: TransactionStatus | undefined;
@@ -12,7 +11,6 @@ interface UseTrackerStateProps {
 }
 
 export function useTrackerState({
-  isActive,
   transactionStatus,
   reservation,
 }: UseTrackerStateProps) {

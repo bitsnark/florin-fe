@@ -36,7 +36,6 @@ export function PositionTracker({
 
   console.log('evmPosition', position?.positionId, evmPosition);
   useTrackerState({
-    isActive: open,
     hasOriginTxId: !!position?.originTxHash,
     hasDestinationTxId: !!position?.destinationTxHash,
     transactionStatus: position?.status,

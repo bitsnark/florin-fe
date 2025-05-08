@@ -46,7 +46,6 @@ export function ReservationTracker({
     handleCompleteStepThree,
     handleCompleteStepFour,
   } = useTrackerState({
-    isActive: open,
     hasOriginTxId: !!reservation?.originTxHash,
     hasDestinationTxId: !!reservation?.destinationTxHash,
     transactionStatus: reservation?.status,
