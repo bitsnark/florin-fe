@@ -9,6 +9,7 @@ import { useExchange } from '@/hooks/useExchange';
 import { TransactionTrackerDialog } from '../transaction-tracker';
 import { Position, Reservation } from '@/types';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
+import { useBitSnarkBalance } from '@/hooks/useBitSnarkBalance';
 
 type TrackerData = {
   type: 'position' | 'reservation';
@@ -46,7 +47,7 @@ export function TabSwitcherContainer() {
     transactionId: '',
   });
 
-  const xbtcAmount = '1.123';
+  const { balance: xbtcAmount } = useBitSnarkBalance();
   const tabs = ['Transfer', 'History'];
   const variant = 'default';
   const size = 'default';

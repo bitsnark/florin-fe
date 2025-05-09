@@ -50,7 +50,6 @@ export function TransferForm({
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
 
-  console.log('bitcoinAddress', bitcoinAddress);
   // Determine which input should be editable
   const isFromXbtcToBtc = fromCurrency === 'xbtc' && toCurrency === 'btc';
 
@@ -100,9 +99,10 @@ export function TransferForm({
           network={toNetwork}
           currency={toCurrency}
           amount={toAmount}
-          xbtcAmount={xbtcAmount}
+          xbtcAmount={"1"}
           onAmountChange={handleToAmountChange}
           readOnly={!isFromXbtcToBtc}
+          isFromXbtcToBtc={isFromXbtcToBtc}
           maxBtc={maxBtc}
           bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
         />
