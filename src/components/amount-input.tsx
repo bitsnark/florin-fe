@@ -31,6 +31,7 @@ interface AmountInputProps {
   maxBtc?: number;
   minBtc?: number;
   bitcoinPrice?: number;
+  isFromXbtcToBtc?: boolean;
 }
 
 export const AmountInput = ({
@@ -43,6 +44,7 @@ export const AmountInput = ({
   maxBtc,
   minBtc,
   bitcoinPrice,
+  isFromXbtcToBtc,
 }: AmountInputProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -88,36 +90,54 @@ export const AmountInput = ({
     return (numericAmount * rate).toFixed(2);
   }, [amount, bitcoinPrice, currency]);
 
+  const validateAmount = (value: string, numValue: number): { error: string | null; validValue: string } => {
+    // Check xbtc amount limit for xbtc to btc conversion first
+    if (isFromXbtcToBtc && xbtcAmount && numValue > Number(xbtcAmount)) {
+      return { error: `Maximum value: ${xbtcAmount} xBTC`, validValue: xbtcAmount };
+    }
+
+    // Then check maxBtc limit
+    if (maxBtc && numValue > Number(maxBtc)) {
+      return { error: `Maximum value: ${maxBtc} ${currencySymbol}`, validValue: maxBtc.toString() };
+    }
+    
+    // Check minBtc limit
+    if (minBtc && numValue !== 0 && numValue < Number(minBtc)) {
+      return { error: `Minimum value: ${minBtc} ${currencySymbol}`, validValue: value };
+    }
+
+    return { error: null, validValue: value };
+  };
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(',', '.');
 
+    // Handle empty input
     if (value === '') {
       onAmountChange?.('');
       setErrorMessage(null);
       return;
     }
 
-    if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-      // If the value ends with a dot, keep it as is
-      if (value.endsWith('.')) {
-        onAmountChange?.(value);
-        return;
-      }
-      const numValue = parseFloat(value);
-
-      if (!isNaN(numValue)) {
-        if (maxBtc && numValue >= Number(maxBtc)) {
-          onAmountChange?.(maxBtc.toString());
-          setErrorMessage(null);
-        } else if (minBtc && numValue !== 0 && numValue < Number(minBtc)) {
-          onAmountChange?.(value);
-          setErrorMessage(`Minimum value: ${minBtc} ${currencySymbol}`);
-        } else {
-          onAmountChange?.(value);
-          setErrorMessage(null);
-        }
-      }
+    // Validate decimal number format
+    if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
+      return;
     }
+
+    // Allow trailing decimal point
+    if (value.endsWith('.')) {
+      onAmountChange?.(value);
+      return;
+    }
+
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+      return;
+    }
+
+    const { error, validValue } = validateAmount(value, numValue);
+    setErrorMessage(error);
+    onAmountChange?.(validValue);
   };
 
   // Convert the amount to use dot as decimal separator for display
@@ -224,7 +244,7 @@ export const AmountInput = ({
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
             </span>
-            {errorMessage && (
+            {errorMessage && !readOnly && (
               <span className="font-inter font-normal text-[11px] sm:text-[12px] leading-[100%] tracking-[0%] text-right text-red-500 mt-1">
                 {errorMessage}
               </span>
