@@ -32,7 +32,7 @@ export function TabSwitcherContainer() {
   const [fromAmount, setFromAmount] = useState('0.012');
   const [toAmount, setToAmount] = useState('0.012');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [bitcoinAddress, setBitcoinAddress] = useState<Address | undefined>(
+  const [bitcoinAddress, setBitcoinAddress] = useState<string | undefined>(
     undefined
   );
   const { openPosition, reservePosition, loading } = useExchange();
@@ -108,7 +108,7 @@ export function TabSwitcherContainer() {
       transaction = await openPosition({
         tokenAmount: parseEther(normalizedAmount),
         exchangeRate: 1,
-        bitcoinAddresses: bitcoinAddress!,
+        bitcoinAddresses: bitcoinAddress! as Address,
         deadline: Math.floor(Date.now() / 1000) + 3600, //ASK about this value to Elias
         owner: address!,
         chainId,

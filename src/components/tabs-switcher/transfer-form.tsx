@@ -18,7 +18,7 @@ interface TransferFormProps {
   isAnimating: boolean;
   isWalletConnected: boolean;
   ethWalletAddress?: Address;
-  bitcoinAddress?: Address;
+  bitcoinAddress?: string;
   bitcoinAddressValid?: boolean;
   handleSwitchNetworks: () => void;
   handleFromAmountChange: (value: string) => void;
@@ -50,6 +50,7 @@ export function TransferForm({
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
 
+  console.log('bitcoinAddress', bitcoinAddress);
   // Determine which input should be editable
   const isFromXbtcToBtc = fromCurrency === 'xbtc' && toCurrency === 'btc';
 
@@ -152,7 +153,7 @@ export function TransferForm({
           <Input
             id="bitcoin-address"
             placeholder="Paste your Bitcoin receiving address"
-            value={bitcoinAddress}
+            value={bitcoinAddress || ''}
             onChange={(e) => setBitcoinAddress(e.target.value as Address)}
             className={cn(
               bitcoinAddress &&
