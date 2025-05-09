@@ -17,12 +17,12 @@ interface TransferTabProps {
   isAnimating: boolean;
   isWalletConnected: boolean;
   ethWalletAddress?: Address;
-  bitcoinAddress?: Address;
+  bitcoinAddress?: string;
   termsAccepted: boolean;
   handleSwitchNetworks: () => void;
   handleFromAmountChange: (value: string) => void;
   handleToAmountChange: (value: string) => void;
-  setBitcoinAddress: (value: Address | undefined) => void;
+  setBitcoinAddress: (value: string | undefined) => void;
   setTermsAccepted: (value: boolean) => void;
   handleBridgeFunds: () => void;
   loading: boolean;
@@ -73,7 +73,7 @@ export function TransferTab({
     handleFromAmountChange('');
     handleToAmountChange('');
     if (fromNetwork === 'ethereum') {
-      setBitcoinAddress(undefined);
+      setBitcoinAddress('');
     }
     setTermsAccepted(false);
   };

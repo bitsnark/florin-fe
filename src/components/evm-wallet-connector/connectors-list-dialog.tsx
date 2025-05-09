@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Connector, useConnect } from 'wagmi';
-import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import { Dialog, DialogContent } from '../ui/dialog';
 import { Card } from '../ui/card';
 import { walletIcons } from '@/lib/utils';
 import { DialogTitle } from '@radix-ui/react-dialog';
@@ -27,10 +27,12 @@ export const ConnectorsListDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={(o) => setOpen(o)}>
-      <DialogTrigger
+     {/*  <DialogTrigger
         title="Connect EVM wallet"
         className="rounded-t-[0.625rem]"
-      />
+        style={{ display: 'none' }}
+
+      /> */}
 
       <DialogContent className="p-6 border-none">
         <DialogTitle>Connect EVM wallet</DialogTitle>
