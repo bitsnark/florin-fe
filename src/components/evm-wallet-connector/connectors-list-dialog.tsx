@@ -27,13 +27,6 @@ export const ConnectorsListDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={(o) => setOpen(o)}>
-     {/*  <DialogTrigger
-        title="Connect EVM wallet"
-        className="rounded-t-[0.625rem]"
-        style={{ display: 'none' }}
-
-      /> */}
-
       <DialogContent className="p-6 border-none">
         <DialogTitle>Connect EVM wallet</DialogTitle>
         <div className="flex gap-2 flex-col">
