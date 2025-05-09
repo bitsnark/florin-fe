@@ -114,14 +114,16 @@ export function TabSwitcherContainer() {
         chainId,
       });
     }
+    if (transaction) {
     setTrackerData({
       type: fromNetwork === 'ethereum' ? 'position' : 'reservation',
       open: true,
       transactionId:
         fromNetwork === 'ethereum'
           ? (transaction as Position)?.positionId
-          : (transaction as Reservation)?.reservationId,
-    });
+            : (transaction as Reservation)?.reservationId,
+      });
+    }
   };
 
   return (
