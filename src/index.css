@@ -258,6 +258,16 @@ button:focus-visible {
   }
 }
 
+.terms-title {
+  @apply font-normal text-[28px] leading-[115%] tracking-[-0.01em] text-center text-[#F5F5F5];
+}
+.terms-section-title {
+  @apply font-medium text-[24px] leading-[100%] tracking-[-0.01em] text-[#F5F5F5];
+}
+.terms-paragraph {
+  @apply font-medium text-[14px] leading-[125%] tracking-normal text-[#F5F5F5];
+} 
+
 /* Hide number input arrows */
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
