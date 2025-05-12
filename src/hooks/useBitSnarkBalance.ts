@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 import { ContractManager } from '@/services/ContractManager';
 import { CMError } from '@/lib/errors';
@@ -11,12 +11,14 @@ export const useBitSnarkBalance = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chainId = useChainId();
-  const erc20BitSnarkAddress = CONTRACTS_ADDRESS[
-   chainId as keyof typeof CONTRACTS_ADDRESS
- ].erc20BitSnark as Address;
+  const erc20BitSnarkAddress = useMemo(() => {
+    return chainId ? CONTRACTS_ADDRESS[
+      chainId as keyof typeof CONTRACTS_ADDRESS
+    ].erc20BitSnark as Address : undefined;
+  }, [chainId]);
 
   const fetchBalance = useCallback(async () => {
-    if (!address) {
+    if (!address || !erc20BitSnarkAddress) {
       setBalance(null);
       return;
     }
@@ -31,7 +33,7 @@ export const useBitSnarkBalance = () => {
         'ERC20BitSnark',
         'balanceOf',
         [address],
-        erc20BitSnarkAddress
+        erc20BitSnarkAddress as Address
       );
       setBalance(result as unknown as bigint);
     } catch (err) {

@@ -13,12 +13,13 @@
  * or change the backend implementation (which might not be feasible at the moment).
  */
 
-import { Transaction } from './types';
 import {
   Position,
   PositionStatus,
   Reservation,
   ReservationStatus,
+  Transaction,
+  TransactionStatus,
 } from '@/types';
 
 /**
@@ -29,19 +30,14 @@ import {
  */
 export const positionToTransaction = (position: Position): Transaction => {
   console.log('position', position.state);
-  // Determine the status based on position state
-  let status: 'Completed' | 'Pending' | 'Failed';
+  let status: TransactionStatus;
   switch (position.state) {
-    case PositionStatus.ACTIVE:
-      status = 'Pending';
-      break;
-    case PositionStatus.COMPLETED:
-      status = 'Completed';
+    case PositionStatus.Active || !position.state:
+      status = TransactionStatus.Pending;
       break;
     default:
-      status = 'Failed';
+      status = TransactionStatus.Failed;
   }
-
   return {
     hash: position.positionId,
     date: new Date(Date.now() - Math.random() * 10000000000).toISOString(), // Random recent date
@@ -51,7 +47,7 @@ export const positionToTransaction = (position: Position): Transaction => {
     toChain: 'Bitcoin',
     amount: position.amount,
     receivedAmount: position.receivedAmount!,
-    status,
+    status: status,
     contractRegistration: position.tokenAddress,
     originTxId: position?.originTxHash || '',
     destinationTxId: position.bitcoinAddress,
@@ -68,16 +64,16 @@ export const reservationToTransaction = (
   reservation: Reservation
 ): Transaction => {
   // Determine the status based on reservation state
-  let status: 'Completed' | 'Pending' | 'Failed';
+  let status: TransactionStatus;
   switch (reservation.state) {
-    case ReservationStatus.COMPLETED:
-      status = 'Completed';
+    case ReservationStatus.Settled:
+      status = TransactionStatus.Completed;
       break;
-    case ReservationStatus.ACTIVE:
-      status = 'Pending';
+    case ReservationStatus.Pending || ReservationStatus.None || !reservation.state:
+      status = TransactionStatus.Pending;
       break;
     default:
-      status = 'Failed';
+      status = TransactionStatus.Failed;
   }
 
   // Calculate amounts

@@ -6,11 +6,8 @@
  * that match the exact format expected by the UI components designed in Figma.
  */
 
-import { Transaction } from '@/components/history-table/types';
-import { Position, Reservation } from '@/types';
+import { transactionHistoryAdapter } from '@/components/history-table/transaction-history-adapter';
 import { useTransactionHistory } from './queries/useTransactionHistory';
-import { transactionHistoryToPositions, transactionHistoryToReservations } from '@/components/history-table/transaction-history-adapter';
-import { positionToTransaction, reservationToTransaction } from '@/components/history-table/data-adapter';
 
 /**
  * Custom hook to transform transaction history data into transactions
@@ -26,16 +23,11 @@ export function useTransactions(ownerAddress: string | undefined) {
   } = useTransactionHistory(ownerAddress);
 
   console.log('transactionHistory', transactionHistory);
-  // Transform the transaction history into positions and reservations
-  const positions = transactionHistoryToPositions(transactionHistory);
-  const reservations = transactionHistoryToReservations(transactionHistory);
+  
 
   // Transform positions and reservations into transactions
-  const transactions: Transaction[] = !isLoading && !isError
-    ? [
-        ...positions.map(positionToTransaction),
-        ...reservations.map(reservationToTransaction),
-      ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const transactions = !isLoading && !isError
+    ? transactionHistory.map(transactionHistoryAdapter).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     : [];
 
   return {

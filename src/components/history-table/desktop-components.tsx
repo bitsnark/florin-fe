@@ -11,11 +11,12 @@ import {
   SymbolIcon,
 } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
-import { Transaction } from './types';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
+import { TransactionNormalized } from './transaction-history-adapter';
+import { TransactionStatus } from '@/types';
 
 interface DesktopTransactionRowProps {
-  tx: Transaction;
+  tx: TransactionNormalized;
   setTransactionToTrack: (tx: {
     id: string;
     type: 'reservation' | 'position';
@@ -33,13 +34,13 @@ export const DesktopTransactionRow = ({
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);
     setTransactionToTrack({
-      id: tx.hash,
-      type: tx.action === 'Deposit' ? 'position' : 'reservation',
+      id: tx.contractRegistrationTxHash,
+      type: tx.type,
     });
   };
 
   return (
-    <TableRow key={tx.hash} className="hover:bg-transparent">
+    <TableRow key={tx.contractRegistrationTxHash} className="hover:bg-transparent">
       <TableCell className="w-fit min-w-[200px] border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center">
           <div className="flex items-center gap-1">
@@ -62,27 +63,27 @@ export const DesktopTransactionRow = ({
         </div>
       </TableCell>
       <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx.contractRegistration)}
+        {formatHash(tx.contractRegistrationTxHash)}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.amount} {tx.asset}
+        {tx.amount} {tx.type === 'position' ? 'BTC' : 'ETH'}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatReceivedAmount(tx.receivedAmount, data?.minAmount)}{' '}
-        {tx.asset === 'ETH' ? 'BTC' : 'ETH'}
+        {tx.type === 'position' ? 'BTC' : 'ETH'}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx.originTxId)}
+        {formatHash(tx.originTxHash)}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx.destinationTxId)}
+        {formatHash(tx.destinationTxHash)}
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatDate(tx.date)}
+        {formatDate(tx.createdAt)}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">
-          {tx.status === 'Completed' ? (
+          {tx.state === TransactionStatus.Completed ? (
             <div className="bg-grey rounded-full p-[0.125rem]">
               <CheckCircledIcon className="text-green-600" />
             </div>
@@ -91,7 +92,7 @@ export const DesktopTransactionRow = ({
               <SymbolIcon />
             </div>
           )}
-          {tx.status}
+          {tx.state.charAt(0).toUpperCase() + tx.state.slice(1)}
         </div>
       </TableCell>
 

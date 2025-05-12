@@ -7,24 +7,25 @@ export enum Finality {
 }
 
 export enum PositionStatus {
-  ACTIVE = 'ACTIVE',
-  COMPLETED = 'COMPLETED',
-  EXPIRED = 'EXPIRED',
+  None = 'None',
+  Active = 'Active',
+  Paused = 'Paused',
+  Closed = 'Closed'
 }
 
 export enum ReservationStatus {
-  NONE = 'NONE',
-  ACTIVE = 'ACTIVE',
-  EXPIRED = 'EXPIRED',
-  CANCELED = 'CANCELED',
-  COMPLETED = 'COMPLETED',
+  None = 'None',
+  Pending = 'Pending',
+  Expired = 'Expired',
+  Canceled = 'Canceled',
+  Settled = 'Settled'
 }
 
+
 export enum TransactionStatus {
-  NONE = 'NONE',
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
+  Pending = 'Pending',
+  Completed = 'Completed',
+  Failed = 'Failed',
 }
 
 export type Position = {
@@ -120,8 +121,11 @@ export interface TransactionResponse {
   wait: () => Promise<any>;
 }
 
+
+
 export type TransactionHistoryItem = {
   positionId: string;
+  reservationId?: string;
   amount: string;
   tokenAddress: string;
   ownerAddress: string;
@@ -130,13 +134,32 @@ export type TransactionHistoryItem = {
   registrationTxhash: string;
   registrationBlockHash: string;
   registrationBlockNumber: number;
-  registrationFinality: 'FINAL' | 'PENDING' | 'FAILED';
+  registrationFinality: Finality;
   originChain: number;
   originTxhash: string;
   originBlockNumber: number;
   originBlockHash: string;
-  originFinality: 'FINAL' | 'PENDING' | 'FAILED';
-  state: PositionStatus;
+  originFinality: Finality;
+  state: PositionStatus | ReservationStatus;
+  destinationTxHash?: string;
+  destinationBlockNumber?: number;
+  destinationBlockHash?: string;
+  destinationTxConfirmations?: number;
 };
 
 export type TransactionHistory = TransactionHistoryItem[]; 
+
+export interface Transaction {
+  hash: string;
+  date: string;
+  action: string;
+  asset: string;
+  fromChain: string;
+  toChain: string;
+  amount: string;
+  receivedAmount: string;
+  status: TransactionStatus;
+  contractRegistration: string;
+  originTxId: string;
+  destinationTxId: string;
+}
