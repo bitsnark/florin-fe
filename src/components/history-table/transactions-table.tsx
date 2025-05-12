@@ -8,7 +8,6 @@ import {
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { Accordion } from '@/components/ui/accordion';
 import { useWindowSize } from './utils';
-// import { useTransactions } from '@/hooks/useTransactions';
 import {
   MobileTransactionItem,
   MobileLoadingSkeleton,
@@ -21,40 +20,31 @@ import {
   EmptyState,
   WalletNotConnectedState,
 } from './desktop-components';
-import { usePositionsByOwner } from '@/hooks/queries/usePositionsByOwner';
 import { useAccount } from 'wagmi';
-import { useReservationsByOwner } from '@/hooks/queries/useReservationsByOwner';
-import { Position, Reservation } from '@/types';
 import { TransactionTrackerDialog } from '../transaction-tracker';
 import { useState } from 'react';
+import { useTransactions } from '@/hooks/useTransactions';
 
 /**
  * Transactions history table component
  *
  * This component displays transaction history in both desktop and mobile views.
- * It uses the useTransactions hook which transforms our backend data (Positions
- * and Reservations) into the Transaction format required by the UI design.
+ * It uses the useTransactions hook which transforms our backend data into the
+ * Transaction format required by the UI design.
  */
 export default function TransactionsTable() {
-  const account = useAccount();
+  const { address } = useAccount();
   const { width } = useWindowSize();
   const isMobile = width < 768;
-  const { data: positions, isLoading: isLoadingPositions } =
-    usePositionsByOwner(account.address);
-  const { data: reservations, isLoading: isLoadingReservations } =
-    useReservationsByOwner(account.address);
-  const transactions: (Position | Reservation)[] = [
-    ...(positions || []),
-    ...(reservations || []),
-  ];
+  const { data: transactions, isLoading } = useTransactions(address);
   const [transactionToTrack, setTransactionToTrack] = useState<{
     id: string;
     type: 'reservation' | 'position';
   } | null>(null);
   const [openTrackerDialog, setOpenTrackerDialog] = useState(false);
-  const isLoading = isLoadingPositions || isLoadingReservations;
 
-  const isWalletConnected = account.isConnected;
+  const isWalletConnected = address !== undefined;
+
   // Render mobile view
   if (isMobile) {
     return (
@@ -66,11 +56,11 @@ export default function TransactionsTable() {
             <MobileLoadingSkeleton />
             <MobileLoadingSkeleton />
           </div>
-        ) : transactions.length > 0 ? (
+        ) : transactions?.length > 0 ? (
           <Accordion type="single" collapsible className="flex flex-col gap-3">
             {transactions.map((tx, index) => (
               <MobileTransactionItem
-                key={tx?.hash}
+                key={tx.hash}
                 tx={tx}
                 index={index}
                 setTransactionToTrack={setTransactionToTrack}
@@ -159,10 +149,10 @@ export default function TransactionsTable() {
               <SkeletonRow />
               <SkeletonRow />
             </>
-          ) : transactions.length > 0 ? (
+          ) : transactions?.length > 0 ? (
             transactions.map((tx) => (
               <DesktopTransactionRow
-                key={tx?.hash}
+                key={tx.hash}
                 tx={tx}
                 setTransactionToTrack={setTransactionToTrack}
                 setOpenTrackerDialog={setOpenTrackerDialog}

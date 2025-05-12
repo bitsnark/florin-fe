@@ -7,10 +7,7 @@ export enum Finality {
 }
 
 export enum PositionStatus {
-  NONE = 'NONE',
   ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
-  CLOSED = 'CLOSED',
   COMPLETED = 'COMPLETED',
   EXPIRED = 'EXPIRED',
 }
@@ -122,3 +119,24 @@ export interface TransactionResponse {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wait: () => Promise<any>;
 }
+
+export type TransactionHistoryItem = {
+  positionId: string;
+  amount: string;
+  tokenAddress: string;
+  ownerAddress: string;
+  bitcoinAddress: string;
+  registrationChain: number;
+  registrationTxhash: string;
+  registrationBlockHash: string;
+  registrationBlockNumber: number;
+  registrationFinality: 'FINAL' | 'PENDING' | 'FAILED';
+  originChain: number;
+  originTxhash: string;
+  originBlockNumber: number;
+  originBlockHash: string;
+  originFinality: 'FINAL' | 'PENDING' | 'FAILED';
+  state: PositionStatus;
+};
+
+export type TransactionHistory = TransactionHistoryItem[]; 

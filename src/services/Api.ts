@@ -1,5 +1,5 @@
 import { env } from '@/config/env';
-import { Position, Reservation } from '@/types';
+import { Position, Reservation, TransactionHistory } from '@/types';
 import { formatEther, parseEther } from 'viem';
 
 const API_BASE_URL = env.VITE_API_BASE_URL;
@@ -281,5 +281,18 @@ export class FlorinApiService {
     if (!response.ok) {
       throw new Error(`Failed to clear data: ${response.statusText}`);
     }
+  }
+
+  // Transaction History methods
+  static async getTransactionHistory(ownerAddress: string | undefined): Promise<TransactionHistory> {
+    if (!ownerAddress) {
+      throw new Error('Owner address is required');
+    }
+
+    const response = await fetch(`${env.VITE_API_BASE_URL_NEW}/history/${ownerAddress}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch transaction history: ${response.statusText}`);
+    }
+    return response.json();
   }
 }

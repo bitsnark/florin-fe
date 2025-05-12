@@ -28,23 +28,19 @@ import {
  * @returns A transaction object compatible with the UI components
  */
 export const positionToTransaction = (position: Position): Transaction => {
+  console.log('position', position.state);
   // Determine the status based on position state
   let status: 'Completed' | 'Pending' | 'Failed';
   switch (position.state) {
     case PositionStatus.ACTIVE:
-      status = 'Completed';
-      break;
-    case PositionStatus.PAUSED:
       status = 'Pending';
+      break;
+    case PositionStatus.COMPLETED:
+      status = 'Completed';
       break;
     default:
       status = 'Failed';
   }
-
-  // Calculate received amount based on original amount and exchange rate
-  const originalAmount = Number(position.amount) / 1e18; // Convert from wei to ETH
-  const exchangeRate = Number(position.exchangeRate) / 1e10; // Normalize exchange rate
-  const receivedAmount = (originalAmount * exchangeRate).toFixed(8); // BTC has 8 decimals
 
   return {
     hash: position.positionId,
@@ -53,8 +49,8 @@ export const positionToTransaction = (position: Position): Transaction => {
     asset: 'ETH',
     fromChain: 'Ethereum',
     toChain: 'Bitcoin',
-    amount: originalAmount.toString(),
-    receivedAmount,
+    amount: position.amount,
+    receivedAmount: position.receivedAmount!,
     status,
     contractRegistration: position.tokenAddress,
     originTxId: position?.originTxHash || '',
