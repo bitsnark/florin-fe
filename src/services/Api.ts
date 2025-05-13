@@ -19,7 +19,6 @@ export class FlorinApiService {
     return response.text();
   }
 
-  // Position methods
   static async getPositionsByOwner(
     ownerId: string | undefined,
     finalityFlag?: boolean
@@ -121,7 +120,6 @@ export class FlorinApiService {
     return response.json();
   }
 
-  // Reservation methods
   static async getReservationsByOwner(
     ownerId: string | undefined,
     finalityFlag?: boolean
@@ -223,7 +221,6 @@ export class FlorinApiService {
     return response.json();
   }
 
-  // Bitcoin methods
   static async getBitcoinTaprootAddress(): Promise<string> {
     const response = await fetch(`${API_BASE_URL}/bitcoin/taproot-address`);
     if (!response.ok) {
@@ -283,7 +280,6 @@ export class FlorinApiService {
     }
   }
 
-  // Transaction History methods
   static async getTransactionHistory(ownerAddress: string | undefined): Promise<TransactionHistory> {
     if (!ownerAddress) {
       throw new Error('Owner address is required');

@@ -5,7 +5,7 @@ import { BtcTransactionCard } from './BtcTransactionCard';
 import { BtcSendStep } from './BtcSendStep';
 import { EthCompletionCard } from './EthCompletionCard';
 import { BaseTransactionTracker } from './BaseTransactionTracker';
-import { useTrackerState } from './useTrackerState';
+import { useTrackerState } from '../../hooks/useTrackerState';
 import { useReservation } from '@/hooks/queries/useReservation';
 import { Button } from '../ui/button';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
@@ -96,7 +96,7 @@ export function ReservationTracker({
                 recipientAddress: reservation.reservationId,
                 reservationTx: reservation?.contractRegistrationTxHash || '',
                 confirmations:
-                  reservation.state !== ReservationStatus.EXPIRED &&
+                  reservation.state !== ReservationStatus.Expired &&
                   !reservation.originTxHash
                     ? parseFloat(fiatAmount) <= 100 // when we finally have this info we should replace this with the actual real data...
                       ? 20

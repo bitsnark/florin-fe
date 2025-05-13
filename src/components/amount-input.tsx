@@ -95,17 +95,14 @@ export const AmountInput = ({
     if (isFromXbtcToBtc && xbtcAmount && numValue > Number(xbtcAmount)) {
       return { error: `Maximum value: ${xbtcAmount} xBTC`, validValue: xbtcAmount };
     }
-
     // Then check maxBtc limit
     if (maxBtc && numValue > Number(maxBtc)) {
       return { error: `Maximum value: ${maxBtc} ${currencySymbol}`, validValue: maxBtc.toString() };
     }
-    
     // Check minBtc limit
     if (minBtc && numValue !== 0 && numValue < Number(minBtc)) {
       return { error: `Minimum value: ${minBtc} ${currencySymbol}`, validValue: value };
     }
-
     return { error: null, validValue: value };
   };
 

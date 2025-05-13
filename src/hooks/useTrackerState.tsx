@@ -27,7 +27,7 @@ export function useTrackerState({
     !!reservation?.destinationTxHash
   );
   const [bridgingCompleted, setBridgingCompleted] = useState(
-    reservation?.state === ReservationStatus.COMPLETED
+    reservation?.state === ReservationStatus.Settled
   );
 
   // Update states when reservation changes
@@ -36,7 +36,7 @@ export function useTrackerState({
       setSendBtcStepCompleted(!!reservation.originTxHash);
       setStepThreeCompleted(!!reservation.originTxHash);
       setBtcTransactionDetected(!!reservation.destinationTxHash);
-      setBridgingCompleted(reservation.state === ReservationStatus.COMPLETED);
+      setBridgingCompleted(reservation.state === ReservationStatus.Settled);
     }
   }, [reservation]);
 
@@ -45,7 +45,7 @@ export function useTrackerState({
   useEffect(() => {
     if (
       btcTransactionDetected &&
-      transactionStatus === TransactionStatus.COMPLETED
+      transactionStatus === TransactionStatus.Completed
     ) {
       setTimeout(() => {
         setBridgingCompleted(true);
@@ -73,7 +73,7 @@ export function useTrackerState({
   function handleExpireReservation() {
     updateReservation({
       ...reservation,
-      state: ReservationStatus.EXPIRED,
+      state: ReservationStatus.Expired,
     } as Reservation);
   }
 
@@ -89,7 +89,7 @@ export function useTrackerState({
   function handleCompleteStepFour() {
     updateReservation({
       ...reservation,
-      state: ReservationStatus.COMPLETED,
+      state: ReservationStatus.Settled,
       receivedAmount: (Number(reservation?.amount) - gasFee).toString(),
       bitcoinAddress: 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
     } as Reservation);

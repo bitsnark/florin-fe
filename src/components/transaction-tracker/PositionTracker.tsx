@@ -2,7 +2,7 @@ import { TransactionStep } from './TransactionStep';
 import { EthTransactionCard } from './EthTransactionCard';
 import { BtcCompletionCard } from './BtcCompletionCard';
 import { BaseTransactionTracker } from './BaseTransactionTracker';
-import { useTrackerState } from './useTrackerState';
+import { useTrackerState } from '../../hooks/useTrackerState';
 import { usePosition } from '@/hooks/queries/usePosition';
 import { useEffect, useState, useRef } from 'react';
 import { Position, PositionStatus } from '@/types';
