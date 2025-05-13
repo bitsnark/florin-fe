@@ -1,7 +1,7 @@
-import { TransactionStep } from './TransactionStep';
-import { EthTransactionCard } from './EthTransactionCard';
-import { BtcCompletionCard } from './BtcCompletionCard';
-import { BaseTransactionTracker } from './BaseTransactionTracker';
+import { TransactionStep } from './transaction-step';
+import { EthTransactionCard } from './eth-transaction-card';
+import { BtcCompletionCard } from './btc-completion-card';
+import { BaseTransactionTracker } from './base-transaction-tracker';
 import { useTrackerState } from '../../hooks/useTrackerState';
 import { usePosition } from '@/hooks/queries/usePosition';
 import { useEffect, useState, useRef } from 'react';

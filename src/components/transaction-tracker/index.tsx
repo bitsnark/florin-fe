@@ -1,5 +1,5 @@
-import { ReservationTracker } from './ReservationTracker';
-import { PositionTracker } from './PositionTracker';
+import { ReservationTracker } from './reservation-tracker';
+import { PositionTracker } from './position-tracker';
 
 interface TransactionTrackerDialogProps {
   open: boolean;

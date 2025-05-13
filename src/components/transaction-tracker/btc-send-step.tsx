@@ -1,8 +1,8 @@
 import { Card } from '@/components/ui/card';
-import { TransactionStep } from './TransactionStep';
-import { WarningMessage } from './WarningMessage';
-import { AddressReveal } from './AddressReveal';
-import { WarningIcon } from './WarningIcon';
+import { TransactionStep } from './transaction-step';
+import { WarningMessage } from './warning-message';
+import { AddressReveal } from './address-reveal';
+import { WarningIcon } from './warning-icon';
 import { useState, useEffect } from 'react';
 import { ReservationStatus, Reservation } from '@/types';
 import { Button } from '../ui/button';

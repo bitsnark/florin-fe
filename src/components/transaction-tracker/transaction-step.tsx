@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { StatusIcon } from './StatusIcon';
+import { StatusIcon } from './status-icon';
 
 interface TransactionStepProps {
   title: string;

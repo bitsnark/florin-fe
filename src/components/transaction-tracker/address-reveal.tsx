@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { CopyIcon } from '@radix-ui/react-icons';
-import { CircleProgress } from './CircleProgress';
-import { EyeIcon } from './EyeIcon';
-import { QRCode } from './QRCode';
+import { CircleProgress } from './circle-progress';
+import { EyeIcon } from './eye-icon';
+import { QRCode } from './qr-code';
 import { truncateAddress } from '@/lib/utils';
 
 interface AddressRevealProps {

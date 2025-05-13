@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ReactNode } from 'react';
-import { TrackerSkeleton } from './TrackerSkeleton';
+import { TrackerSkeleton } from './tracker-skeleton';
 
 interface BaseTransactionTrackerProps {
   open: boolean;

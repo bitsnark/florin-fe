@@ -1,10 +1,10 @@
 import { Reservation, ReservationStatus } from '@/types';
-import { useTimer } from './TimerLogic';
-import { TransactionStep } from './TransactionStep';
-import { BtcTransactionCard } from './BtcTransactionCard';
-import { BtcSendStep } from './BtcSendStep';
-import { EthCompletionCard } from './EthCompletionCard';
-import { BaseTransactionTracker } from './BaseTransactionTracker';
+import { useTimer } from './timer-logic';
+import { TransactionStep } from './transaction-step';
+import { BtcTransactionCard } from './btc-transaction-card';
+import { BtcSendStep } from './btc-send-step';
+import { EthCompletionCard } from './eth-completion-card';
+import { BaseTransactionTracker } from './base-transaction-tracker';
 import { useTrackerState } from '../../hooks/useTrackerState';
 import { useReservation } from '@/hooks/queries/useReservation';
 import { Button } from '../ui/button';

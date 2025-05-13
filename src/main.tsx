@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
-import { NotFoundPage } from '@/pages/NotFoundPage';
+import { NotFoundPage } from '@/pages/not-found-page';
 import { Providers } from './providers';
 
 const router = createRouter({
