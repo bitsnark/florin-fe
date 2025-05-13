@@ -58,20 +58,20 @@ export function BtcSendStep({
       title="Send BTC"
       description={descriptionMessage}
       status={
-        reservation.state !== ReservationStatus.EXPIRED &&
+        reservation.state !== ReservationStatus.Expired &&
         (reservation.originTxHash || isReadyToSend)
           ? 'completed'
           : 'current'
       }
       completed={
-        reservation.state !== ReservationStatus.EXPIRED &&
+        reservation.state !== ReservationStatus.Expired &&
         !!reservation.originTxHash
       }
     >
       {!isSent && (
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
-          {state === ReservationStatus.EXPIRED ? (
+          {state === ReservationStatus.Expired ? (
             <div className="flex gap-2 bg-grey rounded-xl p-3">
               <div className="text-orange w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5 mr-2 md:mr-3">
                 <WarningIcon />
@@ -105,7 +105,7 @@ export function BtcSendStep({
           size="sm"
           className="mt-3"
           onClick={handlePassToStepThree}
-          disabled={reservation.state === ReservationStatus.EXPIRED}
+          disabled={reservation.state === ReservationStatus.Expired}
         >
           Complete step
         </Button>

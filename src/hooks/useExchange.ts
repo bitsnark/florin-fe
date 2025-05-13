@@ -113,7 +113,7 @@ export const useExchange = () => {
         contractRegistrationTxHash: hash,
         blockHash: `0x${Math.random().toString(16).slice(2)}`,
         blockNumber: receipt.receipt?.blockNumber,
-        status: TransactionStatus.PENDING,
+        status: TransactionStatus.Pending,
         createdAt: new Date().toISOString(),
         receivedAmount: '0',
       };
@@ -125,7 +125,7 @@ export const useExchange = () => {
         exchangeRate: exchangeRate.toString(), // receipt?.logs[0]?.args?.exchangeRate?.toString()
         tokenAddress: tokenAddress, // receipt.logs[0].address
         bitcoinAddress: bitcoinAddresses, // receipt.logs[0].args.bitcoinAddresses ? receipt.logs[0].args.bitcoinAddresses[0] : ''
-        state: PositionStatus.ACTIVE,
+        state: PositionStatus.Active,
         finality: Finality.FINAL,
         chainId: chainId,
         ...transaction,
@@ -178,7 +178,7 @@ export const useExchange = () => {
         contractRegistrationTxHash: hash,
         blockHash: receipt.receipt?.blockHash,
         blockNumber: receipt.receipt?.blockNumber,
-        status: TransactionStatus.COMPLETED,
+        status: TransactionStatus.Completed,
         receivedAmount: '0',
       };
 
@@ -194,7 +194,7 @@ export const useExchange = () => {
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         tokenAddress: tokenAddress,
-        state: ReservationStatus.ACTIVE,
+        state: ReservationStatus.Pending,
         finality: Finality.FINAL,
         chainId: chainId,
         ...transaction,

@@ -16,8 +16,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Transaction } from './types';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
+import { TransactionNormalized } from './transaction-history-adapter';
+import { TransactionStatus } from '@/types';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
@@ -26,7 +27,7 @@ export const MobileTransactionItem = ({
   setTransactionToTrack,
   setOpenTrackerDialog,
 }: {
-  tx: Transaction;
+  tx: TransactionNormalized;
   index: number;
   setTransactionToTrack?: (tx: {
     id: string;
@@ -40,8 +41,8 @@ export const MobileTransactionItem = ({
     if (setOpenTrackerDialog && setTransactionToTrack) {
       setOpenTrackerDialog(true);
       setTransactionToTrack({
-        id: tx.hash,
-        type: tx.action === 'Deposit' ? 'position' : 'reservation',
+        id: tx.contractRegistrationTxHash,
+        type: tx.type === 'position' ? 'position' : 'reservation',
       });
     }
   };
@@ -66,7 +67,7 @@ export const MobileTransactionItem = ({
 
         <div className="flex items-center gap-3">
           <div className="text-sm font-medium text-right">
-            <span className="text-white">{tx.amount}</span> {tx.asset}
+            <span className="text-white">{tx.amount}</span> {tx.type === 'position' ? 'BTC' : 'ETH'}
           </div>
         </div>
       </AccordionTrigger>
@@ -76,14 +77,14 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Contract registration</span>
             <span className="text-sm text-right text-[#F0A719]">
-              {formatHash(tx.contractRegistration)}
+              {formatHash(tx.contractRegistrationTxHash)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Requested amount</span>
             <span className="text-sm text-right">
-              {tx.amount} {tx.asset}
+              {tx.amount} {tx.type === 'position' ? 'BTC' : 'ETH'}
             </span>
           </div>
 
@@ -91,35 +92,35 @@ export const MobileTransactionItem = ({
             <span className="text-sm">Received amount</span>
             <span className="text-sm text-right">
               {formatReceivedAmount(tx.receivedAmount, data?.minAmount)}{' '}
-              {tx.asset === 'ETH' ? 'BTC' : 'ETH'}
+              {tx.type === 'position' ? 'BTC' : 'ETH'}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E] underline">
-              {formatHash(tx.originTxId)}
+              {formatHash(tx.originTxHash)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E] underline">
-              {formatHash(tx.destinationTxId)}
+              {formatHash(tx.destinationTxHash)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Timestamp</span>
             <span className="text-sm text-right text-white">
-              {formatDate(tx.date)}
+              {formatDate(tx.createdAt)}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Status</span>
             <div className="flex items-center justify-end gap-2">
-              {tx.status === 'Completed' ? (
+              {tx.state === TransactionStatus.Completed ? (
                 <>
                   <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
                     <CheckCircledIcon className="text-green-600" />
@@ -131,7 +132,7 @@ export const MobileTransactionItem = ({
                   <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
                     <SymbolIcon className="h-5 w-5" />
                   </div>
-                  <span className="text-sm">{tx.status}</span>
+                  <span className="text-sm">{tx.state}</span>
                 </>
               )}
             </div>

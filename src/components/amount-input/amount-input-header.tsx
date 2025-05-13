@@ -1,4 +1,3 @@
-import React from 'react';
 import { ASSETS, NETWORK_NAMES } from '@/constants/assets';
 import walletIcon from '@/assets/wallet-icon.svg';
 import { cn } from '@/lib/utils';
