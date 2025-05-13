@@ -47,7 +47,7 @@ export function PositionTracker({
     transactionHash: position?.contractRegistrationTxHash,
   });
 
-  const isPositionCompleted = position?.state === PositionStatus.COMPLETED;
+  const isPositionCompleted = position?.state === PositionStatus.Closed;
   const [bridgeCompleted, setBridgeCompleted] = useState(isPositionCompleted);
 
   // Update bridge status when position is completed
@@ -73,7 +73,7 @@ export function PositionTracker({
           ...position,
           originTxHash: '0xoriginRandomHash',
           destinationTxHash: '0xdestinationRandomHash',
-          state: PositionStatus.COMPLETED,
+          state: PositionStatus.Closed,
           receivedAmount: (Number(position.amount) - gasFee).toString(),
         } as Position,
         {
