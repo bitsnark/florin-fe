@@ -14,7 +14,7 @@ export function FooterLinks() {
         </span>
         <Link
           className="text-[18px] font-medium text-white md:text-[#939097]"
-          to="/"
+          to="/terms"
         >
           Terms
         </Link>

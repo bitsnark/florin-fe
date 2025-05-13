@@ -18,6 +18,8 @@ import { Providers } from './providers';
 const router = createRouter({
   routeTree,
   defaultNotFoundComponent: NotFoundPage,
+  scrollRestoration: true,
+
 });
 
 // Register the router instance for type safety
