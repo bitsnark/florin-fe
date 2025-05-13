@@ -9,6 +9,8 @@ import { Providers } from './providers';
 const router = createRouter({
   routeTree,
   defaultNotFoundComponent: NotFoundPage,
+  scrollRestoration: true,
+
 });
 declare module '@tanstack/react-router' {
   interface Register {

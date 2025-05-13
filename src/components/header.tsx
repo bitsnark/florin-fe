@@ -64,12 +64,14 @@ export function Header() {
       <div className="w-full flex justify-center pb-8 hidden md:flex">
         <div className="p-2 flex gap-2 w-[1024px] h-[120px] justify-between pt-8">
           <div className="flex items-center gap-5">
-            <img
-              src={logo}
-              alt="Grail Bridge Logo"
-              className="w-[72px] h-[72px]"
-            />
-            <span className="text-white font-bold">Grail Bridge</span>
+            <Link to="/" className="flex items-center gap-5">
+              <img
+                src={logo}
+                alt="Grail Bridge Logo"
+                className="w-[72px] h-[72px]"
+              />
+              <span className="text-white font-bold">Grail Bridge</span>
+            </Link>
           </div>
           <div className="flex items-center gap-5">
             {navigationItems.map((item) => (
