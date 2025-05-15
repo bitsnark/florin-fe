@@ -1,4 +1,3 @@
-import { FlorinApiService } from '@/services/Api';
 import {
   Finality,
   Position,
@@ -13,7 +12,7 @@ import { useState } from 'react';
 import { Address } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
 import { ContractManager } from '@/services/ContractManager';
-import { bech32ToBytes32 } from '@/lib/utils';
+import { bech32ToBytes32, bytes32ToBech32 } from '@/lib/utils';
 import { DEFAULT_POSITION_ID } from '@/constants';
 
 export const useExchange = () => {
@@ -131,7 +130,7 @@ export const useExchange = () => {
         ...transaction,
       };
 
-      await FlorinApiService.addPosition(newPosition);
+      //await FlorinApiService.addPosition(newPosition);
       setLoading(false);
       return newPosition;
     } catch (error) {
@@ -201,7 +200,7 @@ export const useExchange = () => {
         createdAt: new Date().toISOString(),
       };
 
-      await FlorinApiService.addReservation(newReservation);
+      //await FlorinApiService.addReservation(newReservation);
       setLoading(false);
       return newReservation;
     } catch (error) {
@@ -225,6 +224,7 @@ export const useExchange = () => {
         chainId as keyof typeof CONTRACTS_ADDRESS
       ].ammExchange as Address;
 
+      console.log('getPosition', positionId, chainId);
       const position = (await contractManager.readContract(
         'AMMExchange',
         'getPosition',
@@ -232,6 +232,7 @@ export const useExchange = () => {
         contractAddress
       )) as unknown as EVMPosition;
       setLoading(false);
+      console.log('position', position);
       return position;
     } catch (error) {
       setLoading(false);
@@ -262,7 +263,14 @@ export const useExchange = () => {
         contractAddress
       )) as unknown as EVMReservation;
       setLoading(false);
-      return reservation;
+      console.log('reservationnnnnn', reservation );
+      console.log('reservation.bitcoinAddress', bytes32ToBech32(reservation.bitcoinAddress));
+      
+      // For now, we'll just return the bytes32 value since we can't recover the original address
+      return {
+        ...reservation,
+        bitcoinAddress: bytes32ToBech32(reservation.bitcoinAddress),
+      };
     } catch (error) {
       setLoading(false);
       setError((error as Error).message);

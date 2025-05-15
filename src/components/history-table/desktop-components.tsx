@@ -13,13 +13,14 @@ import {
 import { TableRow, TableCell } from '@/components/ui/table';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
-import { TransactionStatus } from '@/types';
+import { PositionStatus, ReservationStatus } from '@/types';
 
 interface DesktopTransactionRowProps {
   tx: TransactionNormalized;
   setTransactionToTrack: (tx: {
     id: string;
     type: 'reservation' | 'position';
+    txHash: string;
   }) => void;
   setOpenTrackerDialog: (open: boolean) => void;
 }
@@ -34,8 +35,9 @@ export const DesktopTransactionRow = ({
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);
     setTransactionToTrack({
-      id: tx.contractRegistrationTxHash,
+      id: tx.type === 'reservation' ? tx.reservationId || '' : tx.positionId || '',
       type: tx.type,
+      txHash: tx.contractRegistrationTxHash,
     });
   };
 
@@ -66,11 +68,11 @@ export const DesktopTransactionRow = ({
         {formatHash(tx.contractRegistrationTxHash)}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.amount} {tx.type === 'position' ? 'BTC' : 'ETH'}
+        {tx.amount} {tx.type === 'position' ? 'ETH' : 'BTC'}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatReceivedAmount(tx.receivedAmount, data?.minAmount)}{' '}
-        {tx.type === 'position' ? 'BTC' : 'ETH'}
+        {tx.type === 'position' ? 'ETH' : 'BTC'}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
         {formatHash(tx.originTxHash)}
@@ -83,7 +85,7 @@ export const DesktopTransactionRow = ({
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">
-          {tx.state === TransactionStatus.Completed ? (
+          {tx.state === PositionStatus.Closed || tx.state === ReservationStatus.Settled ? (
             <div className="bg-grey rounded-full p-[0.125rem]">
               <CheckCircledIcon className="text-green-600" />
             </div>

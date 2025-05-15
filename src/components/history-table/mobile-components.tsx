@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/accordion';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
-import { TransactionStatus } from '@/types';
+import { PositionStatus, ReservationStatus } from '@/types';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
@@ -32,6 +32,7 @@ export const MobileTransactionItem = ({
   setTransactionToTrack?: (tx: {
     id: string;
     type: 'reservation' | 'position';
+    txHash: string;
   }) => void;
   setOpenTrackerDialog?: (open: boolean) => void;
 }) => {
@@ -43,6 +44,7 @@ export const MobileTransactionItem = ({
       setTransactionToTrack({
         id: tx.contractRegistrationTxHash,
         type: tx.type === 'position' ? 'position' : 'reservation',
+        txHash: tx.contractRegistrationTxHash,
       });
     }
   };
@@ -120,7 +122,7 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Status</span>
             <div className="flex items-center justify-end gap-2">
-              {tx.state === TransactionStatus.Completed ? (
+              {tx.state === PositionStatus.Closed || tx.state === ReservationStatus.Settled ? (
                 <>
                   <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
                     <CheckCircledIcon className="text-green-600" />

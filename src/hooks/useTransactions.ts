@@ -22,9 +22,6 @@ export function useTransactions(ownerAddress: string | undefined) {
     error,
   } = useTransactionHistory(ownerAddress);
 
-  console.log('transactionHistory', transactionHistory);
-  
-
   // Transform positions and reservations into transactions
   const transactions = !isLoading && !isError
     ? transactionHistory.map(transactionHistoryAdapter).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())

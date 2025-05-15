@@ -29,7 +29,6 @@ import {
  * @returns A transaction object compatible with the UI components
  */
 export const positionToTransaction = (position: Position): Transaction => {
-  console.log('position', position.state);
   let status: TransactionStatus;
   switch (position.state) {
     case PositionStatus.Active || !position.state:

@@ -6,6 +6,7 @@ interface TransactionTrackerDialogProps {
   onOpenChange: (open: boolean) => void;
   type: 'reservation' | 'position';
   id: string;
+  txHash: string;
 }
 
 export function TransactionTrackerDialog({
@@ -13,14 +14,14 @@ export function TransactionTrackerDialog({
   onOpenChange,
   type,
   id,
+  txHash,
 }: TransactionTrackerDialogProps) {
   // Render the appropriate tracker based on the type
-
   if (type === 'reservation') {
     return (
-      <ReservationTracker open={open} onOpenChange={onOpenChange} id={id} />
+      <ReservationTracker open={open} onOpenChange={onOpenChange} id={id} txHash={txHash} />
     );
   }
 
-  return <PositionTracker open={open} onOpenChange={onOpenChange} id={id} />;
+  return <PositionTracker open={open} onOpenChange={onOpenChange} id={id} txHash={txHash} />;
 }

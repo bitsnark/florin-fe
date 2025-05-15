@@ -64,60 +64,15 @@ export class FlorinApiService {
 
   static async getPositionById(
     id: string | undefined,
-    finalityFlag?: boolean
   ): Promise<Position | null> {
     if (!id) return null;
 
-    const response = await fetch(`${API_BASE_URL}/positions/${id}`);
+    const response = await fetch(`${API_BASE_URL}/position/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch position: ${response.statusText}`);
     }
     const position = await response.json();
-    const normalizedPosition = {
-      ...position,
-      amount: formatEther(BigInt(position.amount)),
-      receivedAmount: formatEther(BigInt(position.receivedAmount || '0')),
-    };
-    return finalityFlag === undefined || position.finality === 'FINAL'
-      ? normalizedPosition
-      : null;
-  }
-
-  static async updatePosition(position: Position): Promise<Position> {
-    const response = await fetch(
-      `${API_BASE_URL}/positions/${position.positionId}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: serializeBigInt({
-          ...position,
-          amount: parseEther(position.amount),
-          receivedAmount: parseEther(position.receivedAmount || '0'),
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to update position: ${response.statusText}`);
-    }
-    return response.json();
-  }
-
-  static async addPosition(position: Position): Promise<Position> {
-    const response = await fetch(`${API_BASE_URL}/positions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: serializeBigInt(position),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to add position: ${response.statusText}`);
-    }
-    return response.json();
+    return position;
   }
 
   static async getReservationsByOwner(
@@ -163,23 +118,15 @@ export class FlorinApiService {
 
   static async getReservationById(
     id: string | undefined,
-    finalityFlag?: boolean
   ): Promise<Reservation | null> {
     if (!id) return null;
 
-    const response = await fetch(`${API_BASE_URL}/reservations/${id}`);
+    const response = await fetch(`${API_BASE_URL}/reservation/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch reservation: ${response.statusText}`);
     }
     const reservation = await response.json();
-    const normalizedReservation = {
-      ...reservation,
-      amount: formatEther(BigInt(reservation.amount)),
-      receivedAmount: formatEther(BigInt(reservation.receivedAmount || '0')),
-    };
-    return finalityFlag === undefined || reservation.finality === 'FINAL'
-      ? normalizedReservation
-      : null;
+    return reservation;
   }
 
   static async updateReservation(
@@ -247,16 +194,19 @@ export class FlorinApiService {
     return data.positionId;
   }
 
-  static async getMaxAmount(): Promise<{ maxAmount: number; minAmount: number }> {
-    const response = await fetch(`${API_BASE_URL}/positions/max-min-amount`);
-    if (!response.ok) {
+  static async getMaxAmount(): Promise<{
+    maxAmount: number;
+    minAmount: number;
+  }> {
+    //const response = await fetch(`${API_BASE_URL}/positions/max-min-amount`);
+    /*  if (!response.ok) {
       throw new Error(`Failed to fetch max amount: ${response.statusText}`);
-    }
-    const data = await response.json();
+    } */
+    // const data = await response.json();
 
     return {
-      maxAmount: Number(data.maxAmount),
-      minAmount: Number(data.minAmount),
+      maxAmount: 3,
+      minAmount: 0.0004,
     };
   }
 
@@ -280,14 +230,20 @@ export class FlorinApiService {
     }
   }
 
-  static async getTransactionHistory(ownerAddress: string | undefined): Promise<TransactionHistory> {
+  static async getTransactionHistory(
+    ownerAddress: string | undefined
+  ): Promise<TransactionHistory> {
     if (!ownerAddress) {
       throw new Error('Owner address is required');
     }
 
-    const response = await fetch(`${env.VITE_API_BASE_URL_NEW}/history/${ownerAddress}`);
+    const response = await fetch(
+      `${env.VITE_API_BASE_URL}/history/${ownerAddress}`
+    );
     if (!response.ok) {
-      throw new Error(`Failed to fetch transaction history: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch transaction history: ${response.statusText}`
+      );
     }
     return response.json();
   }

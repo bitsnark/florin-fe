@@ -50,6 +50,10 @@ export type Position = {
   destinationTxHash?: string;
   originTxConfirmations?: number;
   destinationsTxConfirmations?: number;
+  targetChain?: number;
+  targetTxhash?: string;
+  targetBlockEight?: number;
+  targetBlockHash?: string;
 };
 
 export type Reservation = {
@@ -67,12 +71,12 @@ export type Reservation = {
   hash: string;
   createdAt: string; // ISO 8601 string
   receivedAmount?: string;
-  status: TransactionStatus;
   contractRegistrationTxHash: string;
   originTxHash?: string;
-  destinationTxHash?: string;
-  originTxConfirmations?: number;
-  destinationsTxConfirmations?: number;
+  targetChain?: number;
+  targetTxhash?: string;
+  targetBlockEight?: number;
+  targetBlockHash?: string;
 };
 
 export type EVMPosition = {
@@ -127,6 +131,7 @@ export type TransactionHistoryItem = {
   positionId: string;
   reservationId?: string;
   amount: string;
+  originalAmount?: string;
   tokenAddress: string;
   ownerAddress: string;
   bitcoinAddress: string;
@@ -140,11 +145,12 @@ export type TransactionHistoryItem = {
   originBlockNumber: number;
   originBlockHash: string;
   originFinality: Finality;
-  state: PositionStatus | ReservationStatus;
+  state: number;
   destinationTxHash?: string;
   destinationBlockNumber?: number;
   destinationBlockHash?: string;
   destinationTxConfirmations?: number;
+  blockTimestamp?: string;
 };
 
 export type TransactionHistory = TransactionHistoryItem[]; 

@@ -2,98 +2,54 @@ import { TransactionStep } from './transaction-step';
 import { EthTransactionCard } from './eth-transaction-card';
 import { BtcCompletionCard } from './btc-completion-card';
 import { BaseTransactionTracker } from './base-transaction-tracker';
-import { useTrackerState } from '../../hooks/useTrackerState';
 import { usePosition } from '@/hooks/queries/usePosition';
-import { useEffect, useState, useRef } from 'react';
-import { Position, PositionStatus } from '@/types';
-import { useUpdatePosition } from '@/hooks/mutations/useUpdatePosition';
-import { gasFee } from '@/lib/utils';
+//import { gasFee } from '@/lib/utils';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMPositionPolling } from '@/hooks/useEVMPositionPolling';
 import { useChainId } from 'wagmi';
+import { formatEther } from 'viem';
+import { useMemo } from 'react';
+import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 
 interface PositionTrackerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   id: string;
+  txHash: string;
 }
 
 export function PositionTracker({
   open,
   onOpenChange,
   id,
+  txHash,
 }: PositionTrackerProps) {
-  const { data: position, isLoading, error } = usePosition(id, {});
-  const updatePosition = useUpdatePosition();
-  const hasUpdatedPosition = useRef(false);
+  const { data: position } = usePosition(id, {});
   const chainId = useChainId();
-  
-  const { evmPosition } = useEVMPositionPolling({
-    positionId: position?.positionId || '',
+  const { evmPosition, isLoading, error } = useEVMPositionPolling({
+    positionId: id || '',
     chainId: chainId || 0,
     isActive: open,
   });
+  const { data: bitcoinPrice } = useBitcoinPrice();
 
-  console.log('evmPosition', position?.positionId, evmPosition);
-  useTrackerState({
-    hasOriginTxId: !!position?.originTxHash,
-    hasDestinationTxId: !!position?.destinationTxHash,
-    transactionStatus: position?.status,
-  });
+  const fiatAmount = useMemo(() => {
+    if (!evmPosition?.originalAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
+    const btcAmount = formatEther(evmPosition.originalAmount);
+    const usdValue = Number(btcAmount) * bitcoinPrice.bitcoin.usd;
+    return usdValue.toFixed(2);
+  }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
+  console.log('evmPosition', evmPosition, id, txHash, 'db position', position);
+
+  const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
   const confirmations = useTxConfirmations({
     isActive: open,
-    maxConfirmations: 20,
-    transactionHash: position?.contractRegistrationTxHash,
+    maxConfirmations: maxConfirmations,
+    transactionHash: txHash,
   });
-
-  const isPositionCompleted = position?.state === PositionStatus.Closed;
-  const [bridgeCompleted, setBridgeCompleted] = useState(isPositionCompleted);
-
-  // Update bridge status when position is completed
-  useEffect(() => {
-    if (isPositionCompleted) {
-      setBridgeCompleted(true);
-    }
-  }, [isPositionCompleted]);
-
-  // Update position status when confirmations reach threshold
-  useEffect(() => {
-    const shouldUpdatePosition =
-      confirmations === 20 &&
-      position &&
-      !hasUpdatedPosition.current &&
-      !bridgeCompleted;
-
-    if (shouldUpdatePosition) {
-      hasUpdatedPosition.current = true;
-
-      updatePosition.mutate(
-        {
-          ...position,
-          originTxHash: '0xoriginRandomHash',
-          destinationTxHash: '0xdestinationRandomHash',
-          state: PositionStatus.Closed,
-          receivedAmount: (Number(position.amount) - gasFee).toString(),
-        } as Position,
-        {
-          onSuccess: () => setBridgeCompleted(true),
-          onError: (error) => console.error('Error updating position:', error),
-        }
-      );
-    }
-  }, [confirmations, position, updatePosition, bridgeCompleted]);
-
-  // Reset state when dialog closes
-  useEffect(() => {
-    if (!open) {
-      setBridgeCompleted(false);
-      hasUpdatedPosition.current = false;
-    }
-  }, [open]);
-
-  // Display confirmations based on position state
-  const displayConfirmations = isPositionCompleted ? 20 : confirmations;
+  const isPositionCompleted = evmPosition?.status === 3;
+  const displayConfirmations = isPositionCompleted ? maxConfirmations : confirmations;
 
   return (
     <BaseTransactionTracker
@@ -102,23 +58,23 @@ export function PositionTracker({
       isLoading={isLoading}
       error={error}
     >
-      {position && (
+      {evmPosition && (
         <>
           {/* Step 1 - Initiating transaction */}
           <TransactionStep
             title="Initiating transaction"
             description="Sending your request to the smart contract. It might take up to 5 min."
             status="completed"
-            completed={true}
+            completed={isPositionCompleted}
             isStepOne={true}
           >
             <EthTransactionCard
               data={{
-                amount: position.amount,
-                recipientAddress: position.positionId,
-                reservationTx: position?.contractRegistrationTxHash || '',
+                amount: formatEther(evmPosition.originalAmount),
+                recipientAddress: evmPosition.positionId,
+                reservationTx: '',
                 confirmations: displayConfirmations,
-                fiatAmount: '100',
+                fiatAmount: fiatAmount,
               }}
             />
           </TransactionStep>
@@ -127,15 +83,15 @@ export function PositionTracker({
           <TransactionStep
             title="Bridging complete"
             description="Funds (BTC) are in your wallet now"
-            status={bridgeCompleted ? 'completed' : 'pending'}
-            completed={bridgeCompleted}
+            status={isPositionCompleted ? 'completed' : 'pending'}
+            completed={isPositionCompleted}
             isLastStep={true}
           >
-            {bridgeCompleted && (
+            {isPositionCompleted && (
               <BtcCompletionCard
-                amount={position.amount}
-                recipientAddress={position.positionId}
-                reservationTx={position?.contractRegistrationTxHash || ''}
+                amount={formatEther(evmPosition?.originalAmount || 0n)}
+                recipientAddress={evmPosition?.positionId || ''}
+                reservationTx={''}
                 type="position"
               />
             )}

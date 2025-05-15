@@ -15,7 +15,7 @@ import { useBitSnarkBalance } from '@/hooks/useBitSnarkBalance';
 import { useAccount } from 'wagmi';
 
 interface TransferTabProps {
-  onTransactionCreated: (type: 'position' | 'reservation', id: string) => void;
+  onTransactionCreated: (type: 'position' | 'reservation', id: string, txHash: string) => void;
 }
 
 export function TransferTab({ onTransactionCreated }: TransferTabProps) {
@@ -101,7 +101,8 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
         fromNetwork === 'ethereum' ? 'position' : 'reservation',
         fromNetwork === 'ethereum'
           ? (transaction as Position)?.positionId
-          : (transaction as Reservation)?.reservationId
+          : (transaction as Reservation)?.reservationId,
+        transaction.hash
       );
     }
   };

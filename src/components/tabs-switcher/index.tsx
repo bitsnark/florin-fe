@@ -10,10 +10,12 @@ export function TabSwitcherContainer() {
     type: 'position' | 'reservation';
     open: boolean;
     transactionId: string;
+    txHash: string;
   }>({
     type: 'position',
     open: false,
     transactionId: '',
+    txHash: '',
   });
 
   const tabs = ['Transfer', 'History'];
@@ -37,15 +39,17 @@ export function TabSwitcherContainer() {
         }}
         type={trackerData.type}
         id={trackerData.transactionId}
+        txHash={trackerData.txHash}
       />
       <div className="my-3">
         {activeTab === 0 ? (
           <TransferTab 
-            onTransactionCreated={(type, id) => {
+            onTransactionCreated={(type, id, txHash) => {
               setTrackerData({
                 type,
                 open: true,
                 transactionId: id,
+                txHash,
               });
             }}
           />

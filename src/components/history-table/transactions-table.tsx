@@ -41,6 +41,7 @@ export default function TransactionsTable() {
   const [transactionToTrack, setTransactionToTrack] = useState<{
     id: string;
     type: 'reservation' | 'position';
+    txHash: string;
   } | null>(null);
   const [openTrackerDialog, setOpenTrackerDialog] = useState(false);
 
@@ -171,6 +172,7 @@ export default function TransactionsTable() {
         onOpenChange={setOpenTrackerDialog}
         type={transactionToTrack?.type || 'reservation'}
         id={transactionToTrack?.id || ''}
+        txHash={transactionToTrack?.txHash || ''}
       />
     </>
   );

@@ -5,7 +5,6 @@ import { AddressReveal } from './address-reveal';
 import { WarningIcon } from './warning-icon';
 import { useState, useEffect } from 'react';
 import { ReservationStatus, Reservation } from '@/types';
-import { Button } from '../ui/button';
 
 interface BtcSendStepProps {
   amount: string;
@@ -20,23 +19,21 @@ interface BtcSendStepProps {
   confirmations: number;
   state: ReservationStatus;
   reservation: Reservation;
-  handlePassToStepThree: () => void;
-  handleExpireReservation: () => void;
   fiatAmount: string;
+  maxConfirmations: number;
 }
 
 export function BtcSendStep({
   amount,
-  recipientAddress = 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
+  recipientAddress,
   timeLeft,
   progress,
   isSent,
   confirmations,
   state,
   reservation,
-  handlePassToStepThree,
-  handleExpireReservation,
   fiatAmount,
+  maxConfirmations,
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
   const [isReadyToSend, setIsReadyToSend] = useState(false);
@@ -47,11 +44,12 @@ export function BtcSendStep({
       ? 'Your Bitcoin transaction has been detected. You need to send BTC from your bitcoin wallet to a specified address. If your transaction is $100+ in BTC, you must to wait for at least 6 confirmations before sending BTC. Make sure to send BTC within 12 hours.'
       : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address. Make sure to send BTC within 12 hours.';
 
+  console.log('confirmations', confirmations, maxConfirmations);
   useEffect(() => {
-    if (confirmations === 20) {
+    if (confirmations >= maxConfirmations) {
       setIsReadyToSend(true);
     }
-  }, [confirmations]);
+  }, [confirmations, maxConfirmations]);
 
   return (
     <TransactionStep
@@ -83,7 +81,7 @@ export function BtcSendStep({
           ) : (
             <AddressReveal
               amount={amount}
-              address={recipientAddress}
+              address={recipientAddress!}
               timeLeft={timeLeft}
               progress={progress}
               isReadyToSend={isReadyToSend}
@@ -91,25 +89,7 @@ export function BtcSendStep({
           )}
         </Card>
       )}
-      <div className="flex gap-2">
-        <Button
-          variant="orange"
-          size="sm"
-          className="mt-3"
-          onClick={handleExpireReservation}
-        >
-          Expire reservation
-        </Button>
-        <Button
-          variant="orange"
-          size="sm"
-          className="mt-3"
-          onClick={handlePassToStepThree}
-          disabled={reservation.state === ReservationStatus.Expired}
-        >
-          Complete step
-        </Button>
-      </div>
+     
     </TransactionStep>
   );
 }

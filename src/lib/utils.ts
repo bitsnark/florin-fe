@@ -81,3 +81,18 @@ export function bech32ToBytes32(address: string): `0x${string}` {
     .slice(0, 64)
     .padEnd(64, '0')}` as `0x${string}`;
 }
+
+/**
+ * Converts a bytes32 value back to a Bitcoin address
+ * @param bytes32 The bytes32 value to convert
+ * @returns The original Bitcoin address
+ */
+export function bytes32ToBech32(bytes32: string): string {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(bytes32);
+  return `0x${Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+    .slice(0, 64)
+    .padEnd(64, '0')}` as `0x${string}`;
+}
