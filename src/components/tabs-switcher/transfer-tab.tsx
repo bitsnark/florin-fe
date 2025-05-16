@@ -179,6 +179,7 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
             variant="orange"
             size="custom"
             disabled={disabled}
+            loading={loading}
           >
             {'Bridge funds'}
           </Button>
