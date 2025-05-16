@@ -12,7 +12,7 @@ export const useEVMReservationPolling = ({
   reservationId,
   chainId,
   isActive = true,
-  pollingInterval = 10000,
+  pollingInterval = 5000,
 }: UseEVMReservationPollingProps) => {
   const { getReservation } = useExchange();
 

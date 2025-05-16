@@ -28,11 +28,9 @@ export function ReservationTracker({
   txHash,
 }: ReservationTrackerProps) {
   const { timeLeft, progress } = useTimer(open);
-  const { data, isLoading: isReservationLoading } = useReservation(id, {});
+  const { data, isLoading: isReservationLoading } = useReservation(id, { refetchInterval: 5000 });
   const { data: bitcoinPrice } = useBitcoinPrice();
-
   const chainId = useChainId();
-
   const reservation = data?.data;
 
   const {
