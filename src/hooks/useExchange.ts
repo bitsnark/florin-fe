@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { Address } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
 import { ContractManager } from '@/services/ContractManager';
-import { bech32ToBytes32, bytes32ToBech32, bytes32ToBech32Taproot, decodeBech32WitnessProgram } from '@/lib/utils';
+import { bech32ToBytes32, bytes32ToBech32Taproot } from '@/lib/utils';
 import { DEFAULT_POSITION_ID } from '@/constants';
 
 export const useExchange = () => {
@@ -22,7 +22,7 @@ export const useExchange = () => {
   const openPosition = async ({
     tokenAmount,
     exchangeRate,
-    bitcoinAddresses = '0x9f3c9346dd5edc74032aef79b3e4585f7a4dffb51aa3780704e63f87c4170dd3',
+    bitcoinAddresses,
     deadline,
     owner,
     chainId,
