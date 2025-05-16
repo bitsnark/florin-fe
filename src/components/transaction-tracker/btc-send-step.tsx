@@ -1,11 +1,10 @@
 import { Card } from '@/components/ui/card';
-import { TransactionStep } from './TransactionStep';
-import { WarningMessage } from './WarningMessage';
-import { AddressReveal } from './AddressReveal';
-import { WarningIcon } from './WarningIcon';
+import { TransactionStep } from './transaction-step';
+import { WarningMessage } from './warning-message';
+import { AddressReveal } from './address-reveal';
+import { WarningIcon } from './warning-icon';
 import { useState, useEffect } from 'react';
 import { ReservationStatus, Reservation } from '@/types';
-import { Button } from '../ui/button';
 
 interface BtcSendStepProps {
   amount: string;
@@ -20,23 +19,21 @@ interface BtcSendStepProps {
   confirmations: number;
   state: ReservationStatus;
   reservation: Reservation;
-  handlePassToStepThree: () => void;
-  handleExpireReservation: () => void;
   fiatAmount: string;
+  maxConfirmations: number;
 }
 
 export function BtcSendStep({
   amount,
-  recipientAddress = 'bc1qeeaumkv7r9r5uc0aacrfzejv0dmu2cmlvva5gu',
+  recipientAddress,
   timeLeft,
   progress,
   isSent,
   confirmations,
   state,
   reservation,
-  handlePassToStepThree,
-  handleExpireReservation,
   fiatAmount,
+  maxConfirmations,
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
   const [isReadyToSend, setIsReadyToSend] = useState(false);
@@ -47,31 +44,32 @@ export function BtcSendStep({
       ? 'Your Bitcoin transaction has been detected. You need to send BTC from your bitcoin wallet to a specified address. If your transaction is $100+ in BTC, you must to wait for at least 6 confirmations before sending BTC. Make sure to send BTC within 12 hours.'
       : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address. Make sure to send BTC within 12 hours.';
 
+  console.log('confirmations', confirmations, maxConfirmations);
   useEffect(() => {
-    if (confirmations === 20) {
+    if (confirmations >= maxConfirmations) {
       setIsReadyToSend(true);
     }
-  }, [confirmations]);
+  }, [confirmations, maxConfirmations]);
 
   return (
     <TransactionStep
       title="Send BTC"
       description={descriptionMessage}
       status={
-        reservation.state !== ReservationStatus.EXPIRED &&
+        reservation.state !== ReservationStatus.Expired &&
         (reservation.originTxHash || isReadyToSend)
           ? 'completed'
           : 'current'
       }
       completed={
-        reservation.state !== ReservationStatus.EXPIRED &&
+        reservation.state !== ReservationStatus.Expired &&
         !!reservation.originTxHash
       }
     >
       {!isSent && (
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
-          {state === ReservationStatus.EXPIRED ? (
+          {state === ReservationStatus.Expired ? (
             <div className="flex gap-2 bg-grey rounded-xl p-3">
               <div className="text-orange w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5 mr-2 md:mr-3">
                 <WarningIcon />
@@ -83,7 +81,7 @@ export function BtcSendStep({
           ) : (
             <AddressReveal
               amount={amount}
-              address={recipientAddress}
+              address={recipientAddress!}
               timeLeft={timeLeft}
               progress={progress}
               isReadyToSend={isReadyToSend}
@@ -91,25 +89,7 @@ export function BtcSendStep({
           )}
         </Card>
       )}
-      <div className="flex gap-2">
-        <Button
-          variant="orange"
-          size="sm"
-          className="mt-3"
-          onClick={handleExpireReservation}
-        >
-          Expire reservation
-        </Button>
-        <Button
-          variant="orange"
-          size="sm"
-          className="mt-3"
-          onClick={handlePassToStepThree}
-          disabled={reservation.state === ReservationStatus.EXPIRED}
-        >
-          Complete step
-        </Button>
-      </div>
+     
     </TransactionStep>
   );
 }

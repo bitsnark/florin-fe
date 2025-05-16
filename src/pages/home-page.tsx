@@ -4,7 +4,7 @@ import { TabSwitcherContainer } from '@/components/tabs-switcher';
 import { Hero } from '@/components/hero';
 import heroImageGlobal from '@/assets/hero-image-global.png';
 
-export function Index() {
+export function Home() {
   return (
     <div className="py-10 md:py-20">
       <Hero

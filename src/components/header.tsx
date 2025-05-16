@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { EvmWalletConnect } from './evm-wallet-connector';
 import logo from '@/assets/bos-bridge-logo.png';
 import { MenuIcon } from './ui/menu-icon';
-// Define the navigation items
 const navigationItems = [
   {
     to: 'https://www.bitcoinos.build/',
@@ -26,12 +25,10 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Use effect to handle mounting state - this avoids animation on initial render
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Use effect to prevent scrolling when menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -39,7 +36,6 @@ export function Header() {
       document.body.style.overflow = '';
     }
 
-    // Cleanup function to ensure we restore scrolling when component unmounts
     return () => {
       document.body.style.overflow = '';
     };
@@ -54,12 +50,10 @@ export function Header() {
       'text-white py-3 border-b border-grey opacity-100 transform translate-x-0 transition-all duration-300 ease-in-out',
   };
 
-  // Handle menu toggle with animation
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Delay for staggered animation of menu items
   const getAnimationDelay = (index: number) => {
     return { transitionDelay: `${150 + index * 75}ms` };
   };

@@ -1,5 +1,5 @@
-import { WarningIcon } from './WarningIcon';
-import { InfoIcon } from './InfoIcon';
+import { WarningIcon } from './warning-icon';
+import { InfoIcon } from './info-icon';
 
 interface WarningMessageProps {
   message: string;

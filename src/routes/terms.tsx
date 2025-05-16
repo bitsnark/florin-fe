@@ -1,4 +1,4 @@
-import Terms from '@/pages/Terms'
+import Terms from '@/pages/terms-page'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/terms')({

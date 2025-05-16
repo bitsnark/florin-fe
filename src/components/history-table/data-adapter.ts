@@ -13,12 +13,13 @@
  * or change the backend implementation (which might not be feasible at the moment).
  */
 
-import { Transaction } from './types';
 import {
   Position,
   PositionStatus,
   Reservation,
   ReservationStatus,
+  Transaction,
+  TransactionStatus,
 } from '@/types';
 
 /**
@@ -28,24 +29,14 @@ import {
  * @returns A transaction object compatible with the UI components
  */
 export const positionToTransaction = (position: Position): Transaction => {
-  // Determine the status based on position state
-  let status: 'Completed' | 'Pending' | 'Failed';
+  let status: TransactionStatus;
   switch (position.state) {
-    case PositionStatus.ACTIVE:
-      status = 'Completed';
-      break;
-    case PositionStatus.PAUSED:
-      status = 'Pending';
+    case PositionStatus.Active || !position.state:
+      status = TransactionStatus.Pending;
       break;
     default:
-      status = 'Failed';
+      status = TransactionStatus.Failed;
   }
-
-  // Calculate received amount based on original amount and exchange rate
-  const originalAmount = Number(position.amount) / 1e18; // Convert from wei to ETH
-  const exchangeRate = Number(position.exchangeRate) / 1e10; // Normalize exchange rate
-  const receivedAmount = (originalAmount * exchangeRate).toFixed(8); // BTC has 8 decimals
-
   return {
     hash: position.positionId,
     date: new Date(Date.now() - Math.random() * 10000000000).toISOString(), // Random recent date
@@ -53,9 +44,9 @@ export const positionToTransaction = (position: Position): Transaction => {
     asset: 'ETH',
     fromChain: 'Ethereum',
     toChain: 'Bitcoin',
-    amount: originalAmount.toString(),
-    receivedAmount,
-    status,
+    amount: position.amount,
+    receivedAmount: position.receivedAmount!,
+    status: status,
     contractRegistration: position.tokenAddress,
     originTxId: position?.originTxHash || '',
     destinationTxId: position.bitcoinAddress,
@@ -72,16 +63,16 @@ export const reservationToTransaction = (
   reservation: Reservation
 ): Transaction => {
   // Determine the status based on reservation state
-  let status: 'Completed' | 'Pending' | 'Failed';
+  let status: TransactionStatus;
   switch (reservation.state) {
-    case ReservationStatus.COMPLETED:
-      status = 'Completed';
+    case ReservationStatus.Settled:
+      status = TransactionStatus.Completed;
       break;
-    case ReservationStatus.ACTIVE:
-      status = 'Pending';
+    case ReservationStatus.Pending || ReservationStatus.None || !reservation.state:
+      status = TransactionStatus.Pending;
       break;
     default:
-      status = 'Failed';
+      status = TransactionStatus.Failed;
   }
 
   // Calculate amounts

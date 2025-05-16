@@ -5,7 +5,7 @@ import EthLogo from '@/assets/eth-logo.png';
 import BtcLogo from '@/assets/bitcoin-logo.png';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { truncateAddress } from '@/lib/utils';
-import { InfoField } from './InfoField';
+import { InfoField } from './info-field';
 
 export interface BtcTransactionCardProps {
   data: {

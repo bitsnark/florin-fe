@@ -6,6 +6,7 @@ import WalletConnectIcon from '@/assets/wallet-icons/walletConnect.svg';
 import InjectedIcon from '@/assets/wallet-icons/Injected.svg';
 import UnisatIcon from '@/assets/wallet-icons/UniSat.svg';
 import OkxIcon from '@/assets/wallet-icons/Okx.svg';
+import { bech32, bech32m } from 'bech32';
 
 export const gasFee = 0.0013;
 
@@ -73,11 +74,46 @@ export function isValidBitcoinAddress(address: string | undefined): boolean {
  * @returns bytes32 value as a hex string
  */
 export function bech32ToBytes32(address: string): `0x${string}` {
-  const encoder = new TextEncoder();
-  const bytes = encoder.encode(address);
-  return `0x${Array.from(bytes)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('')
-    .slice(0, 64)
-    .padEnd(64, '0')}` as `0x${string}`;
+  try {
+    const decoded = bech32m.decode(address);
+    const witnessProgram = bech32m.fromWords(decoded.words.slice(1));
+    return `0x${Array.from(witnessProgram).map(b => b.toString(16).padStart(2, '0')).join('')}` as `0x${string}`;
+  } catch {
+    const decoded = bech32.decode(address);
+    const witnessProgram = bech32.fromWords(decoded.words.slice(1));
+    return `0x${Array.from(witnessProgram).map(b => b.toString(16).padStart(2, '0')).join('')}` as `0x${string}`;
+  }
 }
+
+function hexToBytes(hex: string): Uint8Array {
+  if (hex.length % 2 !== 0) throw new Error('Invalid hex string');
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+
+
+/**
+ * Convierte un bytes32 (hex) a una dirección Bech32 Taproot (P2TR)
+ * @param bytes32 Valor en hex (con o sin 0x)
+ * @param network 'mainnet' o 'testnet' (por defecto 'testnet')
+ * @returns Dirección Bech32 (bc1... o tb1...)
+ */
+export function bytes32ToBech32Taproot(bytes32: string, network: 'mainnet' | 'testnet' = 'testnet'): string {
+  const hex = bytes32.startsWith('0x') ? bytes32.slice(2) : bytes32;
+  const data = hexToBytes(hex);
+  const words = [1, ...bech32.toWords(data)];
+  const prefix = network === 'mainnet' ? 'bc' : 'tb';
+  return bech32m.encode(prefix, words);
+}
+
+
+
+//const b32Address = bech32ToBytes32("tb1qvd93l55whp6nzq5t80wurl0zr7s66tprfm84e350k2hzr27hx05sa53ws6")
+//console.log("b32Address", b32Address)
+//const decoded = bytes32ToBech32Taproot(b32Address)
+
+//console.log("decoded", decoded )

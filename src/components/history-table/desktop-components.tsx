@@ -11,14 +11,16 @@ import {
   SymbolIcon,
 } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
-import { Position, PositionStatus, Reservation } from '@/types';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
+import { TransactionNormalized } from './transaction-history-adapter';
+import { PositionStatus, ReservationStatus } from '@/types';
 
 interface DesktopTransactionRowProps {
-  tx: Reservation | Position;
+  tx: TransactionNormalized;
   setTransactionToTrack: (tx: {
     id: string;
     type: 'reservation' | 'position';
+    txHash: string;
   }) => void;
   setOpenTrackerDialog: (open: boolean) => void;
 }
@@ -28,71 +30,62 @@ export const DesktopTransactionRow = ({
   setTransactionToTrack,
   setOpenTrackerDialog,
 }: DesktopTransactionRowProps) => {
-  const isReservation = 'reservationId' in tx;
-  const fromChain = isReservation ? 'bitcoin' : 'ethereum';
-  const toChain = isReservation ? 'ethereum' : 'bitcoin';
-  const requestedAmountAsset = isReservation ? 'btc' : 'xbtc';
-  const receivedAmountAsset = isReservation ? 'xbtc' : 'btc';
   const { data } = useMaxMinBtc();
 
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);
     setTransactionToTrack({
-      id: 'reservationId' in tx ? tx.reservationId : tx.positionId,
-      type: 'reservationId' in tx ? 'reservation' : 'position',
+      id: tx.type === 'reservation' ? tx.reservationId || '' : tx.positionId || '',
+      type: tx.type,
+      txHash: tx.contractRegistrationTxHash,
     });
   };
 
   return (
-    <TableRow key={tx?.hash} className="hover:bg-transparent">
+    <TableRow key={tx.contractRegistrationTxHash} className="hover:bg-transparent">
       <TableCell className="w-fit min-w-[200px] border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center">
           <div className="flex items-center gap-1">
             <img
-              src={getChainLogo(fromChain)}
-              alt={fromChain}
+              src={getChainLogo(tx.fromChain.toLowerCase())}
+              alt={tx.fromChain}
               className="h-4 w-4"
             />
-            <span>
-              {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
-            </span>
-            <span>
-              {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
-            </span>
+            <span>{tx.fromChain}</span>
           </div>
           <ArrowRightIcon />
           <div className="flex items-center gap-1">
             <img
-              src={getChainLogo(toChain)}
-              alt={toChain}
+              src={getChainLogo(tx.toChain.toLowerCase())}
+              alt={tx.toChain}
               className="h-4 w-4"
             />
-            <span>{toChain.charAt(0).toUpperCase() + toChain.slice(1)}</span>
+            <span>{tx.toChain}</span>
           </div>
         </div>
       </TableCell>
       <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx?.contractRegistrationTxHash || '')}
+        {formatHash(tx.contractRegistrationTxHash)}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.amount} {requestedAmountAsset}
+        {tx.amount} {tx.type === 'position' ? 'ETH' : 'BTC'}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatReceivedAmount(tx?.receivedAmount, data?.minAmount)}{' '}
-        {receivedAmountAsset}
+        {formatReceivedAmount(tx.receivedAmount, data?.minAmount)}{' '}
+        {tx.type === 'position' ? 'ETH' : 'BTC'}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx?.originTxHash || '')}
+        {formatHash(tx.originTxHash)}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx?.destinationTxHash || '')}
+        {formatHash(tx.destinationTxHash)}
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx?.createdAt ? formatDate(tx.createdAt) : ''}
+        {formatDate(tx.createdAt)}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">
-          {tx.state === PositionStatus.COMPLETED ? (
+          {tx.state === PositionStatus.Closed || tx.state === ReservationStatus.Settled ? (
             <div className="bg-grey rounded-full p-[0.125rem]">
               <CheckCircledIcon className="text-green-600" />
             </div>
@@ -101,7 +94,7 @@ export const DesktopTransactionRow = ({
               <SymbolIcon />
             </div>
           )}
-          {tx.state.charAt(0).toUpperCase() + tx.state.slice(1).toLowerCase()}
+          {tx.state.charAt(0).toUpperCase() + tx.state.slice(1)}
         </div>
       </TableCell>
 

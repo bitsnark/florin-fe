@@ -15,8 +15,7 @@ export const useEVMPositionPolling = ({
   pollingInterval = 10000,
 }: UseEVMPositionPollingProps) => {
   const { getPosition } = useExchange();
-
-  const queryKey = ['evmPosition', positionId, chainId];
+  const queryKey = ['evmPosition', isActive, positionId, chainId];
   const { data: evmPosition, error, isLoading } = useQuery({
     queryKey,
     queryFn: () => getPosition({ positionId, chainId }),
