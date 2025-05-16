@@ -118,7 +118,7 @@ export class FlorinApiService {
 
   static async getReservationById(
     id: string | undefined,
-  ): Promise<Reservation | null> {
+  ): Promise<{ data: Reservation; blockCount: number } | null> {
     if (!id) return null;
 
     const response = await fetch(`${API_BASE_URL}/reservation/${id}`);

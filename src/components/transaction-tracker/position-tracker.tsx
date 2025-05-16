@@ -3,7 +3,6 @@ import { EthTransactionCard } from './eth-transaction-card';
 import { BtcCompletionCard } from './btc-completion-card';
 import { BaseTransactionTracker } from './base-transaction-tracker';
 import { usePosition } from '@/hooks/queries/usePosition';
-//import { gasFee } from '@/lib/utils';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMPositionPolling } from '@/hooks/useEVMPositionPolling';
 import { useChainId } from 'wagmi';
@@ -49,7 +48,9 @@ export function PositionTracker({
     transactionHash: txHash,
   });
   const isPositionCompleted = evmPosition?.status === 3;
-  const displayConfirmations = isPositionCompleted ? maxConfirmations : confirmations;
+  const displayConfirmations = isPositionCompleted
+    ? maxConfirmations
+    : confirmations;
 
   return (
     <BaseTransactionTracker

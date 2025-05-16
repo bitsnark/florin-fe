@@ -28,16 +28,13 @@ export function ReservationTracker({
   txHash,
 }: ReservationTrackerProps) {
   const { timeLeft, progress } = useTimer(open);
-  const {
-    data: reservation,
-    isLoading: isReservationLoading,
-  } = useReservation(id, {});
+  const { data, isLoading: isReservationLoading } = useReservation(id, {});
   const { data: bitcoinPrice } = useBitcoinPrice();
 
   const chainId = useChainId();
 
-  console.log('id', id);
-  console.log('reservation', reservation);
+  const reservation = data?.data;
+
   const {
     evmReservation,
     isLoading: isEVMReservationLoading,
@@ -55,7 +52,6 @@ export function ReservationTracker({
     return usdValue.toFixed(2);
   }, [evmReservation?.tokenAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  console.log('fiatAmount', bitcoinPrice?.bitcoin.usd, fiatAmount);
   console.log('evmReservation', evmReservation);
   const amount = formatEther(evmReservation?.tokenAmount || 0n);
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
@@ -74,10 +70,12 @@ export function ReservationTracker({
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';
 
-  const btcTransactionDetected = !!reservation?.targetBlockHash && reservation.targetBlockEight && reservation.targetBlockEight > 0;
+  const btcTransactionDetected =
+    !!reservation?.targetBlockHash &&
+    reservation.targetBlockEight &&
+    reservation.targetBlockEight > 0;
   const bridgingCompleted = evmReservation?.status === 4;
 
-  
   return (
     <BaseTransactionTracker
       open={open}

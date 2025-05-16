@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { Address } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
 import { ContractManager } from '@/services/ContractManager';
-import { bech32ToBytes32, bytes32ToBech32 } from '@/lib/utils';
+import { bech32ToBytes32, bytes32ToBech32, bytes32ToBech32Taproot, decodeBech32WitnessProgram } from '@/lib/utils';
 import { DEFAULT_POSITION_ID } from '@/constants';
 
 export const useExchange = () => {
@@ -264,12 +264,12 @@ export const useExchange = () => {
       )) as unknown as EVMReservation;
       setLoading(false);
       console.log('reservationnnnnn', reservation );
-      console.log('reservation.bitcoinAddress', bytes32ToBech32(reservation.bitcoinAddress));
+      console.log('reservation.bitcoinAddress', bytes32ToBech32Taproot(reservation.bitcoinAddress));
       
       // For now, we'll just return the bytes32 value since we can't recover the original address
       return {
         ...reservation,
-        bitcoinAddress: bytes32ToBech32(reservation.bitcoinAddress),
+          bitcoinAddress: bytes32ToBech32Taproot(reservation.bitcoinAddress) ?? '',
       };
     } catch (error) {
       setLoading(false);
