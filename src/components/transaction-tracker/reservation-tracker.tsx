@@ -89,10 +89,11 @@ export function ReservationTracker({
             <BtcTransactionCard
               data={{
                 amount: amount,
-                recipientAddress: evmReservation.reservationId,
+                recipientAddress: evmReservation.ownerAddress,
                 reservationTx: txHash,
                 confirmations: confirmations,
                 fiatAmount: fiatAmount,
+                maxConfirmations: maxConfirmations,
               }}
             />
           </TransactionStep>
