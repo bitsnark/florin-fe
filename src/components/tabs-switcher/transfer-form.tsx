@@ -97,7 +97,7 @@ export function TransferForm({
           network={toNetwork}
           currency={toCurrency}
           amount={toAmount}
-          xbtcAmount={"1"}
+          xbtcAmount={xbtcAmount}
           onAmountChange={handleToAmountChange}
           readOnly={!isFromXbtcToBtc}
           isFromXbtcToBtc={isFromXbtcToBtc}
