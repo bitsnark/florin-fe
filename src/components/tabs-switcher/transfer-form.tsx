@@ -49,8 +49,6 @@ export function TransferForm({
   minBtc,
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
-
-  // Determine which input should be editable
   const isFromXbtcToBtc = fromCurrency === 'xbtc' && toCurrency === 'btc';
 
   return (
@@ -104,6 +102,7 @@ export function TransferForm({
           readOnly={!isFromXbtcToBtc}
           isFromXbtcToBtc={isFromXbtcToBtc}
           maxBtc={maxBtc}
+          minBtc={minBtc}
           bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
         />
       </div>

@@ -10,9 +10,9 @@ import { useMemo } from 'react';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMReservationPolling } from '@/hooks/useEVMReservationPolling';
 import { useChainId } from 'wagmi';
-import { mapNumericStatusToReservationStatus } from '../history-table/transaction-history-adapter';
 import { Address, formatEther } from 'viem';
 import { useReservation } from '@/hooks/queries/useReservation';
+import { RESERVATION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -50,7 +50,6 @@ export function ReservationTracker({
     return usdValue.toFixed(2);
   }, [evmReservation?.tokenAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  console.log('evmReservation', evmReservation);
   const amount = formatEther(evmReservation?.tokenAmount || 0n);
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
   const confirmations = useTxConfirmations({
@@ -59,9 +58,7 @@ export function ReservationTracker({
     transactionHash: txHash,
   });
 
-  const status = mapNumericStatusToReservationStatus(
-    evmReservation?.status || 0
-  );
+  const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
   // Content height class for the dialog
   const isPositionCompleted = evmReservation?.status === 3;
   const maxHeightClass = !isPositionCompleted
@@ -73,7 +70,7 @@ export function ReservationTracker({
     reservation.targetBlockEight &&
     reservation.targetBlockEight > 0;
   const bridgingCompleted = evmReservation?.status === 4;
-
+  
   return (
     <BaseTransactionTracker
       open={open}

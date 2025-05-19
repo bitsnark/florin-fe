@@ -146,10 +146,10 @@ export type TransactionHistoryItem = {
   originBlockHash: string;
   originFinality: Finality;
   state: number;
-  destinationTxHash?: string;
-  destinationBlockNumber?: number;
-  destinationBlockHash?: string;
-  destinationTxConfirmations?: number;
+  targetTxhash?: string;
+  targetBlockNumber?: number;
+  targetBlockHash?: string;
+  targetTxConfirmations?: number;
   blockTimestamp?: string;
 };
 

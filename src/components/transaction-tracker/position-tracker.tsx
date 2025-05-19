@@ -39,8 +39,6 @@ export function PositionTracker({
     return usdValue.toFixed(2);
   }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  console.log('evmPosition', evmPosition, id, txHash, 'db position', position);
-
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
   const confirmations = useTxConfirmations({
     isActive: open,

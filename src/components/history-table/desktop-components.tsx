@@ -5,15 +5,11 @@ import {
   formatReceivedAmount,
 } from './utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  ArrowRightIcon,
-  CheckCircledIcon,
-  SymbolIcon,
-} from '@radix-ui/react-icons';
+import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
-import { PositionStatus, ReservationStatus } from '@/types';
+import { StatusIcon } from '@/components/ui/status-icon';
 
 interface DesktopTransactionRowProps {
   tx: TransactionNormalized;
@@ -78,22 +74,14 @@ export const DesktopTransactionRow = ({
         {formatHash(tx.originTxHash)}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx.destinationTxHash)}
+        {formatHash(tx.targetTxhash)}
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatDate(tx.createdAt)}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">
-          {tx.state === PositionStatus.Closed || tx.state === ReservationStatus.Settled ? (
-            <div className="bg-grey rounded-full p-[0.125rem]">
-              <CheckCircledIcon className="text-green-600" />
-            </div>
-          ) : (
-            <div className="bg-grey rounded-full p-[0.125rem]">
-              <SymbolIcon />
-            </div>
-          )}
+          <StatusIcon status={tx.state} />
           {tx.state.charAt(0).toUpperCase() + tx.state.slice(1)}
         </div>
       </TableCell>
