@@ -26,6 +26,7 @@ export function PositionTracker({
   txHash,
 }: PositionTrackerProps) {
   const { data: position } = usePosition(id, {});
+  console.log('position', position);
   const chainId = useChainId();
   const { evmPosition, isLoading, error } = useEVMPositionPolling({
     positionId: id || '',
