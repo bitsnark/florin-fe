@@ -9,6 +9,8 @@ import { useChainId } from 'wagmi';
 import { formatEther } from 'viem';
 import { useMemo } from 'react';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
+import { PositionStatus } from '@/types';
+import { POSITION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -45,7 +47,8 @@ export function PositionTracker({
     maxConfirmations: maxConfirmations,
     transactionHash: txHash,
   });
-  const isPositionCompleted = evmPosition?.status === 3;
+  const status = POSITION_STATUS_MAP[evmPosition?.status || 1];
+  const isPositionCompleted = status === PositionStatus.Closed;
   const displayConfirmations = isPositionCompleted
     ? maxConfirmations
     : confirmations;

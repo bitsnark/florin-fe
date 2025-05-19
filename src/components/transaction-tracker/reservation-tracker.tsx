@@ -1,4 +1,4 @@
-import { Finality } from '@/types';
+import { Finality, ReservationStatus } from '@/types';
 import { useTimer } from './timer-logic';
 import { TransactionStep } from './transaction-step';
 import { BtcTransactionCard } from './btc-transaction-card';
@@ -59,9 +59,8 @@ export function ReservationTracker({
   });
 
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
-  // Content height class for the dialog
-  const isPositionCompleted = evmReservation?.status === 3;
-  const maxHeightClass = !isPositionCompleted
+  const bridgingCompleted = status === ReservationStatus.Settled;
+  const maxHeightClass = !bridgingCompleted
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';
 
@@ -69,7 +68,6 @@ export function ReservationTracker({
     !!reservation?.targetBlockHash &&
     reservation.targetBlockEight &&
     reservation.targetBlockEight > 0;
-  const bridgingCompleted = evmReservation?.status === 4;
   
   return (
     <BaseTransactionTracker
@@ -105,7 +103,7 @@ export function ReservationTracker({
             amount={amount}
             timeLeft={timeLeft}
             progress={progress}
-            isSent={isPositionCompleted}
+            isSent={bridgingCompleted}
             confirmations={confirmations}
             maxConfirmations={maxConfirmations}
             recipientAddress={evmReservation.bitcoinAddress}
