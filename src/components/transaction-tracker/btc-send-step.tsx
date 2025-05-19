@@ -3,9 +3,10 @@ import { TransactionStep } from './transaction-step';
 import { WarningMessage } from './warning-message';
 import { AddressReveal } from './address-reveal';
 import { WarningIcon } from './warning-icon';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ReservationStatus, Reservation } from '@/types';
 import { useTimer } from './timer-logic';
+import { addHours, differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns';
 
 interface BtcSendStepProps {
   amount: string;
@@ -34,22 +35,20 @@ export function BtcSendStep({
     ? reservation.blockTimestamp * 1000
     : 0;
 
-  const getRemainingTime = (timestamp: number) => {
-    const now = Date.now();
-    const FOUR_HOURS_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
-    const endTime = timestamp + FOUR_HOURS_MS;
+  const remainingTime = useMemo(() => {
+    const now = new Date();
+    const endTime = addHours(new Date(blockTimestamp), 4);
     if (now >= endTime) return { hours: 0, minutes: 0, seconds: 0 };
-
-    const remainingMs = endTime - now;
-    const hours = Math.floor(remainingMs / (60 * 60 * 1000));
-    const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
-    const seconds = Math.floor((remainingMs % (60 * 1000)) / 1000);
-    return { hours, minutes, seconds };
-  };
+    return {
+      hours: differenceInHours(endTime, now),
+      minutes: differenceInMinutes(endTime, now) % 60,
+      seconds: differenceInSeconds(endTime, now) % 60
+    };
+  }, [blockTimestamp]);
 
   const { timeLeft, progress } = useTimer(
     reservation.state === ReservationStatus.Pending,
-    getRemainingTime(blockTimestamp)
+    remainingTime
   );
 
   const descriptionMessage = isSent
