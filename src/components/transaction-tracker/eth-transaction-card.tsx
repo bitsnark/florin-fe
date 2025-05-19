@@ -14,6 +14,7 @@ export interface EthTransactionCardProps {
     reservationTx?: string;
     txid?: string;
     confirmations?: number | React.ReactNode;
+    maxConfirmations?: number;
   };
   isStepThree?: boolean;
 }
@@ -27,7 +28,7 @@ export function EthTransactionCard({
       <span className="text-white text-[12px] font-medium">
         {data.confirmations}
       </span>
-      {data.confirmations === 20 ? (
+      {data.confirmations === data.maxConfirmations ? (
         <CheckCircledIcon className="text-green-600 w-4 h-4" />
       ) : (
         <RefreshCw className="text-foreground w-4 h-4 animate-[spin_2s_linear_infinite]" />

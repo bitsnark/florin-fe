@@ -77,6 +77,7 @@ export function PositionTracker({
                 reservationTx: '',
                 confirmations: displayConfirmations,
                 fiatAmount: fiatAmount,
+                maxConfirmations: maxConfirmations,
               }}
             />
           </TransactionStep>
