@@ -1,5 +1,4 @@
 import { Finality, ReservationStatus } from '@/types';
-import { useTimer } from './timer-logic';
 import { TransactionStep } from './transaction-step';
 import { BtcTransactionCard } from './btc-transaction-card';
 import { BtcSendStep } from './btc-send-step';
@@ -27,7 +26,7 @@ export function ReservationTracker({
   id,
   txHash,
 }: ReservationTrackerProps) {
-  const { timeLeft, progress } = useTimer(open);
+  
   const { data, isLoading: isReservationLoading } = useReservation(id, { refetchInterval: 5000 });
   const { data: bitcoinPrice } = useBitcoinPrice();
   const chainId = useChainId();
@@ -64,7 +63,7 @@ export function ReservationTracker({
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';
 
-  const btcTransactionDetected =
+  const btcTransactionDetected = status !== ReservationStatus.Expired &&
     !!reservation?.targetBlockHash &&
     reservation.targetBlockEight &&
     reservation.targetBlockEight > 0;
@@ -100,15 +99,15 @@ export function ReservationTracker({
 
           {/* Step 2 - Send BTC */}
           <BtcSendStep
+            
             amount={amount}
-            timeLeft={timeLeft}
-            progress={progress}
             isSent={bridgingCompleted}
             confirmations={confirmations}
             maxConfirmations={maxConfirmations}
             recipientAddress={evmReservation.bitcoinAddress}
             state={status}
             reservation={{
+              ...reservation,
               amount: evmReservation.depositAmount.toString(),
               state: status,
               bitcoinAddress: evmReservation.bitcoinAddress,
