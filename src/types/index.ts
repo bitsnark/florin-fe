@@ -67,6 +67,7 @@ export type Reservation = {
   chainId: number;
   bitcoinAddress?: string;
   blockNumber?: number;
+  blockTimestamp?: number;
   blockHash?: string;
   hash: string;
   createdAt: string; // ISO 8601 string

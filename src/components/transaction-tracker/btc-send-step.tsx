@@ -5,16 +5,11 @@ import { AddressReveal } from './address-reveal';
 import { WarningIcon } from './warning-icon';
 import { useState, useEffect } from 'react';
 import { ReservationStatus, Reservation } from '@/types';
+import { useTimer } from './timer-logic';
 
 interface BtcSendStepProps {
   amount: string;
   recipientAddress?: string;
-  timeLeft: {
-    hours: number;
-    minutes: number;
-    seconds: number;
-  };
-  progress: number;
   isSent: boolean;
   confirmations: number;
   state: ReservationStatus;
@@ -26,8 +21,6 @@ interface BtcSendStepProps {
 export function BtcSendStep({
   amount,
   recipientAddress,
-  timeLeft,
-  progress,
   isSent,
   confirmations,
   state,
@@ -37,13 +30,34 @@ export function BtcSendStep({
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
   const [isReadyToSend, setIsReadyToSend] = useState(false);
+  const blockTimestamp = reservation.blockTimestamp
+    ? reservation.blockTimestamp * 1000
+    : 0;
+
+  const getRemainingTime = (timestamp: number) => {
+    const now = Date.now();
+    const FOUR_HOURS_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+    const endTime = timestamp + FOUR_HOURS_MS;
+    if (now >= endTime) return { hours: 0, minutes: 0, seconds: 0 };
+
+    const remainingMs = endTime - now;
+    const hours = Math.floor(remainingMs / (60 * 60 * 1000));
+    const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+    const seconds = Math.floor((remainingMs % (60 * 1000)) / 1000);
+    return { hours, minutes, seconds };
+  };
+
+  const { timeLeft, progress } = useTimer(
+    reservation.state === ReservationStatus.Pending,
+    getRemainingTime(blockTimestamp)
+  );
 
   const descriptionMessage = isSent
     ? 'You initiated transaction in your wallet to send BTC.'
     : parseFloat(fiatAmount) > 100
       ? 'Your Bitcoin transaction has been detected. You need to send BTC from your bitcoin wallet to a specified address. If your transaction is $100+ in BTC, you must to wait for at least 6 confirmations before sending BTC. Make sure to send BTC within 12 hours.'
       : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address. Make sure to send BTC within 12 hours.';
-      
+
   useEffect(() => {
     if (confirmations >= maxConfirmations) {
       setIsReadyToSend(true);
@@ -88,7 +102,6 @@ export function BtcSendStep({
           )}
         </Card>
       )}
-     
     </TransactionStep>
   );
 }
