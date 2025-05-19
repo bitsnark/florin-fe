@@ -9,6 +9,8 @@ import { useChainId } from 'wagmi';
 import { formatEther } from 'viem';
 import { useMemo } from 'react';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
+import { PositionStatus } from '@/types';
+import { POSITION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -24,6 +26,7 @@ export function PositionTracker({
   txHash,
 }: PositionTrackerProps) {
   const { data: position } = usePosition(id, {});
+  console.log('position', position);
   const chainId = useChainId();
   const { evmPosition, isLoading, error } = useEVMPositionPolling({
     positionId: id || '',
@@ -39,15 +42,14 @@ export function PositionTracker({
     return usdValue.toFixed(2);
   }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  console.log('evmPosition', evmPosition, id, txHash, 'db position', position);
-
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
   const confirmations = useTxConfirmations({
     isActive: open,
     maxConfirmations: maxConfirmations,
     transactionHash: txHash,
   });
-  const isPositionCompleted = evmPosition?.status === 3;
+  const status = POSITION_STATUS_MAP[evmPosition?.status || 1];
+  const isPositionCompleted = status === PositionStatus.Closed;
   const displayConfirmations = isPositionCompleted
     ? maxConfirmations
     : confirmations;
@@ -76,6 +78,7 @@ export function PositionTracker({
                 reservationTx: '',
                 confirmations: displayConfirmations,
                 fiatAmount: fiatAmount,
+                maxConfirmations: maxConfirmations,
               }}
             />
           </TransactionStep>

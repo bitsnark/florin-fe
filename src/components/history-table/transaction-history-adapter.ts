@@ -28,47 +28,25 @@ export interface TransactionNormalized {
   createdAt: string;
   contractRegistrationTxHash: string;
   originTxHash: string;
-  destinationTxHash: string;
-  destinationsTxConfirmations?: number;
   receivedAmount?: string;
+  targetTxhash?: string;
+  targetBlockNumber?: number;
 }
 
-// Map numeric status to PositionStatus enum
-export const mapNumericStatusToPositionStatus = (
-  status: number
-): PositionStatus => {
-  switch (status) {
-    case 1:
-      return PositionStatus.None;
-    case 2:
-      return PositionStatus.Active;
-    case 3:
-      return PositionStatus.Paused;
-    case 4:
-      return PositionStatus.Closed;
-    default:
-      return PositionStatus.Active;
-  }
-};
+export const POSITION_STATUS_MAP = [
+  PositionStatus.None,     // 0
+  PositionStatus.Active,   // 1
+  PositionStatus.Paused,   // 2
+  PositionStatus.Closed,   // 3
+];
 
-export const mapNumericStatusToReservationStatus = (
-  status: number
-): ReservationStatus => {
-  switch (status) {
-    case 1:
-      return ReservationStatus.None;
-    case 2:
-      return ReservationStatus.Pending;
-    case 3:
-      return ReservationStatus.Expired;
-    case 4:
-      return ReservationStatus.Canceled;
-    case 5:
-      return ReservationStatus.Settled;
-    default:
-      return ReservationStatus.Pending;
-  }
-};
+export const RESERVATION_STATUS_MAP = [
+  ReservationStatus.None,     // 0
+  ReservationStatus.Pending,  // 1
+  ReservationStatus.Expired,  // 2
+  ReservationStatus.Canceled, // 3
+  ReservationStatus.Settled,  // 4
+];
 
 /**
  * Parse a string in the format "bigint:12a05f200n" to extract the BigInt value
@@ -102,6 +80,10 @@ export function transactionHistoryAdapter(
     ? new Date(parseInt(item.blockTimestamp) * 1000) // Convert seconds to milliseconds
     : new Date();
 
+    const state = type === 'position'
+    ? POSITION_STATUS_MAP[item?.targetBlockHash ? 3 : 1]
+    : RESERVATION_STATUS_MAP[item.state || 1]
+
   return {
     ...item,
     type: type,
@@ -114,10 +96,7 @@ export function transactionHistoryAdapter(
     tokenAddress: item.tokenAddress as `0x${string}`,
     bitcoinAddress: item.bitcoinAddress,
     exchangeRate: '1', // Not available in new API
-    state:
-      type === 'position'
-        ? mapNumericStatusToPositionStatus(item.state)
-        : mapNumericStatusToReservationStatus(item.state),
+    state: state,
     registrationFinality:
       item.registrationFinality === 'FINAL' ? Finality.FINAL : Finality.UNKNOWN,
     amount: formatEther(originalAmountToUse) || '0',
@@ -126,7 +105,7 @@ export function transactionHistoryAdapter(
     createdAt: createdAtDate.toISOString(), // Not available in new API, using current time
     contractRegistrationTxHash: item.registrationTxhash,
     originTxHash: item.originTxhash,
-    destinationTxHash: item.destinationTxHash || '',
-    destinationsTxConfirmations: item.destinationTxConfirmations, // Not available in new API
+    targetTxhash: item.targetTxhash || '',
+    targetBlockNumber: item.targetBlockNumber,
   };
 }

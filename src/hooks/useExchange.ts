@@ -224,7 +224,6 @@ export const useExchange = () => {
         chainId as keyof typeof CONTRACTS_ADDRESS
       ].ammExchange as Address;
 
-      console.log('getPosition', positionId, chainId);
       const position = (await contractManager.readContract(
         'AMMExchange',
         'getPosition',
@@ -232,7 +231,6 @@ export const useExchange = () => {
         contractAddress
       )) as unknown as EVMPosition;
       setLoading(false);
-      console.log('position', position);
       return position;
     } catch (error) {
       setLoading(false);
@@ -263,10 +261,7 @@ export const useExchange = () => {
         contractAddress
       )) as unknown as EVMReservation;
       setLoading(false);
-      console.log('reservationnnnnn', reservation );
-      console.log('reservation.bitcoinAddress', bytes32ToBech32Taproot(reservation.bitcoinAddress));
       
-      // For now, we'll just return the bytes32 value since we can't recover the original address
       return {
         ...reservation,
           bitcoinAddress: bytes32ToBech32Taproot(reservation.bitcoinAddress) ?? '',

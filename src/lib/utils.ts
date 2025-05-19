@@ -75,13 +75,19 @@ export function isValidBitcoinAddress(address: string | undefined): boolean {
  */
 export function bech32ToBytes32(address: string): `0x${string}` {
   try {
-    const decoded = bech32m.decode(address);
-    const witnessProgram = bech32m.fromWords(decoded.words.slice(1));
-    return `0x${Array.from(witnessProgram).map(b => b.toString(16).padStart(2, '0')).join('')}` as `0x${string}`;
-  } catch {
     const decoded = bech32.decode(address);
     const witnessProgram = bech32.fromWords(decoded.words.slice(1));
-    return `0x${Array.from(witnessProgram).map(b => b.toString(16).padStart(2, '0')).join('')}` as `0x${string}`;
+    return `0x${Array.from(witnessProgram)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+      .padStart(64, '0')}` as `0x${string}`;
+  } catch {
+    const decoded = bech32m.decode(address);
+    const witnessProgram = bech32m.fromWords(decoded.words.slice(1));
+    return `0x${Array.from(witnessProgram)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+      .padStart(64, '0')}` as `0x${string}`;
   }
 }
 
@@ -94,23 +100,22 @@ function hexToBytes(hex: string): Uint8Array {
   return bytes;
 }
 
-
-
 /**
  * Convierte un bytes32 (hex) a una dirección Bech32 Taproot (P2TR)
  * @param bytes32 Valor en hex (con o sin 0x)
  * @param network 'mainnet' o 'testnet' (por defecto 'testnet')
  * @returns Dirección Bech32 (bc1... o tb1...)
  */
-export function bytes32ToBech32Taproot(bytes32: string, network: 'mainnet' | 'testnet' = 'testnet'): string {
+export function bytes32ToBech32Taproot(
+  bytes32: string,
+  network: 'mainnet' | 'testnet' = 'testnet'
+): string {
   const hex = bytes32.startsWith('0x') ? bytes32.slice(2) : bytes32;
   const data = hexToBytes(hex);
   const words = [1, ...bech32.toWords(data)];
   const prefix = network === 'mainnet' ? 'bc' : 'tb';
   return bech32m.encode(prefix, words);
 }
-
-
 
 //const b32Address = bech32ToBytes32("tb1qvd93l55whp6nzq5t80wurl0zr7s66tprfm84e350k2hzr27hx05sa53ws6")
 //console.log("b32Address", b32Address)

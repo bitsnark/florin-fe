@@ -60,9 +60,7 @@ export const AmountInput = ({
   const xbtcCardClass =
     currency === 'xbtc' ? 'bg-[#2A273080] border border-[#27292C]' : '';
 
-  // Convert the amount to use dot as decimal separator for display
   const normalizedAmount = amount.replace(',', '.');
-
   return (
     <Card
       className={cn(

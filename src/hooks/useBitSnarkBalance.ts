@@ -53,7 +53,6 @@ export const useBitSnarkBalance = () => {
   }, [fetchBalance]);
 
   const xbtcAmount = balance ? formatEther(balance) : '0';
-  console.log('xbtcAmount', xbtcAmount, balance);
   return {
     balance: xbtcAmount,
     isLoading,

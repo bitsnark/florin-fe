@@ -1,4 +1,4 @@
-import { Finality } from '@/types';
+import { Finality, ReservationStatus } from '@/types';
 import { useTimer } from './timer-logic';
 import { TransactionStep } from './transaction-step';
 import { BtcTransactionCard } from './btc-transaction-card';
@@ -10,9 +10,9 @@ import { useMemo } from 'react';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMReservationPolling } from '@/hooks/useEVMReservationPolling';
 import { useChainId } from 'wagmi';
-import { mapNumericStatusToReservationStatus } from '../history-table/transaction-history-adapter';
 import { Address, formatEther } from 'viem';
 import { useReservation } from '@/hooks/queries/useReservation';
+import { RESERVATION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -50,7 +50,6 @@ export function ReservationTracker({
     return usdValue.toFixed(2);
   }, [evmReservation?.tokenAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  console.log('evmReservation', evmReservation);
   const amount = formatEther(evmReservation?.tokenAmount || 0n);
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
   const confirmations = useTxConfirmations({
@@ -59,12 +58,9 @@ export function ReservationTracker({
     transactionHash: txHash,
   });
 
-  const status = mapNumericStatusToReservationStatus(
-    evmReservation?.status || 0
-  );
-  // Content height class for the dialog
-  const isPositionCompleted = evmReservation?.status === 3;
-  const maxHeightClass = !isPositionCompleted
+  const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
+  const bridgingCompleted = status === ReservationStatus.Settled;
+  const maxHeightClass = !bridgingCompleted
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';
 
@@ -72,8 +68,7 @@ export function ReservationTracker({
     !!reservation?.targetBlockHash &&
     reservation.targetBlockEight &&
     reservation.targetBlockEight > 0;
-  const bridgingCompleted = evmReservation?.status === 4;
-
+  
   return (
     <BaseTransactionTracker
       open={open}
@@ -108,7 +103,7 @@ export function ReservationTracker({
             amount={amount}
             timeLeft={timeLeft}
             progress={progress}
-            isSent={isPositionCompleted}
+            isSent={bridgingCompleted}
             confirmations={confirmations}
             maxConfirmations={maxConfirmations}
             recipientAddress={evmReservation.bitcoinAddress}

@@ -6,11 +6,7 @@ import {
 } from './utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  ArrowRightIcon,
-  CheckCircledIcon,
-  SymbolIcon,
-} from '@radix-ui/react-icons';
+import { ArrowRightIcon, SymbolIcon } from '@radix-ui/react-icons';
 import {
   AccordionContent,
   AccordionItem,
@@ -18,7 +14,7 @@ import {
 } from '@/components/ui/accordion';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
-import { PositionStatus, ReservationStatus } from '@/types';
+import { StatusIcon } from '@/components/ui/status-icon';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
@@ -108,7 +104,7 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E] underline">
-              {formatHash(tx.destinationTxHash)}
+              {formatHash(tx.targetTxhash)}
             </span>
           </div>
 
@@ -122,21 +118,8 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Status</span>
             <div className="flex items-center justify-end gap-2">
-              {tx.state === PositionStatus.Closed || tx.state === ReservationStatus.Settled ? (
-                <>
-                  <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
-                    <CheckCircledIcon className="text-green-600" />
-                  </div>
-                  <span className="text-sm">Completed</span>
-                </>
-              ) : (
-                <>
-                  <div className="bg-[#292929] rounded-full p-1 flex items-center justify-center">
-                    <SymbolIcon className="h-5 w-5" />
-                  </div>
-                  <span className="text-sm">{tx.state}</span>
-                </>
-              )}
+              <StatusIcon status={tx.state} />
+              <span className="text-sm">{tx.state}</span>
             </div>
           </div>
 
