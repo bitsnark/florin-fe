@@ -12,13 +12,14 @@ export const useBitSnarkBalance = () => {
   const [error, setError] = useState<string | null>(null);
   const chainId = useChainId();
   const erc20BitSnarkAddress = useMemo(() => {
-    return chainId ? CONTRACTS_ADDRESS[
+    if (!chainId) return undefined;
+    return CONTRACTS_ADDRESS[
       chainId as keyof typeof CONTRACTS_ADDRESS
-    ].erc20BitSnark as Address : undefined;
+    ]?.erc20BitSnark as Address;
   }, [chainId]);
 
   const fetchBalance = useCallback(async () => {
-    if (!address || !erc20BitSnarkAddress) {
+    if (!address || !erc20BitSnarkAddress || !chainId) {
       setBalance(null);
       return;
     }
@@ -33,11 +34,13 @@ export const useBitSnarkBalance = () => {
         'ERC20BitSnark',
         'balanceOf',
         [address],
-        erc20BitSnarkAddress as Address
+        erc20BitSnarkAddress
       );
       setBalance(result as unknown as bigint);
     } catch (err) {
       if (err instanceof CMError) {
+        setError(err.message);
+      } else if (err instanceof Error) {
         setError(err.message);
       } else {
         setError('Failed to fetch balance');
@@ -46,11 +49,13 @@ export const useBitSnarkBalance = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [address, erc20BitSnarkAddress]);
+  }, [address, erc20BitSnarkAddress, chainId]);
 
   useEffect(() => {
-    fetchBalance();
-  }, [fetchBalance]);
+    if (chainId && address) {
+      fetchBalance();
+    }
+  }, [fetchBalance, chainId, address]);
 
   const xbtcAmount = balance ? formatEther(balance) : '0';
   return {

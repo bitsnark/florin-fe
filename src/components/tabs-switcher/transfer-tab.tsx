@@ -30,8 +30,8 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
     toNetwork === 'bitcoin' ? 'btc' : 'xbtc'
   );
   const [isAnimating, setIsAnimating] = useState(false);
-  const [fromAmount, setFromAmount] = useState('0.012');
-  const [toAmount, setToAmount] = useState('0.012');
+  const [fromAmount, setFromAmount] = useState('0');
+  const [toAmount, setToAmount] = useState('0');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [bitcoinAddress, setBitcoinAddress] = useState<string | undefined>(undefined);
   

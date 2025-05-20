@@ -35,7 +35,7 @@ export const useAmountInput = ({
     const rates = {
       btc: bitcoinPrice,
       eth: bitcoinPrice,
-      xbtc: 83400,
+      xbtc: bitcoinPrice,
     };
 
     const numericAmount = parseFloat(amount) || 0;
