@@ -61,14 +61,16 @@ export const DesktopTransactionRow = ({
         </div>
       </TableCell>
       <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx.contractRegistrationTxHash)}
+        <a href={`https://sepolia.etherscan.io/tx/${tx.contractRegistrationTxHash}`} target="_blank">
+          {formatHash(tx.contractRegistrationTxHash)}
+        </a>
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.amount} {tx.type === 'position' ? 'ETH' : 'BTC'}
+        {tx.amount} {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatReceivedAmount(tx.receivedAmount, data?.minAmount)}{' '}
-        {tx.type === 'position' ? 'ETH' : 'BTC'}
+        {formatReceivedAmount(tx.amount || tx?.originalAmount || '0', data?.minAmount)}{' '}
+        {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
         {formatHash(tx.originTxHash)}

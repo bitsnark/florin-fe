@@ -26,7 +26,7 @@ export function PositionTracker({
   txHash,
 }: PositionTrackerProps) {
   const { data: position } = usePosition(id, {});
-  console.log('position', position);
+  console.log('db position', position);
   const chainId = useChainId();
   const { evmPosition, isLoading, error } = useEVMPositionPolling({
     positionId: id || '',
@@ -34,7 +34,7 @@ export function PositionTracker({
     isActive: open,
   });
   const { data: bitcoinPrice } = useBitcoinPrice();
-
+  console.log('evm position', evmPosition);
   const fiatAmount = useMemo(() => {
     if (!evmPosition?.originalAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
     const btcAmount = formatEther(evmPosition.originalAmount);
@@ -95,7 +95,7 @@ export function PositionTracker({
               <BtcCompletionCard
                 amount={formatEther(evmPosition?.originalAmount || 0n)}
                 recipientAddress={evmPosition?.positionId || ''}
-                reservationTx={''}
+                reservationTx={position?.targetTxhash || position?.targetBlockHash || ''}
                 type="position"
               />
             )}

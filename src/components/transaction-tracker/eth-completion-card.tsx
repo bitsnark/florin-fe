@@ -48,7 +48,7 @@ export function EthCompletionCard({
         <span className="text-[#FFAA2E] text-[12px] font-medium cursor-pointer flex items-center gap-1">
           <img
             src={logoSrc}
-            alt={type === 'position' ? 'BTC' : 'ETH'}
+            alt={type === 'position' ? 'BTC' : 'xBTC'}
             className="w-4 h-4 inline"
           />
           {truncateAddress(reservationTx)}

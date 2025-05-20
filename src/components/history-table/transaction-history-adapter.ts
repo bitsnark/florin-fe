@@ -23,6 +23,7 @@ export interface TransactionNormalized {
   state: PositionStatus | ReservationStatus;
   registrationFinality: Finality;
   amount: string;
+  originalAmount?: string;
   blockNumber: number;
   blockHash: string;
   createdAt: string;
