@@ -26,7 +26,6 @@ export function PositionTracker({
   txHash,
 }: PositionTrackerProps) {
   const { data: position } = usePosition(id, {});
-  console.log('db position', position);
   const chainId = useChainId();
   const { evmPosition, isLoading, error } = useEVMPositionPolling({
     positionId: id || '',
@@ -34,7 +33,6 @@ export function PositionTracker({
     isActive: open,
   });
   const { data: bitcoinPrice } = useBitcoinPrice();
-  console.log('evm position', evmPosition);
   const fiatAmount = useMemo(() => {
     if (!evmPosition?.originalAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
     const btcAmount = formatEther(evmPosition.originalAmount);

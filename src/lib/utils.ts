@@ -104,9 +104,3 @@ export function bytes32ToBech32Taproot(
   const prefix = network === 'mainnet' ? 'bc' : 'tb';
   return bech32m.encode(prefix, words);
 }
-
-//const b32Address = bech32ToBytes32("tb1qvd93l55whp6nzq5t80wurl0zr7s66tprfm84e350k2hzr27hx05sa53ws6")
-//console.log("b32Address", b32Address)
-//const decoded = bytes32ToBech32Taproot(b32Address)
-
-//console.log("decoded", decoded )
