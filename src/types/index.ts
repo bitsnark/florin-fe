@@ -46,6 +46,7 @@ export type Position = {
   receivedAmount?: string;
   status: TransactionStatus;
   contractRegistrationTxHash: string;
+  registrationTxhash?: string;
   originTxHash?: string;
   destinationTxHash?: string;
   originTxConfirmations?: number;

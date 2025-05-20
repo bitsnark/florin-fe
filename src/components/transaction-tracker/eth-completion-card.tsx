@@ -1,6 +1,6 @@
 import { Card } from '../ui/card';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { truncateAddress } from '@/lib/utils';
+import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 import bitcoinLogo from '@/assets/bitcoin-logo.png';
 import ethLogo from '@/assets/eth-logo.png';
 
@@ -40,7 +40,9 @@ export function EthCompletionCard({
       <div className="flex justify-between items-center w-full">
         <span className="text-[#888888] text-[13px]">Recipient address</span>
         <span className="text-[#FFAA2E] text-[12px] font-medium">
-          {truncateAddress(recipientAddress)}
+          <a href={`${getExplorerUrl(recipientAddress)}/address/${recipientAddress}`} target="_blank">
+            {truncateAddress(recipientAddress)}
+          </a>
         </span>
       </div>
       <div className="flex justify-between items-center w-full">
@@ -51,7 +53,9 @@ export function EthCompletionCard({
             alt={type === 'position' ? 'BTC' : 'xBTC'}
             className="w-4 h-4 inline"
           />
-          {truncateAddress(reservationTx)}
+          <a href={`${getExplorerUrl(reservationTx)}/tx/${reservationTx}`} target="_blank">
+            {truncateAddress(reservationTx)}
+          </a>
         </span>
       </div>
       <div className="flex justify-between items-center w-full">

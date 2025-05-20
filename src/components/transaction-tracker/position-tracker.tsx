@@ -52,6 +52,7 @@ export function PositionTracker({
     ? maxConfirmations
     : confirmations;
 
+  console.log('position', position);
   return (
     <BaseTransactionTracker
       open={open}
@@ -73,7 +74,7 @@ export function PositionTracker({
               data={{
                 amount: formatEther(evmPosition.originalAmount),
                 recipientAddress: evmPosition.positionId,
-                reservationTx: '',
+                reservationTx: position?.registrationTxhash || '',
                 confirmations: displayConfirmations,
                 fiatAmount: fiatAmount,
                 maxConfirmations: maxConfirmations,

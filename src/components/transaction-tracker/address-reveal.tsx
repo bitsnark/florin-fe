@@ -4,7 +4,7 @@ import { CopyIcon } from '@radix-ui/react-icons';
 import { CircleProgress } from './circle-progress';
 import { EyeIcon } from './eye-icon';
 import { QRCode } from './qr-code';
-import { truncateAddress } from '@/lib/utils';
+import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 
 interface AddressRevealProps {
   amount: string;
@@ -136,7 +136,9 @@ export function AddressReveal({
               </span>
               <div className="flex items-center gap-1 md:gap-2">
                 <span className="text-[#FFAA2E] text-[10px] md:text-[13px] truncate max-w-[100px] md:max-w-none">
-                  {isDesktop ? truncateAddress(address) : address}
+                  <a href={`${getExplorerUrl(address)}/address/${address}`} target="_blank">
+                    {isDesktop ? truncateAddress(address) : address}
+                  </a>
                 </span>
                 <div
                   className="cursor-pointer flex items-center justify-center w-[30px] h-[30px] md:w-[33px] md:h-[35px] rounded-lg bg-[#3A3740]"

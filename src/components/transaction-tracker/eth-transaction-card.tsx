@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { RefreshCw } from 'lucide-react';
 import EthLogo from '@/assets/eth-logo.png';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { truncateAddress } from '@/lib/utils';
+import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 import { InfoField } from './info-field';
 
 export interface EthTransactionCardProps {
@@ -44,7 +44,9 @@ export function EthTransactionCard({
 
   const renderAddress = () => (
     <span className="text-[#FFAA2E] text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px]">
-      {data.recipientAddress && truncateAddress(data.recipientAddress)}
+      <a href={`${getExplorerUrl(data.recipientAddress)}/address/${data.recipientAddress}`} target="_blank">
+        {data.recipientAddress && truncateAddress(data.recipientAddress)}
+      </a>
     </span>
   );
 
@@ -52,7 +54,9 @@ export function EthTransactionCard({
     <div className="flex items-center">
       <img src={EthLogo} alt="Ethereum Logo" className="w-4 h-4 inline mr-1" />
       <span className="text-[#FFAA2E] text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px] pt-0.5">
-        {data.reservationTx && truncateAddress(data.reservationTx)}
+        <a href={`${getExplorerUrl(data.reservationTx)}/tx/${data.reservationTx}`} target="_blank">
+          {data.reservationTx && truncateAddress(data.reservationTx)}
+        </a>
       </span>
     </div>
   );
