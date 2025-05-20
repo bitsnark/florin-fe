@@ -76,7 +76,7 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Contract registration</span>
             <span className="text-sm text-right text-[#F0A719]">
-              <a href={getExplorerUrl(tx.contractRegistrationTxHash)} target="_blank">
+              <a href={`${getExplorerUrl(tx.contractRegistrationTxHash)}/tx/${tx.contractRegistrationTxHash}`} target="_blank">
                 {formatHash(tx.contractRegistrationTxHash)}
               </a>
             </span>
@@ -100,7 +100,7 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E]">
-              <a href={getExplorerUrl(tx.originTxHash)} target="_blank" className="underline">
+              <a href={`${getExplorerUrl(tx.originTxHash)}/tx/${tx.originTxHash}`} target="_blank" className="underline">
                 {formatHash(tx.originTxHash)}
               </a>
             </span>
@@ -109,7 +109,7 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E]">
-              <a href={getExplorerUrl(tx.targetTxhash)} target="_blank" className="underline">
+              <a href={`${getExplorerUrl(tx.targetTxhash)}/tx/${tx.targetTxhash}`} target="_blank" className="underline">
                 {formatHash(tx.targetTxhash)}
               </a>
             </span>

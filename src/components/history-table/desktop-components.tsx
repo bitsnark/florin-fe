@@ -62,7 +62,7 @@ export const DesktopTransactionRow = ({
         </div>
       </TableCell>
       <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        <a href={getExplorerUrl(tx.contractRegistrationTxHash)} target="_blank">
+        <a href={`${getExplorerUrl(tx.contractRegistrationTxHash)}/tx/${tx.contractRegistrationTxHash}`} target="_blank">
           {formatHash(tx.contractRegistrationTxHash)}
         </a>
       </TableCell>
@@ -74,12 +74,12 @@ export const DesktopTransactionRow = ({
         {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        <a href={getExplorerUrl(tx.originTxHash)} target="_blank">
+        <a href={`${getExplorerUrl(tx.originTxHash)}/tx/${tx.originTxHash}`} target="_blank">
           {formatHash(tx.originTxHash)}
         </a>
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        <a href={getExplorerUrl(tx.targetTxhash)} target="_blank">
+        <a href={`${getExplorerUrl(tx.targetTxhash)}/tx/${tx.targetTxhash}`} target="_blank">
           {formatHash(tx.targetTxhash)}
         </a>
       </TableCell>

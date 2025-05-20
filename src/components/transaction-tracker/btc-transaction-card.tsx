@@ -4,7 +4,7 @@ import { RefreshCw } from 'lucide-react';
 import EthLogo from '@/assets/eth-logo.png';
 import BtcLogo from '@/assets/bitcoin-logo.png';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { truncateAddress } from '@/lib/utils';
+import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 import { InfoField } from './info-field';
 
 export interface BtcTransactionCardProps {
@@ -63,7 +63,9 @@ export function BtcTransactionCard({
 
   const renderAddress = () => (
     <span className="text-[#FFAA2E] text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px]">
-      {data.recipientAddress && truncateAddress(data.recipientAddress)}
+      <a href={`${getExplorerUrl(data.recipientAddress)}/address/${data.recipientAddress}`} target="_blank">
+        {data.recipientAddress && truncateAddress(data.recipientAddress)}
+      </a>
     </span>
   );
 
@@ -71,7 +73,9 @@ export function BtcTransactionCard({
     <div className="flex items-center">
       <img src={EthLogo} alt="Ethereum Logo" className="w-4 h-4 inline mr-1" />
       <span className="text-[#FFAA2E] text-[10px] md:text-xs cursor-pointer max-w-[180px] md:max-w-[250px] pt-0.5">
-        {data.reservationTx && truncateAddress(data.reservationTx)}
+        <a href={`${getExplorerUrl(data.reservationTx)}/tx/${data.reservationTx}`} target="_blank">
+          {data.reservationTx && truncateAddress(data.reservationTx)}
+        </a>
       </span>
     </div>
   );
@@ -79,7 +83,9 @@ export function BtcTransactionCard({
   const renderTxid = () => (
     <span className="text-[#FFAA2E] text-[10px] md:text-xs truncate max-w-[180px] md:max-w-[250px]">
       <img src={BtcLogo} alt="BTC Logo" className="w-4 h-4 inline mr-1" />
-      {data.txid && truncateAddress(data.txid)}
+      <a href={`${getExplorerUrl(data.txid)}/tx/${data.txid}`} target="_blank">
+        {data.txid && truncateAddress(data.txid)}
+      </a>
     </span>
   );
 

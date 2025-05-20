@@ -107,17 +107,15 @@ export function bytes32ToBech32Taproot(
 }
 
 /**
- * Gets the appropriate blockchain explorer URL based on the transaction hash format
- * @param txHash The transaction hash to link to
- * @returns The URL to the appropriate blockchain explorer
+ * Gets the appropriate blockchain explorer URL based on the hash format
+ * @param hash The transaction hash or address to link to
+ * @returns The base URL to the appropriate blockchain explorer
  */
-export function getExplorerUrl(txHash: string | undefined): string {
-  if (!txHash) return '#';
+export function getExplorerUrl(hash: string | undefined): string {
+  if (!hash) return '#';
   
-  // EVM transactions start with '0x' and are 66 characters long
-  const isEvmTx = txHash.startsWith('0x') && txHash.length === 66;
-  
-  return isEvmTx
-    ? `${ETHERSCAN_URL}/tx/${txHash}`
-    : `${BITCOIN_TESTNET_URL}/tx/${txHash}`;
+  // EVM addresses/transactions start with '0x'
+  return hash.startsWith('0x')
+    ? ETHERSCAN_URL
+    : BITCOIN_TESTNET_URL;
 }
