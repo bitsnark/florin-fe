@@ -118,9 +118,9 @@ export function ReservationTracker({
               ownerAddress: evmReservation.ownerAddress,
               tokenAddress: 'token adrress' as Address,
               finality: Finality.UNKNOWN,
-              createdAt: '',
-              chainId: 0,
-              contractRegistrationTxHash: '',
+              createdAt: reservation?.createdAt || '',
+              chainId: chainId || 0,
+              contractRegistrationTxHash: reservation?.contractRegistrationTxHash || '',
               targetChain: reservation?.targetChain,
               targetBlockEight: reservation?.targetBlockEight,
               targetBlockHash: reservation?.targetBlockHash,
@@ -138,7 +138,7 @@ export function ReservationTracker({
             {btcTransactionDetected && (
               <BtcTransactionCard
                 data={{
-                  amount: evmReservation.depositAmount.toString(),
+                  amount: amount,
                   txid: reservation?.targetTxhash,
                   confirmations: '1',
                   fiatAmount: fiatAmount,
@@ -158,9 +158,9 @@ export function ReservationTracker({
           >
             {bridgingCompleted && (
               <EthCompletionCard
-                amount={evmReservation.depositAmount.toString()}
+                amount={amount}
                 recipientAddress={evmReservation.bitcoinAddress || ''}
-                reservationTx={txHash}
+                reservationTx={reservation?.targetTxhash || reservation?.targetBlockHash || ''}
                 type="reservation"
               />
             )}

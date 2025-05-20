@@ -7,6 +7,7 @@ import InjectedIcon from '@/assets/wallet-icons/Injected.svg';
 import UnisatIcon from '@/assets/wallet-icons/UniSat.svg';
 import OkxIcon from '@/assets/wallet-icons/Okx.svg';
 import { bech32, bech32m } from 'bech32';
+import { ETHERSCAN_URL, BITCOIN_TESTNET_URL } from '@/constants';
 
 export const gasFee = 0.0013;
 
@@ -105,8 +106,18 @@ export function bytes32ToBech32Taproot(
   return bech32m.encode(prefix, words);
 }
 
-//const b32Address = bech32ToBytes32("tb1qvd93l55whp6nzq5t80wurl0zr7s66tprfm84e350k2hzr27hx05sa53ws6")
-//console.log("b32Address", b32Address)
-//const decoded = bytes32ToBech32Taproot(b32Address)
-
-//console.log("decoded", decoded )
+/**
+ * Gets the appropriate blockchain explorer URL based on the transaction hash format
+ * @param txHash The transaction hash to link to
+ * @returns The URL to the appropriate blockchain explorer
+ */
+export function getExplorerUrl(txHash: string | undefined): string {
+  if (!txHash) return '#';
+  
+  // EVM transactions start with '0x' and are 66 characters long
+  const isEvmTx = txHash.startsWith('0x') && txHash.length === 66;
+  
+  return isEvmTx
+    ? `${ETHERSCAN_URL}/tx/${txHash}`
+    : `${BITCOIN_TESTNET_URL}/tx/${txHash}`;
+}

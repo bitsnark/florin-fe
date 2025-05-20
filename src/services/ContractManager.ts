@@ -29,11 +29,26 @@ export class ContractManager {
 
   private constructor() {}
 
+  private async waitForConnectorInitialization(maxAttempts = 5): Promise<boolean> {
+    for (let i = 0; i < maxAttempts; i++) {
+      try {
+        const connectorClient = await getConnectorClient(wagmiConfig);
+        // Verificar que el conector esté completamente inicializado
+        if (connectorClient?.chain?.id && connectorClient?.account) {
+          return true;
+        }
+      } catch (error) {
+        console.debug('Waiting for connector initialization...', error);
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    return false;
+  }
+
   public static async getInstance(): Promise<ContractManager> {
     if (this.instance) return this.instance;
 
     if (this.initializing) {
-      // wait for initializing to finish
       while (!this.instance) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -43,28 +58,48 @@ export class ContractManager {
     this.initializing = true;
     const instance = new ContractManager();
 
-    const connectorClient = await getConnectorClient(wagmiConfig);
-    instance.publicClient = createPublicClient({
-      chain: connectorClient.chain,
-      transport: http(env.VITE_RPC_URL),
-    });
-
-    if (connectorClient) {
-      try {
-        instance.walletClient = createWalletClient({
-          account: connectorClient.account,
-          chain: connectorClient.chain,
-          transport: custom(connectorClient.transport),
-        });
-      } catch (error) {
-        console.error('Error creating wallet client:', error);
+    try {
+      let connectorClient = await getConnectorClient(wagmiConfig);
+      
+      if (!connectorClient?.chain?.id || !connectorClient?.account) {
+        const isInitialized = await instance.waitForConnectorInitialization();
+        if (!isInitialized) {
+          throw new Error('Failed to initialize connector');
+        }
+        connectorClient = await getConnectorClient(wagmiConfig);
       }
-    }
 
-    instance.registerContract('AMMExchange', AMMEXCHANGE_ABI);
-    instance.registerContract('ERC20BitSnark', ERC20_BITSNARK_ABI);
-    this.instance = instance;
-    this.initializing = false;
+      if (!connectorClient?.chain?.id) {
+        throw new Error('No chain ID available in connector');
+      }
+
+      instance.publicClient = createPublicClient({
+        chain: connectorClient.chain,
+        transport: http(env.VITE_RPC_URL),
+      });
+
+      if (connectorClient?.account) {
+        try {
+          instance.walletClient = createWalletClient({
+            account: connectorClient.account,
+            chain: connectorClient.chain,
+            transport: custom(connectorClient.transport),
+          });
+        } catch (error) {
+          console.error('Error creating wallet client:', error);
+          // No lanzamos el error aquí para permitir operaciones de solo lectura
+        }
+      }
+
+      instance.registerContract('AMMExchange', AMMEXCHANGE_ABI);
+      instance.registerContract('ERC20BitSnark', ERC20_BITSNARK_ABI);
+      this.instance = instance;
+    } catch (error) {
+      console.error('Error initializing ContractManager:', error);
+      throw error;
+    } finally {
+      this.initializing = false;
+    }
 
     return instance;
   }
@@ -101,13 +136,18 @@ export class ContractManager {
   }
 
   public async refreshWalletClient(): Promise<void> {
-    const connectorClient = await getConnectorClient(wagmiConfig);
-    if (connectorClient) {
-      this.walletClient = createWalletClient({
-        account: connectorClient.account,
-        chain: connectorClient.chain,
-        transport: http(env.VITE_RPC_URL),
-      });
+    try {
+      const connectorClient = await getConnectorClient(wagmiConfig);
+      if (connectorClient?.account && connectorClient?.chain) {
+        this.walletClient = createWalletClient({
+          account: connectorClient.account,
+          chain: connectorClient.chain,
+          transport: custom(connectorClient.transport),
+        });
+      }
+    } catch (error) {
+      console.error('Error refreshing wallet client:', error);
+      // No lanzamos el error para permitir operaciones de solo lectura
     }
   }
 

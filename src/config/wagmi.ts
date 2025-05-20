@@ -14,6 +14,7 @@ const walletConnector = walletConnect({
 export const wagmiConfig = createConfig({
   chains: supportedChains,
   connectors: [injected(), walletConnector, metaMask()],
+  ssr: false,
   transports: Object.fromEntries(
     supportedChains.map((chain) => [chain.id, http()])
   ) as Record<ChainId, ReturnType<typeof http>>,
