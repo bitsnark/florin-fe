@@ -15,6 +15,7 @@ import {
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
 import { StatusIcon } from '@/components/ui/status-icon';
+import { getExplorerUrl } from '@/lib/utils';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
@@ -75,14 +76,16 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Contract registration</span>
             <span className="text-sm text-right text-[#F0A719]">
-              {formatHash(tx.contractRegistrationTxHash)}
+              <a href={getExplorerUrl(tx.contractRegistrationTxHash)} target="_blank">
+                {formatHash(tx.contractRegistrationTxHash)}
+              </a>
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Requested amount</span>
             <span className="text-sm text-right">
-              {tx.amount} {tx.type === 'position' ? 'BTC' : 'ETH'}
+              {tx.amount} {tx.type === 'position' ? 'BTC' : 'xBTC'}
             </span>
           </div>
 
@@ -90,21 +93,25 @@ export const MobileTransactionItem = ({
             <span className="text-sm">Received amount</span>
             <span className="text-sm text-right">
               {formatReceivedAmount(tx.receivedAmount, data?.minAmount)}{' '}
-              {tx.type === 'position' ? 'BTC' : 'ETH'}
+              {tx.type === 'position' ? 'BTC' : 'xBTC'}
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
-            <span className="text-sm text-right text-[#FFAA2E] underline">
-              {formatHash(tx.originTxHash)}
+            <span className="text-sm text-right text-[#FFAA2E]">
+              <a href={getExplorerUrl(tx.originTxHash)} target="_blank" className="underline">
+                {formatHash(tx.originTxHash)}
+              </a>
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
-            <span className="text-sm text-right text-[#FFAA2E] underline">
-              {formatHash(tx.targetTxhash)}
+            <span className="text-sm text-right text-[#FFAA2E]">
+              <a href={getExplorerUrl(tx.targetTxhash)} target="_blank" className="underline">
+                {formatHash(tx.targetTxhash)}
+              </a>
             </span>
           </div>
 
