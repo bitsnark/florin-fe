@@ -67,9 +67,9 @@ export const useAmountInput = ({
       return;
     }
 
-    const { error, validValue } = validateAmount(value, numValue);
+    const { error } = validateAmount(value, numValue);
     setErrorMessage(error);
-    onAmountChange?.(validValue);
+    onAmountChange?.(value);
   };
 
   return {
