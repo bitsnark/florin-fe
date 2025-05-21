@@ -12,6 +12,7 @@ import { useChainId } from 'wagmi';
 import { Address, formatEther } from 'viem';
 import { useReservation } from '@/hooks/queries/useReservation';
 import { RESERVATION_STATUS_MAP } from '../history-table/transaction-history-adapter';
+import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -26,8 +27,9 @@ export function ReservationTracker({
   id,
   txHash,
 }: ReservationTrackerProps) {
-  
-  const { data, isLoading: isReservationLoading } = useReservation(id, { refetchInterval: 5000 });
+  const { data, isLoading: isReservationLoading } = useReservation(id, {
+    refetchInterval: 5000,
+  });
   const { data: bitcoinPrice } = useBitcoinPrice();
   const chainId = useChainId();
   const reservation = data?.data;
@@ -57,17 +59,23 @@ export function ReservationTracker({
     transactionHash: txHash,
   });
 
+  const btcConfirmations = useBtcBlockConfirmations({
+    isActive: open,
+    targetBlockHeight: reservation?.targetBlockEight,
+  });
+
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
   const bridgingCompleted = status === ReservationStatus.Settled;
   const maxHeightClass = !bridgingCompleted
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';
 
-  const btcTransactionDetected = status !== ReservationStatus.Expired &&
+  const btcTransactionDetected =
+    status !== ReservationStatus.Expired &&
     !!reservation?.targetBlockHash &&
     reservation.targetBlockEight &&
     reservation.targetBlockEight > 0;
-  
+
   return (
     <BaseTransactionTracker
       open={open}
@@ -100,7 +108,6 @@ export function ReservationTracker({
 
           {/* Step 2 - Send BTC */}
           <BtcSendStep
-            
             amount={amount}
             isSent={bridgingCompleted}
             confirmations={confirmations}
@@ -120,7 +127,8 @@ export function ReservationTracker({
               finality: Finality.UNKNOWN,
               createdAt: reservation?.createdAt || '',
               chainId: chainId || 0,
-              contractRegistrationTxHash: reservation?.contractRegistrationTxHash || '',
+              contractRegistrationTxHash:
+                reservation?.contractRegistrationTxHash || '',
               targetChain: reservation?.targetChain,
               targetBlockEight: reservation?.targetBlockEight,
               targetBlockHash: reservation?.targetBlockHash,
@@ -140,8 +148,9 @@ export function ReservationTracker({
                 data={{
                   amount: amount,
                   txid: reservation?.targetTxhash,
-                  confirmations: '1',
+                  confirmations: btcConfirmations,
                   fiatAmount: fiatAmount,
+                  maxConfirmations: maxConfirmations,
                 }}
                 isStepThree={true}
               />
@@ -160,7 +169,11 @@ export function ReservationTracker({
               <EthCompletionCard
                 amount={amount}
                 recipientAddress={evmReservation.bitcoinAddress || ''}
-                reservationTx={reservation?.targetTxhash || reservation?.targetBlockHash || ''}
+                reservationTx={
+                  reservation?.targetTxhash ||
+                  reservation?.targetBlockHash ||
+                  ''
+                }
                 type="reservation"
               />
             )}
