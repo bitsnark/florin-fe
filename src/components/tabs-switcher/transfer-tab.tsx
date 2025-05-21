@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TransferForm } from './transfer-form';
 import { FeeCard } from './fee-card';
 import { TermsSection } from './terms-section';
@@ -15,7 +15,11 @@ import { useBitSnarkBalance } from '@/hooks/useBitSnarkBalance';
 import { useAccount } from 'wagmi';
 
 interface TransferTabProps {
-  onTransactionCreated: (type: 'position' | 'reservation', id: string, txHash: string) => void;
+  onTransactionCreated: (
+    type: 'position' | 'reservation',
+    id: string,
+    txHash: string
+  ) => void;
 }
 
 export function TransferTab({ onTransactionCreated }: TransferTabProps) {
@@ -33,14 +37,58 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
   const [fromAmount, setFromAmount] = useState('0');
   const [toAmount, setToAmount] = useState('0');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [bitcoinAddress, setBitcoinAddress] = useState<string | undefined>(undefined);
-  
-  const { openPosition, reservePosition, loading } = useExchange();
+  const [bitcoinAddress, setBitcoinAddress] = useState<string | undefined>(
+    undefined
+  );
+  const [estimatedGasFee, setEstimatedGasFee] = useState<number>(0);
+
+  const {
+    openPosition,
+    reservePosition,
+    loading,
+    estimateOpenPositionGas,
+    estimateReservePositionGas,
+  } = useExchange();
   const { data } = useMaxMinBtc();
   const maxBtc = data?.maxAmount || 0;
   const minBtc = data?.minAmount || 0;
   const { balance: xbtcAmount } = useBitSnarkBalance();
   const isWalletConnected = !!address;
+
+  const updateGasEstimate = async () => {
+    if (
+      !address ||
+      !chainId ||
+      !fromAmount ||
+      fromAmount === '0'
+    ) {
+      setEstimatedGasFee(0);
+      return;
+    }
+
+    try {
+      const normalizedAmount = fromAmount.replace(',', '.');
+      const tokenAmount = parseEther(normalizedAmount);
+
+      const gasFee =
+        fromNetwork === 'bitcoin'
+          ? await estimateReservePositionGas({
+              tokenAmount,
+              owner: address,
+              chainId,
+            })
+          : await estimateOpenPositionGas();
+
+      setEstimatedGasFee(gasFee);
+    } catch (error) {
+      console.error('Error updating gas estimate:', error);
+      setEstimatedGasFee(0);
+    }
+  };
+
+  useEffect(() => {
+    updateGasEstimate();
+  }, [fromAmount, fromNetwork, bitcoinAddress, address, chainId, toAmount]);
 
   const handleSwitchNetworks = () => {
     if (isAnimating) return;
@@ -107,7 +155,6 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
     }
   };
 
-  // TODO: REFACTOR, validate form using zod
   const isBitcoinAddressValid =
     fromNetwork === 'ethereum' && toCurrency === 'btc'
       ? isValidBitcoinAddress(bitcoinAddress as string)
@@ -158,6 +205,7 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
         toCurrency={toCurrency}
         isAnimating={isAnimating}
         amount={fromAmount}
+        gasFee={estimatedGasFee}
       />
       {isWalletConnected && (
         <TermsSection
