@@ -1,14 +1,15 @@
 import { Card } from '@/components/ui/card';
-import { cn, gasFee } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 interface FeeCardProps {
   toCurrency: 'btc' | 'eth' | 'xbtc';
   isAnimating: boolean;
   amount: string;
+  gasFee: number;
 }
 
-export function FeeCard({ toCurrency, isAnimating, amount }: FeeCardProps) {
+export function FeeCard({ toCurrency, isAnimating, amount, gasFee }: FeeCardProps) {
   const amountNumber = parseFloat(amount) || 0;
   const receiveAmount = Math.max(0, amountNumber - gasFee).toFixed(6);
 

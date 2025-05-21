@@ -9,15 +9,63 @@ import {
   EVMReservation,
 } from '@/types';
 import { useState } from 'react';
-import { Address } from 'viem';
+import { Address, formatEther } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
 import { ContractManager } from '@/services/ContractManager';
 import { bech32ToBytes32, bytes32ToBech32Taproot } from '@/lib/utils';
 import { DEFAULT_POSITION_ID } from '@/constants';
+import { AMMEXCHANGE_ABI } from '@/constants/abis';
 
 export const useExchange = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const estimateOpenPositionGas = async (): Promise<number> => {
+    try {
+      const contractManager = await ContractManager.getInstance();
+      const gasPrice = await contractManager.publicClient.getGasPrice();
+      return Number(formatEther(2000000n * gasPrice));
+    } catch (error) {
+      console.error('Error estimating openPosition gas:', error);
+      return 0;
+    }
+  };
+
+  const estimateReservePositionGas = async ({
+    tokenAmount,
+    owner,
+    chainId,
+  }: {
+    tokenAmount: bigint;
+    owner: Address;
+    chainId: number;
+  }): Promise<number> => {
+    try {
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const { request } = await contractManager.publicClient.simulateContract({
+        address: contractAddress,
+        abi: AMMEXCHANGE_ABI,
+        functionName: 'reservePosition',
+        args: [DEFAULT_POSITION_ID, owner, tokenAmount],
+        account: owner,
+        value: 0n,
+      });
+      const gasEstimate =
+        await contractManager.publicClient.estimateContractGas({
+          ...request,
+          account: owner,
+        });
+      const gasPrice = await contractManager.publicClient.getGasPrice();
+      return Number(formatEther(gasEstimate * gasPrice));
+    } catch (error) {
+      console.error('Error estimating reservePosition gas:', error);
+      return 0;
+    }
+  };
 
   const openPosition = async ({
     tokenAmount,
@@ -121,16 +169,15 @@ export const useExchange = () => {
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         deadline: deadline,
-        exchangeRate: exchangeRate.toString(), // receipt?.logs[0]?.args?.exchangeRate?.toString()
-        tokenAddress: tokenAddress, // receipt.logs[0].address
-        bitcoinAddress: bitcoinAddresses, // receipt.logs[0].args.bitcoinAddresses ? receipt.logs[0].args.bitcoinAddresses[0] : ''
+        exchangeRate: exchangeRate.toString(),
+        tokenAddress: tokenAddress,
+        bitcoinAddress: bitcoinAddresses,
         state: PositionStatus.Active,
         finality: Finality.FINAL,
         chainId: chainId,
         ...transaction,
       };
 
-      //await FlorinApiService.addPosition(newPosition);
       setLoading(false);
       return newPosition;
     } catch (error) {
@@ -163,7 +210,7 @@ export const useExchange = () => {
         chainId as keyof typeof CONTRACTS_ADDRESS
       ].ammExchange as Address;
 
-      const {hash, wait} = await contractManager.writeContract(
+      const { hash, wait } = await contractManager.writeContract(
         'AMMExchange',
         'reservePosition',
         [positionId, evmReceivingAddress, tokenAmount],
@@ -200,7 +247,6 @@ export const useExchange = () => {
         createdAt: new Date().toISOString(),
       };
 
-      //await FlorinApiService.addReservation(newReservation);
       setLoading(false);
       return newReservation;
     } catch (error) {
@@ -261,10 +307,11 @@ export const useExchange = () => {
         contractAddress
       )) as unknown as EVMReservation;
       setLoading(false);
-      
+
       return {
         ...reservation,
-          bitcoinAddress: bytes32ToBech32Taproot(reservation.bitcoinAddress) ?? '',
+        bitcoinAddress:
+          bytes32ToBech32Taproot(reservation.bitcoinAddress) ?? '',
       };
     } catch (error) {
       setLoading(false);
@@ -281,5 +328,7 @@ export const useExchange = () => {
     reservePosition,
     getPosition,
     getReservation,
+    estimateOpenPositionGas,
+    estimateReservePositionGas,
   };
 };

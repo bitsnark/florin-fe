@@ -52,7 +52,6 @@ export function PositionTracker({
     ? maxConfirmations
     : confirmations;
 
-  console.log('position', position);
   return (
     <BaseTransactionTracker
       open={open}
