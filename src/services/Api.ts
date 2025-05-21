@@ -247,4 +247,12 @@ export class FlorinApiService {
     }
     return response.json();
   }
+
+  static async getBtcBlockCount(): Promise<number> {
+    const response = await fetch(`${API_BASE_URL}/btcBlockCount`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch block count: ${response.statusText}`);
+    }
+    return response.json();
+  }
 }
