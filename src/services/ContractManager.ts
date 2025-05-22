@@ -29,19 +29,25 @@ export class ContractManager {
 
   private constructor() {}
 
-  private async waitForConnectorInitialization(maxAttempts = 5): Promise<boolean> {
+  private async waitForConnectorInitialization(maxAttempts = 10): Promise<boolean> {
     for (let i = 0; i < maxAttempts; i++) {
       try {
+        console.log(`Attempt ${i + 1}/${maxAttempts} to initialize connector...`);
         const connectorClient = await getConnectorClient(wagmiConfig);
-        // Verificar que el conector esté completamente inicializado
         if (connectorClient?.chain?.id && connectorClient?.account) {
+          console.log('Connector initialized successfully:', {
+            chainId: connectorClient.chain.id,
+            account: connectorClient.account
+          });
           return true;
         }
+        console.log('Connector client obtained but missing chain or account:', connectorClient);
       } catch (error) {
-        console.debug('Waiting for connector initialization...', error);
+        console.error(`Attempt ${i + 1} failed:`, error);
       }
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
+    console.error('Failed to initialize connector after', maxAttempts, 'attempts');
     return false;
   }
 
@@ -49,6 +55,7 @@ export class ContractManager {
     if (this.instance) return this.instance;
 
     if (this.initializing) {
+      console.log('ContractManager is already initializing, waiting...');
       while (!this.instance) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -59,12 +66,14 @@ export class ContractManager {
     const instance = new ContractManager();
 
     try {
+      console.log('Starting ContractManager initialization...');
       let connectorClient = await getConnectorClient(wagmiConfig);
       
       if (!connectorClient?.chain?.id || !connectorClient?.account) {
+        console.log('Initial connector client missing chain or account, waiting for initialization...');
         const isInitialized = await instance.waitForConnectorInitialization();
         if (!isInitialized) {
-          throw new Error('Failed to initialize connector');
+          throw new Error('Failed to initialize connector after multiple attempts. Please check your wallet connection and try again.');
         }
         connectorClient = await getConnectorClient(wagmiConfig);
       }
