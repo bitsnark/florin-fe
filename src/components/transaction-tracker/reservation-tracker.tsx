@@ -80,7 +80,7 @@ export function ReservationTracker({
     <BaseTransactionTracker
       open={open}
       onOpenChange={onOpenChange}
-      isLoading={isReservationLoading || isEVMReservationLoading}
+      isLoading={false}
       error={isEVMReservationError}
       maxHeight={maxHeightClass}
     >
