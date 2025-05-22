@@ -16,6 +16,13 @@ export const AmountInputHeader = ({
   const networkLogoSrc = ASSETS.NETWORK_LOGOS[network];
   const bgColor = network === 'bitcoin' ? 'bg-bitcoin-bg' : 'bg-ethereum-bg';
 
+  const formattedAmount = xbtcAmount 
+    ? Number(xbtcAmount).toLocaleString('es-ES', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4,
+      })
+    : '0';
+
   return (
     <div className="flex items-center justify-between gap-2">
       <div className="flex items-center gap-2">
@@ -53,7 +60,7 @@ export const AmountInputHeader = ({
               currency === 'xbtc' ? 'opacity-50 text-gray-400' : ''
             }`}
           >
-            {xbtcAmount ?? '0'} xBTC
+            {formattedAmount} xBTC
           </span>
         </div>
       )}

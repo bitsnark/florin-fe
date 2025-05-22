@@ -4,10 +4,12 @@ import { truncateAddress } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { Card } from '../ui/card';
 import EthLogo from '@/assets/eth-logo.png';
+import { useSupportedChains } from '@/hooks/useSupportedChains';
 
 export const EvmWalletConnected = () => {
   const { disconnect } = useDisconnect();
   const { address } = useAccount();
+  const { isSupported } = useSupportedChains();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +38,12 @@ export const EvmWalletConnected = () => {
         <div className="h-full flex flex-row items-center justify-between gap-9">
           <div className="flex flex-row items-center gap-2">
             <img src={EthLogo} alt="Ethereum Logo" className="w-4 h-4" />
-            {truncatedAddr}
+
+            {!isSupported ? (
+              <span className="text-red-500 ml-2">Unsupported network</span>
+            ) : (
+              truncatedAddr
+            )}
           </div>
 
           <ChevronDown

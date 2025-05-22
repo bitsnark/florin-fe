@@ -13,6 +13,7 @@ import { Position, Reservation } from '@/types';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { useBitSnarkBalance } from '@/hooks/useBitSnarkBalance';
 import { useAccount } from 'wagmi';
+import { useSupportedChains } from '@/hooks/useSupportedChains';
 
 interface TransferTabProps {
   onTransactionCreated: (
@@ -41,7 +42,7 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
     undefined
   );
   const [estimatedGasFee, setEstimatedGasFee] = useState<number>(0);
-
+  const { isSupported } = useSupportedChains();
   const {
     openPosition,
     reservePosition,
@@ -219,8 +220,9 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
         <ConnectButton
           isWalletConnected={isWalletConnected}
           isAnimating={isAnimating}
+          isSupported={isSupported}
         />
-        {isWalletConnected && (
+        {isWalletConnected && isSupported && (
           <Button
             onClick={handleBridgeAndReset}
             isAnimating={isAnimating}

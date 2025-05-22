@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 import { ContractManager } from '@/services/ContractManager';
 import { CMError } from '@/lib/errors';
-import { Address, formatEther } from 'viem';
+import { Address, formatUnits } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
 
 export const useBitSnarkBalance = () => {
@@ -57,7 +57,7 @@ export const useBitSnarkBalance = () => {
     }
   }, [fetchBalance, chainId, address]);
 
-  const xbtcAmount = balance ? formatEther(balance) : '0';
+  const xbtcAmount = balance ? formatUnits(balance, 8) : '0';
   return {
     balance: xbtcAmount,
     isLoading,
