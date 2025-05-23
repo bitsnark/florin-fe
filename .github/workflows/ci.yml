@@ -22,7 +22,7 @@ jobs:
           rm -rf node_modules package-lock.json
 
       - name: Install deps
-        run: npm install
+        run: npm install --force
 
       - name: Lint
         run: npm run lint
