@@ -169,8 +169,8 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
     Number(fromAmount) < minBtc ||
     Number(fromAmount) > maxBtc;
 
-  const handleBridgeAndReset = () => {
-    handleBridgeFunds();
+  const handleBridgeAndReset = async () => {
+    await handleBridgeFunds();
     // Reset form after bridge operation
     handleFromAmountChange('');
     handleToAmountChange('');

@@ -27,7 +27,7 @@ export function ReservationTracker({
   id,
   txHash,
 }: ReservationTrackerProps) {
-  const { data, isLoading: isReservationLoading } = useReservation(id, {
+  const { data } = useReservation(id, {
     refetchInterval: 5000,
   });
   const { data: bitcoinPrice } = useBitcoinPrice();
@@ -36,7 +36,7 @@ export function ReservationTracker({
 
   const {
     evmReservation,
-    isLoading: isEVMReservationLoading,
+   // isLoading: isEVMReservationLoading,
     error: isEVMReservationError,
   } = useEVMReservationPolling({
     reservationId: id || '',
