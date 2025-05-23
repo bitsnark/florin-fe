@@ -14,6 +14,7 @@ import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { useBitSnarkBalance } from '@/hooks/useBitSnarkBalance';
 import { useAccount } from 'wagmi';
 import { useSupportedChains } from '@/hooks/useSupportedChains';
+import { useToast } from '@/hooks/useToast';
 
 interface TransferTabProps {
   onTransactionCreated: (
@@ -47,14 +48,17 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
     openPosition,
     reservePosition,
     loading,
+    error,
     estimateOpenPositionGas,
     estimateReservePositionGas,
+    setError,
   } = useExchange();
   const { data } = useMaxMinBtc();
   const maxBtc = data?.maxAmount || 0;
   const minBtc = data?.minAmount || 0;
   const { balance: xbtcAmount } = useBitSnarkBalance();
   const isWalletConnected = !!address;
+  const { showError } = useToast();
 
   const updateGasEstimate = async () => {
     if (
@@ -90,6 +94,13 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
   useEffect(() => {
     updateGasEstimate();
   }, [fromAmount, fromNetwork, bitcoinAddress, address, chainId, toAmount]);
+
+  useEffect(() => {
+    if (error) {
+      showError(error);
+      setError(null);
+    }
+  }, [error, showError]);
 
   const handleSwitchNetworks = () => {
     if (isAnimating) return;
