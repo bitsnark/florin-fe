@@ -16,12 +16,23 @@ export function TransactionTrackerDialog({
   id,
   txHash,
 }: TransactionTrackerDialogProps) {
-  // Render the appropriate tracker based on the type
   if (type === 'reservation') {
     return (
-      <ReservationTracker open={open} onOpenChange={onOpenChange} id={id} txHash={txHash} />
+      <ReservationTracker
+        open={open}
+        onOpenChange={onOpenChange}
+        id={id}
+        txHash={txHash}
+      />
     );
   }
 
-  return <PositionTracker open={open} onOpenChange={onOpenChange} id={id} txHash={txHash} />;
+  return (
+    <PositionTracker
+      open={open}
+      onOpenChange={onOpenChange}
+      id={id}
+      txHash={txHash}
+    />
+  );
 }
