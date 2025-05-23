@@ -56,7 +56,7 @@ export function BtcTransactionCard({
   };
 
   const renderAmount = () => (
-    <span className="text-white text-[14px] md:text-[16px] font-medium">
+    <span className="text-white text-[14px] md:text-[16px] font-medium" data-testid="btc-amount">
       {isStepThree ? data.amount : `~${data.amount}`} BTC
     </span>
   );

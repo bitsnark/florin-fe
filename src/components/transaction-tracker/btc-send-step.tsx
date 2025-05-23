@@ -82,7 +82,7 @@ export function BtcSendStep({
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full gap-2">
           <WarningMessage message={warningMessage} iconToShow="info" />
           {state === ReservationStatus.Expired ? (
-            <div className="flex gap-2 bg-grey rounded-xl p-3">
+            <div className="flex gap-2 bg-grey rounded-xl p-3" data-testid="reservation-expired-message">
               <div className="text-orange w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5 mr-2 md:mr-3">
                 <WarningIcon />
               </div>

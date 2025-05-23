@@ -14,7 +14,7 @@ function Skeleton({
 
 export function TrackerSkeleton() {
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-3" data-testid="skeleton">
       {/* Step 1 */}
       <div className="flex">
         <div className="flex items-center mr-4">
