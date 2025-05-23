@@ -66,10 +66,10 @@ export const DesktopTransactionRow = ({
           {formatHash(tx.contractRegistrationTxHash)}
         </a>
       </TableCell>
-      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap" data-testid="requested-amount">
         {tx.amount} {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
-      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap" data-testid="received-amount">
         {formatReceivedAmount(tx.amount || tx?.originalAmount || '0', data?.minAmount)}{' '}
         {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
@@ -107,36 +107,36 @@ export const SkeletonRow = () => (
   <TableRow className="hover:bg-transparent">
     <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <div className="flex gap-2 items-center">
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-4 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-4 w-16" data-testid="skeleton" />
         <ArrowRightIcon />
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-4 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-4 w-16" data-testid="skeleton" />
       </div>
     </TableCell>
     <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-24 mx-auto" />
+      <Skeleton className="h-4 w-24 mx-auto" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-16 ml-auto" />
+      <Skeleton className="h-4 w-16 ml-auto" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-16 ml-auto" />
+      <Skeleton className="h-4 w-16 ml-auto" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-24" />
+      <Skeleton className="h-4 w-24" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-24" />
+      <Skeleton className="h-4 w-24" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <div className="flex flex-row gap-1 items-center justify-start">
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-4 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-4 w-16" data-testid="skeleton" />
       </div>
     </TableCell>
     <TableCell className="text-xs text-center text-[#FFAA2E] cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-12 mx-auto" />
+      <Skeleton className="h-4 w-12 mx-auto" data-testid="skeleton" />
     </TableCell>
   </TableRow>
 );
@@ -146,6 +146,7 @@ export const EmptyState = () => (
     <TableCell
       colSpan={8}
       className="border border-[#333845] rounded-[10px] py-8 px-4 text-center"
+      data-testid="empty-state"
     >
       <div className="flex flex-col items-center justify-center gap-2">
         <p className="text-gray-500 text-xs">
@@ -161,6 +162,7 @@ export const WalletNotConnectedState = () => (
     <TableCell
       colSpan={8}
       className="border border-[#333845] rounded-[10px] py-8 px-4 text-center"
+      data-testid="wallet-not-connected-state"
     >
       <div className="flex flex-col items-center justify-center gap-2">
         <p className="text-gray-500 text-xs">
