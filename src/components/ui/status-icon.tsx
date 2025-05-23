@@ -56,9 +56,9 @@ export function StatusIcon({ status, className = '' }: StatusIconProps) {
   return (
     <div className={`bg-grey rounded-full p-[0.125rem] ${className}`}>
       {typeof Icon === 'function' && Icon !== SymbolIcon ? (
-        <Icon className={colorClass} />
+        <Icon className={colorClass} data-testid={`status-icon-${status.toLowerCase()}`} />
       ) : (
-        <SymbolIcon className={colorClass} />
+        <SymbolIcon className={colorClass} data-testid={`status-icon-${status.toLowerCase()}`} />
       )}
     </div>
   );

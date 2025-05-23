@@ -50,8 +50,9 @@ export const MobileTransactionItem = ({
     <AccordionItem
       value={`tx-${index}`}
       className="bg-[#1D1F25] rounded-xl border-none overflow-hidden"
+      data-testid="mobile-transaction-item"
     >
-      <AccordionTrigger className="flex items-center justify-between p-3 w-[327px] h-[52px] text-white hover:no-underline">
+      <AccordionTrigger className="flex items-center justify-between p-3 w-[327px] h-[52px] text-white hover:no-underline" data-testid="mobile-transaction-header">
         <div className="flex items-center gap-1">
           <img
             src={getChainLogo(tx.fromChain.toLowerCase())}
@@ -148,14 +149,14 @@ export const MobileLoadingSkeleton = () => (
   <div className="bg-[#1D1F25] rounded-xl border-none overflow-hidden mb-3">
     <div className="flex items-center justify-between p-3 w-[327px] h-[52px]">
       <div className="flex items-center gap-1">
-        <Skeleton className="h-5 w-5 rounded-full" />
-        <Skeleton className="h-5 w-16" />
-        <Skeleton className="h-3 w-3 mx-1" />
-        <Skeleton className="h-5 w-5 rounded-full" />
-        <Skeleton className="h-5 w-16" />
+        <Skeleton className="h-5 w-5 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-5 w-16" data-testid="skeleton" />
+        <Skeleton className="h-3 w-3 mx-1" data-testid="skeleton" />
+        <Skeleton className="h-5 w-5 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-5 w-16" data-testid="skeleton" />
       </div>
       <div className="flex items-center">
-        <Skeleton className="h-5 w-16" />
+        <Skeleton className="h-5 w-16" data-testid="skeleton" />
       </div>
     </div>
   </div>
@@ -163,7 +164,7 @@ export const MobileLoadingSkeleton = () => (
 
 // Mobile Empty State
 export const MobileEmptyState = () => (
-  <div className="bg-[#1D1F25] rounded-[24px] border border-[#333845] p-6 text-center">
+  <div className="bg-[#1D1F25] rounded-[24px] border border-[#333845] p-6 text-center" data-testid="empty-state">
     <div className="flex flex-col items-center justify-center gap-2">
       <SymbolIcon className="h-10 w-10 text-[#666]" />
       <p className="text-white text-base">No transactions found</p>
@@ -177,7 +178,7 @@ export const MobileEmptyState = () => (
 
 // Mobile Wallet Not Connected State
 export const MobileWalletNotConnectedState = () => (
-  <div className="bg-[#1D1F25] rounded-[24px] border border-[#333845] p-6 text-center">
+  <div className="bg-[#1D1F25] rounded-[24px] border border-[#333845] p-6 text-center" data-testid="wallet-not-connected-state">
     <div className="flex flex-col items-center justify-center gap-2">
       <SymbolIcon className="h-10 w-10 text-[#666]" />
       <p className="text-white text-base">Wallet not connected</p>
