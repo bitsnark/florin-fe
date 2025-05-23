@@ -17,7 +17,7 @@ export const AmountInputHeader = ({
   const bgColor = network === 'bitcoin' ? 'bg-bitcoin-bg' : 'bg-ethereum-bg';
 
   const formattedAmount = xbtcAmount 
-    ? Number(xbtcAmount).toLocaleString('es-ES', {
+    ? Number(xbtcAmount).toLocaleString('en-US', {
         minimumFractionDigits: 4,
         maximumFractionDigits: 4,
       })

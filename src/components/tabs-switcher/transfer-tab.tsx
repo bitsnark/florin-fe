@@ -126,18 +126,18 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
 
   const handleBridgeFunds = async () => {
     const normalizedAmount = fromAmount.replace(',', '.');
-
+    const parsedAmount = parseEther(normalizedAmount);
     let transaction: Position | Reservation | undefined;
     if (fromNetwork === 'bitcoin') {
       transaction = await reservePosition({
-        tokenAmount: parseEther(normalizedAmount),
+        tokenAmount: parsedAmount,
         evmReceivingAddress: address!,
         chainId,
         owner: address!,
       });
     } else {
       transaction = await openPosition({
-        tokenAmount: parseEther(normalizedAmount),
+        tokenAmount: parsedAmount,
         exchangeRate: 1,
         bitcoinAddresses: bitcoinAddress! as Address,
         deadline: Math.floor(Date.now() / 1000) + 3600,
@@ -169,8 +169,8 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
     Number(fromAmount) < minBtc ||
     Number(fromAmount) > maxBtc;
 
-  const handleBridgeAndReset = () => {
-    handleBridgeFunds();
+  const handleBridgeAndReset = async () => {
+    await handleBridgeFunds();
     // Reset form after bridge operation
     handleFromAmountChange('');
     handleToAmountChange('');
