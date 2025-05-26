@@ -2,6 +2,7 @@ import { ConnectorsListDialog } from '@/components/evm-wallet-connector/connecto
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { Toaster } from '@/components/ui/sonner';
 
 const Layout = () => {
   return  (
@@ -14,6 +15,7 @@ const Layout = () => {
         <Outlet />
       </div>
       <Footer />
+      <Toaster />
     </div>
   )
 }

@@ -84,6 +84,7 @@ export const useExchange = () => {
   }) => {
     try {
       setLoading(true);
+      setError(null);
 
       const contractManager = await ContractManager.getInstance();
       const contractAddress = CONTRACTS_ADDRESS[
@@ -200,6 +201,8 @@ export const useExchange = () => {
   }) => {
     try {
       setLoading(true);
+      setError(null);
+
       const contractManager = await ContractManager.getInstance();
       const tokenAddress = CONTRACTS_ADDRESS[
         chainId as keyof typeof CONTRACTS_ADDRESS
@@ -330,5 +333,6 @@ export const useExchange = () => {
     getReservation,
     estimateOpenPositionGas,
     estimateReservePositionGas,
+    setError,
   };
 };
