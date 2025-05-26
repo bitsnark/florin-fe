@@ -1,6 +1,5 @@
 import { env } from '@/config/env';
 import { Position, Reservation, TransactionHistory } from '@/types';
-import { formatEther, parseEther } from 'viem';
 
 const API_BASE_URL = env.VITE_API_BASE_URL;
 
@@ -17,36 +16,6 @@ export class FlorinApiService {
       throw new Error(`Failed to fetch greeting: ${response.statusText}`);
     }
     return response.text();
-  }
-
-  static async getPositionsByOwner(
-    ownerId: string | undefined,
-    finalityFlag?: boolean
-  ): Promise<Position[]> {
-    if (!ownerId) {
-      const response = await fetch(`${API_BASE_URL}/positions`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch positions: ${response.statusText}`);
-      }
-      return response.json();
-    }
-
-    const response = await fetch(
-      `${API_BASE_URL}/positions?ownerId=${ownerId}`
-    );
-    if (!response.ok) {
-      throw new Error(`Failed to fetch positions: ${response.statusText}`);
-    }
-    const positions = await response.json();
-    const normalizedPositions = positions.map((p: Position) => ({
-      ...p,
-      amount: formatEther(BigInt(p.amount)),
-      receivedAmount: formatEther(BigInt(p.receivedAmount || '0')),
-    }));
-
-    return finalityFlag === undefined
-      ? normalizedPositions
-      : normalizedPositions.filter((p: Position) => p.finality === 'FINAL');
   }
 
   static async getActivePositions(finalityFlag?: boolean): Promise<Position[]> {
@@ -75,37 +44,6 @@ export class FlorinApiService {
     return position;
   }
 
-  static async getReservationsByOwner(
-    ownerId: string | undefined,
-    finalityFlag?: boolean
-  ): Promise<Reservation[]> {
-    if (!ownerId) {
-      const response = await fetch(`${API_BASE_URL}/reservations`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch reservations: ${response.statusText}`);
-      }
-      return response.json();
-    }
-
-    const response = await fetch(
-      `${API_BASE_URL}/reservations?ownerId=${ownerId}`
-    );
-    if (!response.ok) {
-      throw new Error(`Failed to fetch reservations: ${response.statusText}`);
-    }
-    const reservations = await response.json();
-    const normalizedReservations = reservations.map((r: Reservation) => ({
-      ...r,
-      amount: formatEther(BigInt(r.amount)),
-      receivedAmount: formatEther(BigInt(r.receivedAmount || '0')),
-    }));
-    return finalityFlag === undefined
-      ? normalizedReservations
-      : normalizedReservations.filter(
-          (r: Reservation) => r.finality === 'FINAL'
-        );
-  }
-
   static async getActiveReservations(): Promise<Reservation[]> {
     const response = await fetch(`${API_BASE_URL}/reservations/active`);
     if (!response.ok) {
@@ -127,45 +65,6 @@ export class FlorinApiService {
     }
     const reservation = await response.json();
     return reservation;
-  }
-
-  static async updateReservation(
-    reservation: Reservation
-  ): Promise<Reservation> {
-    const response = await fetch(
-      `${API_BASE_URL}/reservations/${reservation.reservationId}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: serializeBigInt({
-          ...reservation,
-          amount: parseEther(reservation.amount),
-          receivedAmount: parseEther(reservation.receivedAmount || '0'),
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to update reservation: ${response.statusText}`);
-    }
-    return response.json();
-  }
-
-  static async addReservation(reservation: Reservation): Promise<Reservation> {
-    const response = await fetch(`${API_BASE_URL}/reservations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: serializeBigInt(reservation),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to add reservation: ${response.statusText}`);
-    }
-    return response.json();
   }
 
   static async getBitcoinTaprootAddress(): Promise<string> {
@@ -208,26 +107,6 @@ export class FlorinApiService {
       maxAmount: 3,
       minAmount: 0.0004,
     };
-  }
-
-  static async seed(): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/seed`, {
-      method: 'POST',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to seed data: ${response.statusText}`);
-    }
-  }
-
-  static async clearAllMockData(): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/clear`, {
-      method: 'POST',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to clear data: ${response.statusText}`);
-    }
   }
 
   static async getTransactionHistory(

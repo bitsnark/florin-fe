@@ -6,7 +6,7 @@ import { usePosition } from '@/hooks/queries/usePosition';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMPositionPolling } from '@/hooks/useEVMPositionPolling';
 import { useChainId } from 'wagmi';
-import { formatEther } from 'viem';
+import { formatUnits } from 'viem';
 import { useMemo } from 'react';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 import { PositionStatus } from '@/types';
@@ -33,10 +33,11 @@ export function PositionTracker({
     isActive: open,
   });
   const { data: bitcoinPrice } = useBitcoinPrice();
+
+  const amount = formatUnits(evmPosition?.originalAmount || 0n, 8);
   const fiatAmount = useMemo(() => {
     if (!evmPosition?.originalAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
-    const btcAmount = formatEther(evmPosition.originalAmount);
-    const usdValue = Number(btcAmount) * bitcoinPrice.bitcoin.usd;
+    const usdValue = Number(amount) * bitcoinPrice.bitcoin.usd;
     return usdValue.toFixed(2);
   }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
@@ -71,7 +72,7 @@ export function PositionTracker({
           >
             <EthTransactionCard
               data={{
-                amount: formatEther(evmPosition.originalAmount),
+                amount: amount,
                 recipientAddress: evmPosition.positionId,
                 reservationTx: position?.registrationTxhash || '',
                 confirmations: displayConfirmations,
@@ -91,7 +92,7 @@ export function PositionTracker({
           >
             {isPositionCompleted && (
               <BtcCompletionCard
-                amount={formatEther(evmPosition?.originalAmount || 0n)}
+                amount={amount}
                 recipientAddress={evmPosition?.positionId || ''}
                 reservationTx={position?.targetTxhash || position?.targetBlockHash || ''}
                 type="position"

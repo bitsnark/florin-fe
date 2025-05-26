@@ -106,12 +106,12 @@ describe('ReservationTracker', () => {
 
     vi.mocked(useEVMReservationPolling).mockReturnValue({
       evmReservation: {
-        tokenAmount: 1000000000000000000n, // 1 ETH in wei
+        tokenAmount: 100000000n, // 1 BTC in satoshis
         reservationId: '0xabc...',
         status: 1,
         ownerAddress: '0xowner...',
         bitcoinAddress: 'bc1...',
-        depositAmount: 1000000000000000000n,
+        depositAmount: 100000000n,
         createdAtBlock: 123n,
         positionId: '0xpos...'
       },

@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMReservationPolling } from '@/hooks/useEVMReservationPolling';
 import { useChainId } from 'wagmi';
-import { Address, formatEther } from 'viem';
+import { Address, formatUnits } from 'viem';
 import { useReservation } from '@/hooks/queries/useReservation';
 import { RESERVATION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
@@ -44,14 +44,15 @@ export function ReservationTracker({
     isActive: open,
   });
 
+  const amount = formatUnits(evmReservation?.tokenAmount || 0n, 8);
+
   const fiatAmount = useMemo(() => {
     if (!evmReservation?.tokenAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
-    const btcAmount = formatEther(evmReservation.tokenAmount);
-    const usdValue = Number(btcAmount) * bitcoinPrice.bitcoin.usd;
+    const usdValue = Number(amount) * bitcoinPrice.bitcoin.usd;
     return usdValue.toFixed(2);
   }, [evmReservation?.tokenAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  const amount = formatEther(evmReservation?.tokenAmount || 0n);
+  
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
   const confirmations = useTxConfirmations({
     isActive: open,
@@ -116,7 +117,7 @@ export function ReservationTracker({
             state={status}
             reservation={{
               ...reservation,
-              amount: evmReservation.depositAmount.toString(),
+              amount: amount,
               state: status,
               bitcoinAddress: evmReservation.bitcoinAddress,
               hash: txHash,
