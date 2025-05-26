@@ -95,12 +95,12 @@ describe('PositionTracker', () => {
 
     vi.mocked(useEVMPositionPolling).mockReturnValue({
       evmPosition: {
-        originalAmount: 1000000000000000000n, // 1 ETH in wei
+        originalAmount: 100000000n, // 1 BTC in satoshis
         positionId: '0xabc...',
         status: 1,
         ownerAddress: '0xowner...',
         bitcoinAddress: ['bc1...'],
-        availableAmount: 1000000000000000000n,
+        availableAmount: 100000000n,
         settledAmount: 0n,
         withdrawnAmount: 0n,
         exchangeRate: 1n,
