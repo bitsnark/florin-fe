@@ -256,6 +256,7 @@ export class ContractManager {
     primaryType: string;
     message: T;
   }): Promise<`0x${string}`> {
+    console.log('signTypedData', params, this.walletClient?.account, this.walletClient?.chain?.id);
     if (!this.walletClient?.account) {
       throw new CMError('Wallet client not initialized');
     }
