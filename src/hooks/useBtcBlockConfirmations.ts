@@ -3,22 +3,22 @@ import { FlorinApiService } from '@/services/Api';
 
 interface UseBtcBlockConfirmationsProps {
   isActive: boolean;
-  targetBlockHeight?: number;
+  targetBlockNumber?: number;
 }
 
 export function useBtcBlockConfirmations({
   isActive,
-  targetBlockHeight,
+  targetBlockNumber,
 }: UseBtcBlockConfirmationsProps) {
   const { data: currentBlockHeight } = useQuery({
     queryKey: ['btc-block-count'],
     queryFn: () => FlorinApiService.getBtcBlockCount(),
-    enabled: isActive && !!targetBlockHeight,
+    enabled: isActive && !!targetBlockNumber,
   });
 
-  if (!isActive || !targetBlockHeight || !currentBlockHeight) {
+  if (!isActive || !targetBlockNumber || !currentBlockHeight) {
     return 0;
   }
 
-  return Math.max(0, currentBlockHeight - targetBlockHeight);
+  return Math.max(0, currentBlockHeight - targetBlockNumber);
 } 

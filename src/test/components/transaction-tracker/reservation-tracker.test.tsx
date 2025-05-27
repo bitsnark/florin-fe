@@ -52,7 +52,7 @@ describe('ReservationTracker', () => {
           createdAt: new Date().toISOString(),
           contractRegistrationTxHash: '0x456...',
           targetBlockHash: '0xblock...',
-          targetBlockEight: 123,
+          targetBlockNumber: 123,
           targetTxhash: '0x789...',
           targetChain: 1
         },
@@ -94,7 +94,7 @@ describe('ReservationTracker', () => {
           createdAt: new Date().toISOString(),
           contractRegistrationTxHash: '0x456...',
           targetBlockHash: '0xblock...',
-          targetBlockEight: 123,
+          targetBlockNumber: 123,
           targetTxhash: '0x789...',
           targetChain: 1
         },
@@ -213,7 +213,7 @@ describe('ReservationTracker', () => {
   });
 
   it('shows BTC transaction card when Bitcoin transaction is detected', () => {
-    // Mock the reservation data to include targetBlockHash and targetBlockEight
+    // Mock the reservation data to include targetBlockHash and targetBlockNumber
     vi.mocked(useReservation).mockReturnValue({
       data: {
         data: {
@@ -228,7 +228,7 @@ describe('ReservationTracker', () => {
           createdAt: new Date().toISOString(),
           contractRegistrationTxHash: '0x456...',
           targetBlockHash: '0xblock...',
-          targetBlockEight: 123,
+          targetBlockNumber: 123,
           targetTxhash: '0x789...',
           targetChain: 1
         },
@@ -270,7 +270,7 @@ describe('ReservationTracker', () => {
           createdAt: new Date().toISOString(),
           contractRegistrationTxHash: '0x456...',
           targetBlockHash: '0xblock...',
-          targetBlockEight: 123,
+          targetBlockNumber: 123,
           targetTxhash: '0x789...',
           targetChain: 1
         },
@@ -306,7 +306,7 @@ describe('ReservationTracker', () => {
           createdAt: new Date().toISOString(),
           contractRegistrationTxHash: '0x456...',
           targetBlockHash: '0xblock...',
-          targetBlockEight: 123,
+          targetBlockNumber: 123,
           targetTxhash: '0x789...',
           targetChain: 1
         },
@@ -348,7 +348,7 @@ describe('ReservationTracker', () => {
           createdAt: new Date().toISOString(),
           contractRegistrationTxHash: '0x456...',
           targetBlockHash: '0xblock...',
-          targetBlockEight: 123,
+          targetBlockNumber: 123,
           targetTxhash: '0x789...',
           targetChain: 1
         },
