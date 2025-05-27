@@ -62,7 +62,7 @@ export function ReservationTracker({
 
   const btcConfirmations = useBtcBlockConfirmations({
     isActive: open,
-    targetBlockHeight: reservation?.targetBlockNumber,
+    targetBlockNumber: reservation?.targetBlockNumber,
   });
 
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];

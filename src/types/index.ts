@@ -53,7 +53,7 @@ export type Position = {
   destinationsTxConfirmations?: number;
   targetChain?: number;
   targetTxhash?: string;
-  targetBlockEight?: number;
+  targetBlockNumber?: number;
   targetBlockHash?: string;
 };
 
