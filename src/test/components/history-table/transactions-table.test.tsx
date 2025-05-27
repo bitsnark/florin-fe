@@ -66,7 +66,7 @@ describe('TransactionsTable', () => {
       originTxHash: '0x456',
       targetTxhash: '0x789',
       createdAt: '2024-03-20T10:00:00Z',
-      state: 'completed',
+      state: 'settled',
       type: 'position',
       positionId: 'pos-123',
     },
