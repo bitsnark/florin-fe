@@ -26,7 +26,7 @@ export function FeeCard({ toCurrency, isAnimating, amount, gasFee }: FeeCardProp
             You'll receive
             <InfoTooltip
               message={`You'll receive the ${toCurrency === 'btc' ? 'BTC' : 'xBTC'} you sent, minus the network fee.`}
-              position="bottom"
+              position="top"
               align="center"
             />
           </div>
@@ -39,7 +39,7 @@ export function FeeCard({ toCurrency, isAnimating, amount, gasFee }: FeeCardProp
             Network fee
             <InfoTooltip
               message="The cost of gas to fund your transaction, paid in ETH. This fee may vary, and is estimated at the moment of your transaction."
-              position="bottom"
+              position="top"
               align="center"
             />
           </div>

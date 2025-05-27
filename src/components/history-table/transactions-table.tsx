@@ -80,7 +80,7 @@ export default function TransactionsTable() {
 
     // Render desktop table view
     return (
-      <div className="bg-card p-6 rounded-xl overflow-hidden w-full">
+      <div className="bg-card p-6 rounded-xl overflow-visible w-full">
         <Table
           style={{
             borderCollapse: 'separate',

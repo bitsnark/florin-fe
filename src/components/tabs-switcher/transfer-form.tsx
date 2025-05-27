@@ -120,7 +120,7 @@ export function TransferForm({
           Ethereum sending address
           <InfoTooltip
             message="The sending amount is calculated in BTC. Ethereum token X, Y, Z can be used for transfer"
-            position="bottom"
+            position="top"
           />
         </Label>
         <Input
@@ -146,7 +146,7 @@ export function TransferForm({
             Bitcoin receiving address
             <InfoTooltip
               message="Enter the Bitcoin address where you want to receive your BTC."
-              position="bottom"
+              position="top"
             />
           </Label>
           <Input
