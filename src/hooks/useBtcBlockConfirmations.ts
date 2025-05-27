@@ -16,9 +16,11 @@ export function useBtcBlockConfirmations({
     enabled: isActive && !!targetBlockNumber,
   });
 
-  if (!isActive || !targetBlockNumber || !currentBlockHeight) {
+  const blockCount = currentBlockHeight?.blockCount;
+  if (!isActive || !targetBlockNumber || !blockCount) {
     return 0;
   }
 
-  return Math.max(0, currentBlockHeight - targetBlockNumber);
+  
+  return Math.max(0, blockCount - targetBlockNumber);
 } 

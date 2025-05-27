@@ -83,7 +83,7 @@ export function BtcTransactionCard({
   const renderTxid = () => (
     <span className="text-[#FFAA2E] text-[10px] md:text-xs truncate max-w-[180px] md:max-w-[250px]">
       <img src={BtcLogo} alt="BTC Logo" className="w-4 h-4 inline mr-1" />
-      <a href={`${getExplorerUrl(data.txid)}/tx/${data.txid}`} target="_blank">
+      <a href={`${getExplorerUrl(data.txid)}/tx/${data.txid}`} target="_blank" data-testid="btc-txid">
         {data.txid && truncateAddress(data.txid)}
       </a>
     </span>

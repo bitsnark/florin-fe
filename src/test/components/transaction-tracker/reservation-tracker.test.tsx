@@ -48,12 +48,12 @@ describe('ReservationTracker', () => {
           state: ReservationStatus.Pending,
           finality: Finality.UNKNOWN,
           chainId: 1,
-          hash: '0x123...',
+          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
           createdAt: new Date().toISOString(),
-          contractRegistrationTxHash: '0x456...',
-          targetBlockHash: '0xblock...',
+          contractRegistrationTxHash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
+          targetBlockHash: '0x0000000000000000000000000000000000000000000000000000000000000123',
           targetBlockNumber: 123,
-          targetTxhash: '0x789...',
+          targetTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
           targetChain: 1
         },
         blockCount: 0
@@ -90,12 +90,12 @@ describe('ReservationTracker', () => {
           state: ReservationStatus.Pending,
           finality: Finality.UNKNOWN,
           chainId: 1,
-          hash: '0x123...',
+          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
           createdAt: new Date().toISOString(),
-          contractRegistrationTxHash: '0x456...',
-          targetBlockHash: '0xblock...',
+          contractRegistrationTxHash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
+          targetBlockHash: '0x0000000000000000000000000000000000000000000000000000000000000123',
           targetBlockNumber: 123,
-          targetTxhash: '0x789...',
+          targetTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
           targetChain: 1
         },
         blockCount: 0
@@ -224,13 +224,14 @@ describe('ReservationTracker', () => {
           state: ReservationStatus.Pending,
           finality: Finality.UNKNOWN,
           chainId: 1,
-          hash: '0x123...',
+          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
           createdAt: new Date().toISOString(),
-          contractRegistrationTxHash: '0x456...',
-          targetBlockHash: '0xblock...',
+          contractRegistrationTxHash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
+          targetBlockHash: '0x0000000000000000000000000000000000000000000000000000000000000123',
           targetBlockNumber: 123,
-          targetTxhash: '0x789...',
-          targetChain: 1
+          targetTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+          targetChain: 1,
+          originTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
         },
         blockCount: 0
       },
@@ -266,13 +267,14 @@ describe('ReservationTracker', () => {
           state: ReservationStatus.Pending,
           finality: Finality.UNKNOWN,
           chainId: 1,
-          hash: '0x123...',
+          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
           createdAt: new Date().toISOString(),
-          contractRegistrationTxHash: '0x456...',
-          targetBlockHash: '0xblock...',
+          contractRegistrationTxHash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
+          targetBlockHash: '0x0000000000000000000000000000000000000000000000000000000000000123',
           targetBlockNumber: 123,
-          targetTxhash: '0x789...',
-          targetChain: 1
+          targetTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+          targetChain: 1,
+          originTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
         },
         blockCount: 0
       })
@@ -286,8 +288,11 @@ describe('ReservationTracker', () => {
     
     // Verify the BTC transaction details
     expect(screen.getByText('TXID')).toBeInTheDocument();
-    const txid = screen.getByText(/0x789/);
+    const txid = screen.getByTestId('btc-txid');
     expect(txid).toBeInTheDocument();
+    const txidLink = screen.getByTestId('btc-txid');
+    expect(txidLink).toBeInTheDocument();
+    expect(txidLink).toHaveTextContent('0xabcd...7890'); // Match the truncated version of originTxhash
   });
 
   it('shows expiration message when reservation expires', () => {
@@ -302,12 +307,12 @@ describe('ReservationTracker', () => {
           state: ReservationStatus.Expired,
           finality: Finality.UNKNOWN,
           chainId: 1,
-          hash: '0x123...',
+          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
           createdAt: new Date().toISOString(),
-          contractRegistrationTxHash: '0x456...',
-          targetBlockHash: '0xblock...',
+          contractRegistrationTxHash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
+          targetBlockHash: '0x0000000000000000000000000000000000000000000000000000000000000123',
           targetBlockNumber: 123,
-          targetTxhash: '0x789...',
+          targetTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
           targetChain: 1
         },
         blockCount: 0
@@ -344,12 +349,12 @@ describe('ReservationTracker', () => {
           state: ReservationStatus.Expired,
           finality: Finality.UNKNOWN,
           chainId: 1,
-          hash: '0x123...',
+          hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
           createdAt: new Date().toISOString(),
-          contractRegistrationTxHash: '0x456...',
-          targetBlockHash: '0xblock...',
+          contractRegistrationTxHash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234',
+          targetBlockHash: '0x0000000000000000000000000000000000000000000000000000000000000123',
           targetBlockNumber: 123,
-          targetTxhash: '0x789...',
+          targetTxhash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
           targetChain: 1
         },
         blockCount: 0

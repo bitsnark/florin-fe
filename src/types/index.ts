@@ -74,7 +74,7 @@ export type Reservation = {
   createdAt: string; // ISO 8601 string
   receivedAmount?: string;
   contractRegistrationTxHash: string;
-  originTxHash?: string;
+  originTxhash?: string;
   targetChain?: number;
   targetTxhash?: string;
   targetBlockNumber?: number;

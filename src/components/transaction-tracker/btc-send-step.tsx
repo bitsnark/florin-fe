@@ -47,7 +47,7 @@ export function BtcSendStep({
       new Date(blockTimestamp),
       env.VITE_EXPIRATION_HOURS
     );
-    
+
     if (now >= endTime) return { hours: 0, minutes: 0, seconds: 0 };
     return {
       hours: differenceInHours(endTime, now),
@@ -73,20 +73,18 @@ export function BtcSendStep({
     }
   }, [confirmations, maxConfirmations]);
 
+  const stepStatus =
+    reservation.state !== ReservationStatus.Expired &&
+    (reservation.originTxhash || isReadyToSend)
+      ? 'completed'
+      : 'current';
+
   return (
     <TransactionStep
       title="Send BTC"
       description={descriptionMessage}
-      status={
-        reservation.state !== ReservationStatus.Expired &&
-        (reservation.originTxHash || isReadyToSend)
-          ? 'completed'
-          : 'current'
-      }
-      completed={
-        reservation.state !== ReservationStatus.Expired &&
-        !!reservation.originTxHash
-      }
+      status={stepStatus}
+      completed={stepStatus === 'completed'}
     >
       {!isSent && (
         <Card className="bg-[#100D16] rounded-xl p-3 md:p-4 border-none w-full gap-2">
