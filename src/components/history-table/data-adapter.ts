@@ -90,7 +90,7 @@ export const reservationToTransaction = (
     receivedAmount,
     status,
     contractRegistration: reservation?.positionId?.substring(0, 10) + '...',
-    originTxId: reservation?.originTxHash || '',
+    originTxId: reservation?.originTxhash || '',
     destinationTxId: reservation.reservationId,
   };
 };
