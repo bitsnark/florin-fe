@@ -11,6 +11,7 @@ import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
 import { StatusIcon } from '@/components/ui/status-icon';
 import { getExplorerUrl } from '@/lib/utils';
+import { Txhash } from './txhash';
 
 interface DesktopTransactionRowProps {
   tx: TransactionNormalized;
@@ -62,9 +63,11 @@ export const DesktopTransactionRow = ({
         </div>
       </TableCell>
       <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        <a href={`${getExplorerUrl(tx.contractRegistrationTxHash)}/tx/${tx.contractRegistrationTxHash}`} target="_blank">
-          {formatHash(tx.contractRegistrationTxHash)}
-        </a>
+        <Txhash
+          hash={tx.contractRegistrationTxHash || ''}
+          explorerUrl={`${getExplorerUrl(tx.contractRegistrationTxHash || '')}/tx/${tx.contractRegistrationTxHash || ''}`}
+          formattedHash={formatHash(tx.contractRegistrationTxHash || '')}
+        />
       </TableCell>
       <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap" data-testid="requested-amount">
         {tx.amount} {tx.type === 'position' ? 'xBTC' : 'BTC'}
@@ -74,14 +77,18 @@ export const DesktopTransactionRow = ({
         {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        <a href={`${getExplorerUrl(tx.originTxHash)}/tx/${tx.originTxHash}`} target="_blank">
-          {formatHash(tx.originTxHash)}
-        </a>
+        <Txhash
+          hash={tx.originTxHash || ''}
+          explorerUrl={`${getExplorerUrl(tx.originTxHash || '')}/tx/${tx.originTxHash || ''}`}
+          formattedHash={formatHash(tx.originTxHash || '')}
+        />
       </TableCell>
       <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        <a href={`${getExplorerUrl(tx.targetTxhash)}/tx/${tx.targetTxhash}`} target="_blank">
-          {formatHash(tx.targetTxhash)}
-        </a>
+        <Txhash
+          hash={tx.targetTxhash || ''}
+          explorerUrl={`${getExplorerUrl(tx.targetTxhash || '')}/tx/${tx.targetTxhash || ''}`}
+          formattedHash={formatHash(tx.targetTxhash || '')}
+        />
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         {formatDate(tx.createdAt)}

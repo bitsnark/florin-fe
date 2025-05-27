@@ -15,10 +15,11 @@ export function useBtcBlockConfirmations({
     queryFn: () => FlorinApiService.getBtcBlockCount(),
     enabled: isActive && !!targetBlockHeight,
   });
-
-  if (!isActive || !targetBlockHeight || !currentBlockHeight) {
+  
+  const blockCount = currentBlockHeight?.blockCount;
+  if (!isActive || !targetBlockHeight || !blockCount) {
     return 0;
   }
 
-  return Math.max(0, currentBlockHeight - targetBlockHeight);
+  return Math.max(0, blockCount - targetBlockHeight);
 } 

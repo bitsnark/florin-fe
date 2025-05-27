@@ -62,7 +62,7 @@ export function ReservationTracker({
 
   const btcConfirmations = useBtcBlockConfirmations({
     isActive: open,
-    targetBlockHeight: reservation?.targetBlockEight,
+    targetBlockHeight: reservation?.targetBlockNumber,
   });
 
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
@@ -74,8 +74,8 @@ export function ReservationTracker({
   const btcTransactionDetected =
     status !== ReservationStatus.Expired &&
     !!reservation?.targetBlockHash &&
-    reservation.targetBlockEight &&
-    reservation.targetBlockEight > 0;
+    reservation.targetBlockNumber &&
+    reservation.targetBlockNumber > 0;
 
   return (
     <BaseTransactionTracker
@@ -131,7 +131,7 @@ export function ReservationTracker({
               contractRegistrationTxHash:
                 reservation?.contractRegistrationTxHash || '',
               targetChain: reservation?.targetChain,
-              targetBlockEight: reservation?.targetBlockEight,
+              targetBlockNumber: reservation?.targetBlockNumber,
               targetBlockHash: reservation?.targetBlockHash,
             }}
             fiatAmount={fiatAmount}

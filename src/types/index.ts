@@ -77,7 +77,7 @@ export type Reservation = {
   originTxHash?: string;
   targetChain?: number;
   targetTxhash?: string;
-  targetBlockEight?: number;
+  targetBlockNumber?: number;
   targetBlockHash?: string;
 };
 

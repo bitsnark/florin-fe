@@ -16,6 +16,7 @@ import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { TransactionNormalized } from './transaction-history-adapter';
 import { StatusIcon } from '@/components/ui/status-icon';
 import { getExplorerUrl } from '@/lib/utils';
+import { Txhash } from './txhash';
 
 // Mobile Transaction Item using Accordion
 export const MobileTransactionItem = ({
@@ -77,9 +78,12 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Contract registration</span>
             <span className="text-sm text-right text-[#F0A719]">
-              <a href={`${getExplorerUrl(tx.contractRegistrationTxHash)}/tx/${tx.contractRegistrationTxHash}`} target="_blank">
-                {formatHash(tx.contractRegistrationTxHash)}
-              </a>
+              <Txhash
+                hash={tx.contractRegistrationTxHash || ''}
+                explorerUrl={`${getExplorerUrl(tx.contractRegistrationTxHash || '')}/tx/${tx.contractRegistrationTxHash || ''}`}
+                formattedHash={formatHash(tx.contractRegistrationTxHash || '')}
+                trigger="click"
+              />
             </span>
           </div>
 
@@ -101,18 +105,24 @@ export const MobileTransactionItem = ({
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Origin network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E]">
-              <a href={`${getExplorerUrl(tx.originTxHash)}/tx/${tx.originTxHash}`} target="_blank" className="underline">
-                {formatHash(tx.originTxHash)}
-              </a>
+              <Txhash
+                hash={tx.originTxHash || ''}
+                explorerUrl={`${getExplorerUrl(tx.originTxHash || '')}/tx/${tx.originTxHash || ''}`}
+                formattedHash={formatHash(tx.originTxHash || '')}
+                trigger="click"
+              />
             </span>
           </div>
 
           <div className="grid grid-cols-2 items-center">
             <span className="text-sm">Destination network TXID</span>
             <span className="text-sm text-right text-[#FFAA2E]">
-              <a href={`${getExplorerUrl(tx.targetTxhash)}/tx/${tx.targetTxhash}`} target="_blank" className="underline">
-                {formatHash(tx.targetTxhash)}
-              </a>
+              <Txhash
+                hash={tx.targetTxhash || ''}
+                explorerUrl={`${getExplorerUrl(tx.targetTxhash || '')}/tx/${tx.targetTxhash || ''}`}
+                formattedHash={formatHash(tx.targetTxhash || '')}
+                trigger="click"
+              />
             </span>
           </div>
 
