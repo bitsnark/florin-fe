@@ -75,7 +75,7 @@ export function BtcSendStep({
 
   const stepStatus =
     reservation.state !== ReservationStatus.Expired &&
-    (reservation.originTxHash || isReadyToSend)
+    (reservation.originTxhash || isReadyToSend)
       ? 'completed'
       : 'current';
 

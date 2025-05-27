@@ -85,7 +85,6 @@ export const useExchange = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('openPosition', tokenAmount, exchangeRate, bitcoinAddresses, deadline, owner, chainId);
       const contractManager = await ContractManager.getInstance();
       const contractAddress = CONTRACTS_ADDRESS[
         chainId as keyof typeof CONTRACTS_ADDRESS
@@ -101,20 +100,18 @@ export const useExchange = () => {
         tokenAddress
       );
 
-      console.log('tokenName', tokenName);
+      
       const nonce = await contractManager.readContract(
         'ERC20BitSnark',
         'nonces',
         [owner],
         tokenAddress
       );
-      console.log('nonce', nonce);
       const domain = {
         name: tokenName,
         version: '1',
         verifyingContract: tokenAddress,
       };
-      console.log('domain', domain);
       const types = {
         Permit: [
           { name: 'owner', type: 'address' },
@@ -124,7 +121,6 @@ export const useExchange = () => {
           { name: 'deadline', type: 'uint256' },
         ],
       };
-      console.log('types', types);
       const message = {
         owner,
         spender: contractAddress,
@@ -132,17 +128,17 @@ export const useExchange = () => {
         nonce,
         deadline,
       };
-      console.log('message', message);
+      
       const signature = await contractManager.signTypedData({
         domain,
         types,
         primaryType: 'Permit',
         message,
       });
-      console.log('signature', signature);
+      
       const { r, s, v } = contractManager.getRSV(signature);
       const bytes32 = bech32ToBytes32(bitcoinAddresses);
-      console.log('bytes32', bytes32);
+      
       const { hash, wait } = await contractManager.writeContract(
         'AMMExchange',
         'openPosition',

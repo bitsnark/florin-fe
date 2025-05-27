@@ -12,6 +12,7 @@ import { TransactionNormalized } from './transaction-history-adapter';
 import { StatusIcon } from '@/components/ui/status-icon';
 import { getExplorerUrl } from '@/lib/utils';
 import { Txhash } from './txhash';
+import { STATUS_LABEL } from '@/constants';
 
 interface DesktopTransactionRowProps {
   tx: TransactionNormalized;
@@ -39,6 +40,7 @@ export const DesktopTransactionRow = ({
     });
   };
 
+  const statusLabel = STATUS_LABEL[tx.state.toLowerCase()];
   return (
     <TableRow key={tx.contractRegistrationTxHash} className="hover:bg-transparent">
       <TableCell className="w-fit min-w-[200px] border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
@@ -96,7 +98,7 @@ export const DesktopTransactionRow = ({
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">
           <StatusIcon status={tx.state} />
-          {tx.state.charAt(0).toUpperCase() + tx.state.slice(1)}
+          {statusLabel}
         </div>
       </TableCell>
 

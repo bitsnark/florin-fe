@@ -148,7 +148,7 @@ export function ReservationTracker({
               <BtcTransactionCard
                 data={{
                   amount: amount,
-                  txid: reservation?.targetTxhash,
+                  txid: reservation?.originTxhash,
                   confirmations: btcConfirmations,
                   fiatAmount: fiatAmount,
                   maxConfirmations: maxConfirmations,
