@@ -2,7 +2,6 @@ import {
   CheckCircledIcon,
   SymbolIcon,
   CrossCircledIcon,
-  ClockIcon,
 } from '@radix-ui/react-icons';
 import { PositionStatus, ReservationStatus } from '@/types';
 import expiredIcon from '@/assets/expired.svg';
@@ -25,7 +24,7 @@ export function StatusIcon({ status, className = '' }: StatusIconProps) {
         colorClass = 'text-gray-400';
         break;
       case PositionStatus.Active:
-        Icon = ClockIcon;
+        Icon = SymbolIcon;
         colorClass = 'text-white';
         break;
       case PositionStatus.Paused:

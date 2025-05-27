@@ -42,7 +42,7 @@ export function Tooltip({
   }, []);
 
   return (
-    <div className="relative inline-block z-100000">
+    <div className="relative inline-block">
       <div
         ref={triggerRef}
         onMouseEnter={handleMouseEnter}
@@ -57,7 +57,7 @@ export function Tooltip({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={cn(
-            'absolute z-100000 min-w-[216px] px-[12px] py-[8px] rounded-lg bg-[#484D59]',
+            'absolute min-w-[216px] px-[12px] py-[8px] rounded-lg bg-[#484D59]',
             position === 'top' && 'bottom-full mb-3 left-1/2 transform -translate-x-1/2',
             position === 'bottom' && 'top-full mt-3 left-1/2 transform -translate-x-1/2',
             position === 'left' && 'right-full mr-3 top-1/2 transform -translate-y-1/2',
