@@ -189,7 +189,7 @@ describe('PositionTracker', () => {
     expect(amountLabel).toBeInTheDocument();
     const amountValue = amountLabel.nextSibling;
     expect(amountValue).toHaveTextContent('~1 XBTC');
-    expect(screen.getByText(/0xabc/)).toBeInTheDocument(); // Position ID
+    expect(screen.getByText(/0xowne\.\.\.r\.\.\./)).toBeInTheDocument(); // Owner address
   });
 
   it('shows completion card when position is closed', () => {

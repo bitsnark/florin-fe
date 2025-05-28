@@ -47,10 +47,10 @@ export function ReservationTracker({
   const amount = formatUnits(evmReservation?.tokenAmount || 0n, 8);
 
   const fiatAmount = useMemo(() => {
-    if (!evmReservation?.tokenAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
+    if (!amount || !bitcoinPrice?.bitcoin?.usd) return '0';
     const usdValue = Number(amount) * bitcoinPrice.bitcoin.usd;
     return usdValue.toFixed(2);
-  }, [evmReservation?.tokenAmount, bitcoinPrice?.bitcoin?.usd]);
+  }, [amount, bitcoinPrice?.bitcoin?.usd]);
 
   
   const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
@@ -62,7 +62,7 @@ export function ReservationTracker({
 
   const btcConfirmations = useBtcBlockConfirmations({
     isActive: open,
-    targetBlockNumber: reservation?.targetBlockNumber,
+    blockNumber: reservation?.originBlockNumber,
   });
 
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
