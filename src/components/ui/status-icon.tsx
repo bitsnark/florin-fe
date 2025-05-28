@@ -50,7 +50,7 @@ export function StatusIcon({ status, className = '' }: StatusIconProps) {
         break;
       case ReservationStatus.Expired:
         return (
-          <div className={`bg-[#FF5353] rounded-full p-[0.125rem] ${className}`}>
+          <div className={`bg-grey rounded-full p-[0.125rem] ${className}`}>
             <img src={expiredIcon} alt="Expired" className="w-3.5 h-3.5" />
           </div>
         );

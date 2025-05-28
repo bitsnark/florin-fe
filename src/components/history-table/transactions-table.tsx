@@ -25,6 +25,7 @@ import { TransactionTrackerDialog } from '../transaction-tracker';
 import { useState } from 'react';
 import { useTransactions } from '@/hooks/useTransactions';
 import { TransactionNormalized } from './transaction-history-adapter';
+import { useSupportedChains } from '@/hooks/useSupportedChains';
 
 /**
  * Transactions history table component
@@ -44,10 +45,13 @@ export default function TransactionsTable() {
     txHash: string;
   } | null>(null);
   const [openTrackerDialog, setOpenTrackerDialog] = useState(false);
+  const { isSupported } = useSupportedChains();
 
   const isWalletConnected = address !== undefined;
 
   const renderContent = () => {
+    if (!isSupported) return null;
+
     // Render mobile view
     if (isMobile) {
       return (
@@ -60,7 +64,11 @@ export default function TransactionsTable() {
               <MobileLoadingSkeleton />
             </div>
           ) : transactions?.length > 0 ? (
-            <Accordion type="single" collapsible className="flex flex-col gap-3">
+            <Accordion
+              type="single"
+              collapsible
+              className="flex flex-col gap-3"
+            >
               {transactions.map((tx: TransactionNormalized, index) => (
                 <MobileTransactionItem
                   key={tx.contractRegistrationTxHash}
