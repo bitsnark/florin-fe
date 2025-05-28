@@ -6,6 +6,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { Mock } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useWindowSize } from '@/components/history-table/utils';
+import { useSupportedChains } from '@/hooks/useSupportedChains';
 
 // Mock ContractManager
 vi.mock('@/services/ContractManager', () => ({
@@ -30,6 +31,13 @@ vi.mock('wagmi', () => ({
 
 vi.mock('@/hooks/useTransactions', () => ({
   useTransactions: vi.fn(),
+}));
+
+// Mock useSupportedChains
+vi.mock('@/hooks/useSupportedChains', () => ({
+  useSupportedChains: vi.fn(() => ({
+    isSupported: true,
+  })),
 }));
 
 // Mock window size hook and utils
@@ -78,6 +86,19 @@ describe('TransactionsTable', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (useWindowSize as Mock).mockReturnValue({ width: 1024 }); // Default to desktop
+    (useSupportedChains as Mock).mockReturnValue({ isSupported: true }); // Default to supported chain
+  });
+
+  it('returns null when chain is not supported', async () => {
+    (useSupportedChains as Mock).mockReturnValue({ isSupported: false });
+    (useAccount as Mock).mockReturnValue({ address: '0x123' } as UseAccountReturn);
+    (useTransactions as Mock).mockReturnValue({ 
+      data: [], 
+      isLoading: false 
+    } as UseTransactionsReturn);
+    
+    const { container } = render(<TransactionsTable />, { wrapper });
+    expect(container.firstChild).toBeNull();
   });
 
   it('shows wallet not connected state when no wallet is connected', async () => {
