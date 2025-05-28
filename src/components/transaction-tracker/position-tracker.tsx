@@ -73,7 +73,7 @@ export function PositionTracker({
             <EthTransactionCard
               data={{
                 amount: amount,
-                recipientAddress: evmPosition.positionId,
+                recipientAddress: evmPosition.ownerAddress,
                 reservationTx: position?.registrationTxhash || '',
                 confirmations: displayConfirmations,
                 fiatAmount: fiatAmount,
