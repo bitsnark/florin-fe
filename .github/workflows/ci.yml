@@ -22,10 +22,24 @@ jobs:
           rm -rf node_modules package-lock.json
 
       - name: Install deps
-        run: npm install
+        run: npm install --force
 
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm run test
+        env:
+          CI: true # This ensures the process exits with a non-zero code if tests fail
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
+          VITE_RPC_URL: ${{ secrets.VITE_RPC_URL }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_EXPIRATION_HOURS: ${{ secrets.VITE_EXPIRATION_HOURS }}
+
       - name: Build
         run: npm run build
+        env:
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
+          VITE_RPC_URL: ${{ secrets.VITE_RPC_URL }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_EXPIRATION_HOURS: ${{ secrets.VITE_EXPIRATION_HOURS }}

@@ -7,27 +7,25 @@ export enum Finality {
 }
 
 export enum PositionStatus {
-  NONE = 'NONE',
-  ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
-  CLOSED = 'CLOSED',
-  COMPLETED = 'COMPLETED',
-  EXPIRED = 'EXPIRED',
+  None = 'None',
+  Active = 'Active',
+  Paused = 'Paused',
+  Closed = 'Closed'
 }
 
 export enum ReservationStatus {
-  NONE = 'NONE',
-  ACTIVE = 'ACTIVE',
-  EXPIRED = 'EXPIRED',
-  CANCELED = 'CANCELED',
-  COMPLETED = 'COMPLETED',
+  None = 'None',
+  Pending = 'Pending',
+  Expired = 'Expired',
+  Canceled = 'Canceled',
+  Settled = 'Settled'
 }
 
+
 export enum TransactionStatus {
-  NONE = 'NONE',
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
+  Pending = 'Pending',
+  Completed = 'Completed',
+  Failed = 'Failed',
 }
 
 export type Position = {
@@ -48,10 +46,15 @@ export type Position = {
   receivedAmount?: string;
   status: TransactionStatus;
   contractRegistrationTxHash: string;
+  registrationTxhash?: string;
   originTxHash?: string;
   destinationTxHash?: string;
   originTxConfirmations?: number;
   destinationsTxConfirmations?: number;
+  targetChain?: number;
+  targetTxhash?: string;
+  targetBlockNumber?: number;
+  targetBlockHash?: string;
 };
 
 export type Reservation = {
@@ -65,16 +68,43 @@ export type Reservation = {
   chainId: number;
   bitcoinAddress?: string;
   blockNumber?: number;
+  blockTimestamp?: number;
   blockHash?: string;
   hash: string;
   createdAt: string; // ISO 8601 string
   receivedAmount?: string;
-  status: TransactionStatus;
   contractRegistrationTxHash: string;
-  originTxHash?: string;
-  destinationTxHash?: string;
-  originTxConfirmations?: number;
-  destinationsTxConfirmations?: number;
+  originTxhash?: string;
+  targetChain?: number;
+  targetTxhash?: string;
+  targetBlockNumber?: number;
+  targetBlockHash?: string;
+  originBlockNumber?: number;
+  originBlockHash?: string;
+};
+
+export type EVMPosition = {
+  positionId: string;
+  ownerAddress: Address;
+  bitcoinAddress: string[];
+  originalAmount: bigint;
+  availableAmount: bigint;
+  settledAmount: bigint;
+  withdrawnAmount: bigint;
+  exchangeRate: bigint;
+  partialSettlement: boolean;
+  status: number;
+};
+
+export type EVMReservation = {
+  reservationId: string;
+  positionId: string;
+  ownerAddress: Address;
+  tokenAmount: bigint;
+  depositAmount: bigint;
+  createdAtBlock: bigint;
+  status: number;
+  bitcoinAddress: string;
 };
 
 export interface ContractManagerConfig {
@@ -97,4 +127,49 @@ export interface TransactionResponse {
   // TODO: Fix this type once we have the correct type for the transaction
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wait: () => Promise<any>;
+}
+
+
+
+export type TransactionHistoryItem = {
+  positionId: string;
+  reservationId?: string;
+  amount: string;
+  originalAmount?: string;
+  tokenAddress: string;
+  ownerAddress: string;
+  bitcoinAddress: string;
+  registrationChain: number;
+  registrationTxhash: string;
+  registrationBlockHash: string;
+  registrationBlockNumber: number;
+  registrationFinality: Finality;
+  originChain: number;
+  originTxhash: string;
+  originBlockNumber: number;
+  originBlockHash: string;
+  originFinality: Finality;
+  state: number;
+  targetTxhash?: string;
+  targetBlockNumber?: number;
+  targetBlockHash?: string;
+  targetTxConfirmations?: number;
+  blockTimestamp?: string;
+};
+
+export type TransactionHistory = TransactionHistoryItem[]; 
+
+export interface Transaction {
+  hash: string;
+  date: string;
+  action: string;
+  asset: string;
+  fromChain: string;
+  toChain: string;
+  amount: string;
+  receivedAmount: string;
+  status: TransactionStatus;
+  contractRegistration: string;
+  originTxId: string;
+  destinationTxId: string;
 }

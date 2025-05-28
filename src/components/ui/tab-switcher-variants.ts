@@ -28,7 +28,7 @@ export const tabItemVariants = cva(
     variants: {
       variant: {
         default:
-          'data-[state=active]:border-none data-[state=active]:bg-grey data-[state=active]:text-orange-light data-[state=inactive]:text-text-secondary data-[state=inactive]:bg-background data-[state=inactive]:hover:text-text-primary',
+          'data-[state=active]:border-none data-[state=active]:bg-grey data-[state=active]:text-[#FFAA2E] data-[state=inactive]:text-text-secondary data-[state=inactive]:bg-background data-[state=inactive]:hover:text-text-primary',
         pill: 'data-[state=active]:bg-white data-[state=active]:text-white data-[state=inactive]:text-text-secondary data-[state=inactive]:hover:text-text-primary',
       },
     },

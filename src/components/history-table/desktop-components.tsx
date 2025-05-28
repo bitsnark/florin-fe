@@ -5,20 +5,21 @@ import {
   formatReceivedAmount,
 } from './utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  ArrowRightIcon,
-  CheckCircledIcon,
-  SymbolIcon,
-} from '@radix-ui/react-icons';
+import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { TableRow, TableCell } from '@/components/ui/table';
-import { Position, PositionStatus, Reservation } from '@/types';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
+import { TransactionNormalized } from './transaction-history-adapter';
+import { StatusIcon } from '@/components/ui/status-icon';
+import { getExplorerUrl } from '@/lib/utils';
+import { Txhash } from './txhash';
+import { STATUS_LABEL } from '@/constants';
 
 interface DesktopTransactionRowProps {
-  tx: Reservation | Position;
+  tx: TransactionNormalized;
   setTransactionToTrack: (tx: {
     id: string;
     type: 'reservation' | 'position';
+    txHash: string;
   }) => void;
   setOpenTrackerDialog: (open: boolean) => void;
 }
@@ -28,86 +29,82 @@ export const DesktopTransactionRow = ({
   setTransactionToTrack,
   setOpenTrackerDialog,
 }: DesktopTransactionRowProps) => {
-  const isReservation = 'reservationId' in tx;
-  const fromChain = isReservation ? 'bitcoin' : 'ethereum';
-  const toChain = isReservation ? 'ethereum' : 'bitcoin';
-  const requestedAmountAsset = isReservation ? 'btc' : 'xbtc';
-  const receivedAmountAsset = isReservation ? 'xbtc' : 'btc';
   const { data } = useMaxMinBtc();
 
   const handleOpenTrackerDialog = () => {
     setOpenTrackerDialog(true);
     setTransactionToTrack({
-      id: 'reservationId' in tx ? tx.reservationId : tx.positionId,
-      type: 'reservationId' in tx ? 'reservation' : 'position',
+      id: tx.type === 'reservation' ? tx.reservationId || '' : tx.positionId || '',
+      type: tx.type,
+      txHash: tx.contractRegistrationTxHash,
     });
   };
 
+  const statusLabel = STATUS_LABEL[tx.state.toLowerCase()];
   return (
-    <TableRow key={tx?.hash} className="hover:bg-transparent">
+    <TableRow key={tx.contractRegistrationTxHash} className="hover:bg-transparent">
       <TableCell className="w-fit min-w-[200px] border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center">
           <div className="flex items-center gap-1">
             <img
-              src={getChainLogo(fromChain)}
-              alt={fromChain}
+              src={getChainLogo(tx.fromChain.toLowerCase())}
+              alt={tx.fromChain}
               className="h-4 w-4"
             />
-            <span>
-              {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
-            </span>
-            <span>
-              {fromChain.charAt(0).toUpperCase() + fromChain.slice(1)}
-            </span>
+            <span>{tx.fromChain}</span>
           </div>
           <ArrowRightIcon />
           <div className="flex items-center gap-1">
             <img
-              src={getChainLogo(toChain)}
-              alt={toChain}
+              src={getChainLogo(tx.toChain.toLowerCase())}
+              alt={tx.toChain}
               className="h-4 w-4"
             />
-            <span>{toChain.charAt(0).toUpperCase() + toChain.slice(1)}</span>
+            <span>{tx.toChain}</span>
           </div>
         </div>
       </TableCell>
-      <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx?.contractRegistrationTxHash || '')}
+      <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
+        <Txhash
+          hash={tx.contractRegistrationTxHash || ''}
+          explorerUrl={`${getExplorerUrl(tx.contractRegistrationTxHash || '')}/tx/${tx.contractRegistrationTxHash || ''}`}
+          formattedHash={formatHash(tx.contractRegistrationTxHash || '')}
+        />
       </TableCell>
-      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx.amount} {requestedAmountAsset}
+      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap" data-testid="requested-amount">
+        {tx.amount} {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
-      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {formatReceivedAmount(tx?.receivedAmount, data?.minAmount)}{' '}
-        {receivedAmountAsset}
+      <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap" data-testid="received-amount">
+        {formatReceivedAmount(tx.amount || tx?.originalAmount || '0', data?.minAmount)}{' '}
+        {tx.type === 'position' ? 'xBTC' : 'BTC'}
       </TableCell>
-      <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx?.originTxHash || '')}
+      <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
+        <Txhash
+          hash={tx.originTxHash || ''}
+          explorerUrl={`${getExplorerUrl(tx.originTxHash || '')}/tx/${tx.originTxHash || ''}`}
+          formattedHash={formatHash(tx.originTxHash || '')}
+        />
       </TableCell>
-      <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
-        {formatHash(tx?.destinationTxHash || '')}
+      <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap cursor-pointer">
+        <Txhash
+          hash={tx.targetTxhash || ''}
+          explorerUrl={`${getExplorerUrl(tx.targetTxhash || '')}/tx/${tx.targetTxhash || ''}`}
+          formattedHash={formatHash(tx.targetTxhash || '')}
+        />
       </TableCell>
       <TableCell className="text-white pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-        {tx?.createdAt ? formatDate(tx.createdAt) : ''}
+        {formatDate(tx.createdAt)}
       </TableCell>
       <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
         <div className="flex flex-row gap-1 items-center justify-start">
-          {tx.state === PositionStatus.COMPLETED ? (
-            <div className="bg-grey rounded-full p-[0.125rem]">
-              <CheckCircledIcon className="text-green-600" />
-            </div>
-          ) : (
-            <div className="bg-grey rounded-full p-[0.125rem]">
-              <SymbolIcon />
-            </div>
-          )}
-          {tx.state}
+          <StatusIcon status={tx.state} />
+          {statusLabel}
         </div>
       </TableCell>
 
       <TableCell
         onClick={handleOpenTrackerDialog}
-        className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap"
+        className="text-xs text-center text-[#FFAA2E] cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap"
       >
         Track
       </TableCell>
@@ -119,36 +116,36 @@ export const SkeletonRow = () => (
   <TableRow className="hover:bg-transparent">
     <TableCell className="border-t border-b border-l border-[#333845] rounded-l-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <div className="flex gap-2 items-center">
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-4 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-4 w-16" data-testid="skeleton" />
         <ArrowRightIcon />
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-4 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-4 w-16" data-testid="skeleton" />
       </div>
     </TableCell>
-    <TableCell className="text-center text-orange-light text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-24 mx-auto" />
+    <TableCell className="text-center text-[#FFAA2E] text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <Skeleton className="h-4 w-24 mx-auto" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-16 ml-auto" />
+      <Skeleton className="h-4 w-16 ml-auto" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-end pr-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-16 ml-auto" />
+      <Skeleton className="h-4 w-16 ml-auto" data-testid="skeleton" />
     </TableCell>
-    <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-24" />
+    <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <Skeleton className="h-4 w-24" data-testid="skeleton" />
     </TableCell>
-    <TableCell className="text-orange-light pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-24" />
+    <TableCell className="text-[#FFAA2E] pl-2 text-xs border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <Skeleton className="h-4 w-24" data-testid="skeleton" />
     </TableCell>
     <TableCell className="text-xs text-center border-t border-b border-[#333845] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
       <div className="flex flex-row gap-1 items-center justify-start">
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-4 rounded-full" data-testid="skeleton" />
+        <Skeleton className="h-4 w-16" data-testid="skeleton" />
       </div>
     </TableCell>
-    <TableCell className="text-xs text-center text-orange-light cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
-      <Skeleton className="h-4 w-12 mx-auto" />
+    <TableCell className="text-xs text-center text-[#FFAA2E] cursor-pointer border-t border-b border-r border-[#333845] rounded-r-[10px] bg-[#1D1F25] py-3 px-2 whitespace-nowrap">
+      <Skeleton className="h-4 w-12 mx-auto" data-testid="skeleton" />
     </TableCell>
   </TableRow>
 );
@@ -158,6 +155,7 @@ export const EmptyState = () => (
     <TableCell
       colSpan={8}
       className="border border-[#333845] rounded-[10px] py-8 px-4 text-center"
+      data-testid="empty-state"
     >
       <div className="flex flex-col items-center justify-center gap-2">
         <p className="text-gray-500 text-xs">
@@ -173,6 +171,7 @@ export const WalletNotConnectedState = () => (
     <TableCell
       colSpan={8}
       className="border border-[#333845] rounded-[10px] py-8 px-4 text-center"
+      data-testid="wallet-not-connected-state"
     >
       <div className="flex flex-col items-center justify-center gap-2">
         <p className="text-gray-500 text-xs">

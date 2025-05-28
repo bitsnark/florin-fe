@@ -1,4 +1,4 @@
-import { createConfig, http, injected } from '@wagmi/core';
+import { createConfig, http, injected, createStorage } from '@wagmi/core';
 import { metaMask, walletConnect } from '@wagmi/connectors';
 import { supportedChains } from './evm-chains';
 import { ChainId } from '@/types/chains';
@@ -13,7 +13,9 @@ const walletConnector = walletConnect({
 
 export const wagmiConfig = createConfig({
   chains: supportedChains,
-  connectors: [injected(), walletConnector, metaMask()],
+  connectors: [metaMask(), walletConnector, injected()],
+  ssr: true,
+  storage: createStorage({ storage: window.localStorage }),
   transports: Object.fromEntries(
     supportedChains.map((chain) => [chain.id, http()])
   ) as Record<ChainId, ReturnType<typeof http>>,

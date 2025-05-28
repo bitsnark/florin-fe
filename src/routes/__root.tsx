@@ -1,17 +1,10 @@
 import { ConnectorsListDialog } from '@/components/evm-wallet-connector/connectors-list-dialog';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-//import { FlorinApiService } from '@/services/Api';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { Toaster } from '@/components/ui/sonner';
 
 const Layout = () => {
-
-  useEffect(() => {
-    /* FlorinApiService.clearAllMockData();
-    FlorinApiService.seed(); */
-  },[])
-  
   return  (
     <div className="w-full min-h-screen flex flex-col">
       <Header />
@@ -22,6 +15,7 @@ const Layout = () => {
         <Outlet />
       </div>
       <Footer />
+      <Toaster />
     </div>
   )
 }

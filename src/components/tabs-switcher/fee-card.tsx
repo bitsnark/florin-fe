@@ -1,21 +1,22 @@
 import { Card } from '@/components/ui/card';
-import { cn, gasFee } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 interface FeeCardProps {
   toCurrency: 'btc' | 'eth' | 'xbtc';
   isAnimating: boolean;
   amount: string;
+  gasFee: number;
 }
 
-export function FeeCard({ toCurrency, isAnimating, amount }: FeeCardProps) {
+export function FeeCard({ toCurrency, isAnimating, amount, gasFee }: FeeCardProps) {
   const amountNumber = parseFloat(amount) || 0;
   const receiveAmount = Math.max(0, amountNumber - gasFee).toFixed(6);
 
   return (
     <Card
       className={cn(
-        'bg-[#100D16] border-none w-full sm:w-[400px] md:w-[440px] h-[104px] py-5 px-4 rounded-xl mt-3 transition-all duration-300 ease-in-out',
+        'bg-[#100D16] border-none w-full sm:w-[400px] md:w-[440px] py-5 px-4 rounded-xl mt-3 transition-all duration-300 ease-in-out',
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}
     >
@@ -25,7 +26,7 @@ export function FeeCard({ toCurrency, isAnimating, amount }: FeeCardProps) {
             You'll receive
             <InfoTooltip
               message={`You'll receive the ${toCurrency === 'btc' ? 'BTC' : 'xBTC'} you sent, minus the network fee.`}
-              position="bottom"
+              position="top"
               align="center"
             />
           </div>
@@ -38,7 +39,7 @@ export function FeeCard({ toCurrency, isAnimating, amount }: FeeCardProps) {
             Network fee
             <InfoTooltip
               message="The cost of gas to fund your transaction, paid in ETH. This fee may vary, and is estimated at the moment of your transaction."
-              position="bottom"
+              position="top"
               align="center"
             />
           </div>

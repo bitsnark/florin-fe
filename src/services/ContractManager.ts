@@ -7,6 +7,7 @@ import {
   http,
   PublicClient,
   WalletClient,
+  custom,
 } from 'viem';
 import { getConnectorClient } from '@wagmi/core';
 import { AMMEXCHANGE_ABI, ERC20_BITSNARK_ABI } from '@/constants/abis';
@@ -28,11 +29,33 @@ export class ContractManager {
 
   private constructor() {}
 
+  private async waitForConnectorInitialization(maxAttempts = 10): Promise<boolean> {
+    for (let i = 0; i < maxAttempts; i++) {
+      try {
+        console.log(`Attempt ${i + 1}/${maxAttempts} to initialize connector...`);
+        const connectorClient = await getConnectorClient(wagmiConfig);
+        if (connectorClient?.chain?.id && connectorClient?.account) {
+          console.log('Connector initialized successfully:', {
+            chainId: connectorClient.chain.id,
+            account: connectorClient.account
+          });
+          return true;
+        }
+        console.log('Connector client obtained but missing chain or account:', connectorClient);
+      } catch (error) {
+        console.error(`Attempt ${i + 1} failed:`, error);
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    console.error('Failed to initialize connector after', maxAttempts, 'attempts');
+    return false;
+  }
+
   public static async getInstance(): Promise<ContractManager> {
     if (this.instance) return this.instance;
 
     if (this.initializing) {
-      // wait for initializing to finish
+      console.log('ContractManager is already initializing, waiting...');
       while (!this.instance) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -42,28 +65,50 @@ export class ContractManager {
     this.initializing = true;
     const instance = new ContractManager();
 
-    const connectorClient = await getConnectorClient(wagmiConfig);
-    instance.publicClient = createPublicClient({
-      chain: connectorClient.chain,
-      transport: http(),
-    });
-
-    if (connectorClient) {
-      try {
-        instance.walletClient = createWalletClient({
-          account: connectorClient.account,
-          chain: connectorClient.chain,
-          transport: http(env.VITE_RPC_URL),
-        });
-      } catch (error) {
-        console.error('Error creating wallet client:', error);
+    try {
+      console.log('Starting ContractManager initialization...');
+      let connectorClient = await getConnectorClient(wagmiConfig);
+      
+      if (!connectorClient?.chain?.id || !connectorClient?.account) {
+        console.log('Initial connector client missing chain or account, waiting for initialization...');
+        const isInitialized = await instance.waitForConnectorInitialization();
+        if (!isInitialized) {
+          throw new Error('Failed to initialize connector after multiple attempts. Please check your wallet connection and try again.');
+        }
+        connectorClient = await getConnectorClient(wagmiConfig);
       }
-    }
 
-    instance.registerContract('AMMExchange', AMMEXCHANGE_ABI);
-    instance.registerContract('ERC20BitSnark', ERC20_BITSNARK_ABI);
-    this.instance = instance;
-    this.initializing = false;
+      if (!connectorClient?.chain?.id) {
+        throw new Error('No chain ID available in connector');
+      }
+
+      instance.publicClient = createPublicClient({
+        chain: connectorClient.chain,
+        transport: http(env.VITE_RPC_URL),
+      });
+
+      if (connectorClient?.account) {
+        try {
+          instance.walletClient = createWalletClient({
+            account: connectorClient.account,
+            chain: connectorClient.chain,
+            transport: custom(connectorClient.transport),
+          });
+        } catch (error) {
+          console.error('Error creating wallet client:', error);
+          // No lanzamos el error aquí para permitir operaciones de solo lectura
+        }
+      }
+
+      instance.registerContract('AMMExchange', AMMEXCHANGE_ABI);
+      instance.registerContract('ERC20BitSnark', ERC20_BITSNARK_ABI);
+      this.instance = instance;
+    } catch (error) {
+      console.error('Error initializing ContractManager:', error);
+      throw error;
+    } finally {
+      this.initializing = false;
+    }
 
     return instance;
   }
@@ -100,13 +145,18 @@ export class ContractManager {
   }
 
   public async refreshWalletClient(): Promise<void> {
-    const connectorClient = await getConnectorClient(wagmiConfig);
-    if (connectorClient) {
-      this.walletClient = createWalletClient({
-        account: connectorClient.account,
-        chain: connectorClient.chain,
-        transport: http(env.VITE_RPC_URL),
-      });
+    try {
+      const connectorClient = await getConnectorClient(wagmiConfig);
+      if (connectorClient?.account && connectorClient?.chain) {
+        this.walletClient = createWalletClient({
+          account: connectorClient.account,
+          chain: connectorClient.chain,
+          transport: custom(connectorClient.transport),
+        });
+      }
+    } catch (error) {
+      console.error('Error refreshing wallet client:', error);
+      // No lanzamos el error para permitir operaciones de solo lectura
     }
   }
 
@@ -125,6 +175,13 @@ export class ContractManager {
 
     try {
       const abi = this.getABI(contractName);
+      console.log('Simulating contract call with params:', {
+        address,
+        method,
+        args,
+        options,
+        account: this.walletClient.account,
+      });
 
       const { request } = await this.publicClient.simulateContract({
         address,
@@ -135,26 +192,32 @@ export class ContractManager {
         value: options?.value || 0n,
       });
 
+      console.log('Simulation successful, sending transaction...');
       const txRequest = {
         ...request,
         ...options,
       };
       const hash = await this.walletClient.writeContract(txRequest);
+      console.log('Transaction sent with hash:', hash);
 
       return {
         hash,
         wait: async () => {
+          console.log('Waiting for transaction receipt...');
           const receipt = await this.publicClient.waitForTransactionReceipt({
             hash,
             confirmations: 1,
           });
+          console.log('Transaction receipt received:', receipt);
 
           // Parse logs from the receipt
           const logs = receipt.logs
             .map((log) => {
               try {
                 return decodeEventLog({ abi, ...log });
-              } catch {
+              } catch(error) {
+                console.log('Error decoding event log:', log);
+                console.log('Error:', error);
                 return null;
               }
             })
@@ -163,6 +226,7 @@ export class ContractManager {
         },
       };
     } catch (error) {
+      console.error('Contract write error:', error);
       const parsed = parseContractError(error);
       throw new ContractError(
         `Failed to write to contract ${contractName}: ${parsed}`

@@ -18,7 +18,7 @@ interface TransferFormProps {
   isAnimating: boolean;
   isWalletConnected: boolean;
   ethWalletAddress?: Address;
-  bitcoinAddress?: Address;
+  bitcoinAddress?: string;
   bitcoinAddressValid?: boolean;
   handleSwitchNetworks: () => void;
   handleFromAmountChange: (value: string) => void;
@@ -49,8 +49,6 @@ export function TransferForm({
   minBtc,
 }: TransferFormProps) {
   const { data: bitcoinPrice } = useBitcoinPrice();
-
-  // Determine which input should be editable
   const isFromXbtcToBtc = fromCurrency === 'xbtc' && toCurrency === 'btc';
 
   return (
@@ -102,7 +100,9 @@ export function TransferForm({
           xbtcAmount={xbtcAmount}
           onAmountChange={handleToAmountChange}
           readOnly={!isFromXbtcToBtc}
+          isFromXbtcToBtc={isFromXbtcToBtc}
           maxBtc={maxBtc}
+          minBtc={minBtc}
           bitcoinPrice={bitcoinPrice?.bitcoin.usd || 0}
         />
       </div>
@@ -120,7 +120,7 @@ export function TransferForm({
           Ethereum sending address
           <InfoTooltip
             message="The sending amount is calculated in BTC. Ethereum token X, Y, Z can be used for transfer"
-            position="bottom"
+            position="top"
           />
         </Label>
         <Input
@@ -146,13 +146,13 @@ export function TransferForm({
             Bitcoin receiving address
             <InfoTooltip
               message="Enter the Bitcoin address where you want to receive your BTC."
-              position="bottom"
+              position="top"
             />
           </Label>
           <Input
             id="bitcoin-address"
             placeholder="Paste your Bitcoin receiving address"
-            value={bitcoinAddress}
+            value={bitcoinAddress || ''}
             onChange={(e) => setBitcoinAddress(e.target.value as Address)}
             className={cn(
               bitcoinAddress &&

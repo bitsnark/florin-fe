@@ -64,7 +64,7 @@ export function Hero({
                   {topTitle}
                 </h2>
               )}
-              <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 md:mb-6">
+              <h1 className="text-3xl md:text-5xl font-medium text-white mb-4 md:mb-6">
                 {title}
               </h1>
               <p className="text-base md:text-lg text-gray-300">

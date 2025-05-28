@@ -1,6 +1,3 @@
-import { env } from '@/config/env';
-//import { useContractManager } from '@/hooks/useContractManager';
-import { FlorinApiService } from '@/services/Api';
 import {
   Finality,
   Position,
@@ -8,22 +5,72 @@ import {
   Reservation,
   ReservationStatus,
   TransactionStatus,
+  EVMPosition,
+  EVMReservation,
 } from '@/types';
 import { useState } from 'react';
-import { Address, /* keccak256, toBytes */ } from 'viem';
-import { v4 as uuidv4 } from 'uuid';
+import { Address, formatEther } from 'viem';
+import { CONTRACTS_ADDRESS } from '@/constants/contracts';
+import { ContractManager } from '@/services/ContractManager';
+import { bech32ToBytes32, bytes32ToBech32Taproot } from '@/lib/utils';
+import { DEFAULT_POSITION_ID } from '@/constants';
+import { AMMEXCHANGE_ABI } from '@/constants/abis';
 
 export const useExchange = () => {
-  //const { data: contractManager } = useContractManager();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  //const contractAddress = env.VITE_EXCHANGE_CONTRACT_ADDRESS as Address;
-  const tokenAddress = env.VITE_TOKEN_ADDRESS as Address; // Asegurate de definir esto
+
+  const estimateOpenPositionGas = async (): Promise<number> => {
+    try {
+      const contractManager = await ContractManager.getInstance();
+      const gasPrice = await contractManager.publicClient.getGasPrice();
+      return Number(formatEther(2000000n * gasPrice));
+    } catch (error) {
+      console.error('Error estimating openPosition gas:', error);
+      return 0;
+    }
+  };
+
+  const estimateReservePositionGas = async ({
+    tokenAmount,
+    owner,
+    chainId,
+  }: {
+    tokenAmount: bigint;
+    owner: Address;
+    chainId: number;
+  }): Promise<number> => {
+    try {
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const { request } = await contractManager.publicClient.simulateContract({
+        address: contractAddress,
+        abi: AMMEXCHANGE_ABI,
+        functionName: 'reservePosition',
+        args: [DEFAULT_POSITION_ID, owner, tokenAmount],
+        account: owner,
+        value: 0n,
+      });
+      const gasEstimate =
+        await contractManager.publicClient.estimateContractGas({
+          ...request,
+          account: owner,
+        });
+      const gasPrice = await contractManager.publicClient.getGasPrice();
+      return Number(formatEther(gasEstimate * gasPrice));
+    } catch (error) {
+      console.error('Error estimating reservePosition gas:', error);
+      return 0;
+    }
+  };
 
   const openPosition = async ({
     tokenAmount,
     exchangeRate,
-    bitcoinAddresses = '0x9f3c9346dd5edc74032aef79b3e4585f7a4dffb51aa3780704e63f87c4170dd3',
+    bitcoinAddresses,
     deadline,
     owner,
     chainId,
@@ -36,15 +83,24 @@ export const useExchange = () => {
     chainId: number;
   }) => {
     try {
-      // if (!contractManager) throw new Error('contractManager not available');
-
       setLoading(true);
-      
-      // Mock transaction data
-      const mockHash = `0x${Math.random().toString(16).slice(2)}`;
-      const mockBlockNumber = Math.floor(Math.random() * 1000000);
+      setError(null);
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+      const tokenAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].erc20BitSnark as Address;
 
-      /* // Get nonce from token
+      const tokenName = await contractManager.readContract(
+        'ERC20BitSnark',
+        'name',
+        [],
+        tokenAddress
+      );
+
+      
       const nonce = await contractManager.readContract(
         'ERC20BitSnark',
         'nonces',
@@ -52,11 +108,10 @@ export const useExchange = () => {
         tokenAddress
       );
       const domain = {
-        name: 'BitSnark',
+        name: tokenName,
         version: '1',
         verifyingContract: tokenAddress,
       };
-
       const types = {
         Permit: [
           { name: 'owner', type: 'address' },
@@ -66,7 +121,6 @@ export const useExchange = () => {
           { name: 'deadline', type: 'uint256' },
         ],
       };
-
       const message = {
         owner,
         spender: contractAddress,
@@ -74,48 +128,55 @@ export const useExchange = () => {
         nonce,
         deadline,
       };
-
+      
       const signature = await contractManager.signTypedData({
         domain,
         types,
         primaryType: 'Permit',
         message,
       });
+      
       const { r, s, v } = contractManager.getRSV(signature);
+      const bytes32 = bech32ToBytes32(bitcoinAddresses);
+      
       const { hash, wait } = await contractManager.writeContract(
         'AMMExchange',
         'openPosition',
-        [tokenAmount, exchangeRate, bitcoinAddresses, deadline, v, r, s],
+        [
+          tokenAmount,
+          BigInt(exchangeRate),
+          bytes32 as `0x${string}`,
+          BigInt(deadline),
+          v,
+          r,
+          s,
+        ],
         contractAddress
       );
-      const receipt = await wait(); */
-      
+      const receipt = await wait();
       const transaction = {
-        hash: mockHash, // hash
-        contractRegistrationTxHash: mockHash, // hash
-        blockHash: `0x${Math.random().toString(16).slice(2)}`, // receipt.receipt?.blockHash
-        blockNumber: mockBlockNumber, // receipt.receipt?.blockNumber
-        status: TransactionStatus.COMPLETED,
+        hash,
+        contractRegistrationTxHash: hash,
+        blockHash: `0x${Math.random().toString(16).slice(2)}`,
+        blockNumber: receipt.receipt?.blockNumber,
+        status: TransactionStatus.Pending,
         createdAt: new Date().toISOString(),
         receivedAmount: '0',
       };
-
       const newPosition: Position = {
-        positionId: mockHash, // receipt.logs[0].args.positionId
+        positionId: receipt?.logs ? receipt?.logs[0].args.positionId : '',
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         deadline: deadline,
-        exchangeRate: exchangeRate.toString(), // receipt?.logs[0]?.args?.exchangeRate?.toString()
-        tokenAddress: tokenAddress, // receipt.logs[0].address
-        bitcoinAddress: bitcoinAddresses, // receipt.logs[0].args.bitcoinAddresses ? receipt.logs[0].args.bitcoinAddresses[0] : ''
-        state: PositionStatus.ACTIVE,
+        exchangeRate: exchangeRate.toString(),
+        tokenAddress: tokenAddress,
+        bitcoinAddress: bitcoinAddresses,
+        state: PositionStatus.Active,
         finality: Finality.FINAL,
         chainId: chainId,
         ...transaction,
       };
 
-      await FlorinApiService.addPosition(newPosition);
-      console.log('position created (mocked)!!!');
       setLoading(false);
       return newPosition;
     } catch (error) {
@@ -136,60 +197,57 @@ export const useExchange = () => {
     chainId: number;
     owner: Address;
   }) => {
-    console.log('reservePosition', evmReceivingAddress);
     try {
-      // if (!contractManager) throw new Error('contractManager not available');
       setLoading(true);
-      
-      // Mock data
-      const mockHash = `0x${Math.random().toString(16).slice(2)}`;
-      const mockBlockNumber = Math.floor(Math.random() * 1000000);
-      const positionId = '1234';
+      setError(null);
 
-      /* const rIdb32 = keccak256(toBytes(positionId)) as `0x${string}`;
-      let writeReceipt;
-      let receipt;
-      try {
-        writeReceipt = await contractManager.writeContract(
-          'AMMExchange',
-          'reservePosition',
-          [rIdb32, positionId, evmReceivingAddress, tokenAmount],
-          contractAddress,
-          { value: 0n }
-        );
-        receipt = await writeReceipt.wait();
-        const rJson = JSON.stringify(receipt, (_, value) =>
-          typeof value === 'bigint' ? value.toString() : value
-        );
-        window.localStorage.setItem('receitp_reservation', rJson);
-      } catch (error) {
-        console.log('error', error);
-      } */
+      const contractManager = await ContractManager.getInstance();
+      const tokenAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].erc20BitSnark as Address;
+
+      const positionId = DEFAULT_POSITION_ID;
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const { hash, wait } = await contractManager.writeContract(
+        'AMMExchange',
+        'reservePosition',
+        [positionId, evmReceivingAddress, tokenAmount],
+        contractAddress,
+        { value: 0n }
+      );
+      const receipt = await wait();
 
       const transaction = {
-        hash: mockHash,
-        contractRegistrationTxHash: mockHash,
-        blockHash: `0x${Math.random().toString(16).slice(2)}`,
-        blockNumber: mockBlockNumber,
-        status: TransactionStatus.COMPLETED,
+        hash: hash,
+        contractRegistrationTxHash: hash,
+        blockHash: receipt.receipt?.blockHash,
+        blockNumber: receipt.receipt?.blockNumber,
+        status: TransactionStatus.Completed,
         receivedAmount: '0',
       };
 
+      const reservationId = receipt?.logs
+        ? receipt?.logs[0].args.reservationId
+        : '';
+      if (!reservationId) {
+        throw new Error('Reservation ID not found');
+      }
       const newReservation: Reservation = {
         positionId: positionId,
-        reservationId: uuidv4(),
+        reservationId: reservationId,
         ownerAddress: owner,
         amount: tokenAmount.toString(),
         tokenAddress: tokenAddress,
-        state: ReservationStatus.ACTIVE,
+        state: ReservationStatus.Pending,
         finality: Finality.FINAL,
         chainId: chainId,
         ...transaction,
         createdAt: new Date().toISOString(),
       };
-      
-      await FlorinApiService.addReservation(newReservation);
-      console.log('reservation created (mocked)!!!');
+
       setLoading(false);
       return newReservation;
     } catch (error) {
@@ -199,10 +257,80 @@ export const useExchange = () => {
     }
   };
 
+  const getPosition = async ({
+    positionId,
+    chainId,
+  }: {
+    positionId: string;
+    chainId: number;
+  }): Promise<EVMPosition> => {
+    try {
+      setLoading(true);
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const position = (await contractManager.readContract(
+        'AMMExchange',
+        'getPosition',
+        [positionId],
+        contractAddress
+      )) as unknown as EVMPosition;
+      setLoading(false);
+      return position;
+    } catch (error) {
+      setLoading(false);
+      setError((error as Error).message);
+      console.error('getPosition error:', error);
+      throw error;
+    }
+  };
+
+  const getReservation = async ({
+    reservationId,
+    chainId,
+  }: {
+    reservationId: string;
+    chainId: number;
+  }): Promise<EVMReservation> => {
+    try {
+      setLoading(true);
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].ammExchange as Address;
+
+      const reservation = (await contractManager.readContract(
+        'AMMExchange',
+        'getReservation',
+        [reservationId],
+        contractAddress
+      )) as unknown as EVMReservation;
+      setLoading(false);
+
+      return {
+        ...reservation,
+        bitcoinAddress:
+          bytes32ToBech32Taproot(reservation.bitcoinAddress) ?? '',
+      };
+    } catch (error) {
+      setLoading(false);
+      setError((error as Error).message);
+      console.error('getReservation error:', error);
+      throw error;
+    }
+  };
+
   return {
     loading,
     error,
     openPosition,
     reservePosition,
+    getPosition,
+    getReservation,
+    estimateOpenPositionGas,
+    estimateReservePositionGas,
+    setError,
   };
 };
