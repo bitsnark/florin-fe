@@ -79,6 +79,8 @@ export type Reservation = {
   targetTxhash?: string;
   targetBlockNumber?: number;
   targetBlockHash?: string;
+  originBlockNumber?: number;
+  originBlockHash?: string;
 };
 
 export type EVMPosition = {
