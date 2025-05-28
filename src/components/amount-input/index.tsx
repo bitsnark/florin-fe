@@ -116,12 +116,13 @@ export const AmountInput = ({
               pattern="[0-9]*[.]?[0-9]*"
               value={normalizedAmount}
               onChange={handleAmountChange}
-              className={`text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                currency === 'xbtc' ? 'text-[#2A273080]' : ''
-              }`}
+              className={cn(
+                'text-text-primary text-2xl sm:text-3xl font-bold bg-transparent border-none outline-none text-right w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                readOnly && 'text-text-secondary'
+              )}
               placeholder="0.000"
               readOnly={readOnly}
-              disabled={currency === 'xbtc'}
+              disabled={readOnly}
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
               ${calculateUsdValue}
