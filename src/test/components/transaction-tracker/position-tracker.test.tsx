@@ -8,6 +8,8 @@ import { useChainId } from 'wagmi';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 import type { EVMPosition } from '@/types';
 import { TransactionStatus, PositionStatus, Finality } from '@/types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
 
 // Mock all the hooks
 vi.mock('@/hooks/queries/usePosition');
@@ -15,6 +17,7 @@ vi.mock('@/hooks/useTxConfirmations');
 vi.mock('@/hooks/useEVMPositionPolling');
 vi.mock('wagmi');
 vi.mock('@/hooks/useBitcoinPrice');
+vi.mock('@/hooks/useBtcBlockConfirmations');
 
 describe('PositionTracker', () => {
   const mockProps = {
@@ -23,6 +26,18 @@ describe('PositionTracker', () => {
     id: 'test-position-id',
     txHash: '0x123...',
   };
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 
   beforeEach(() => {
     // Reset all mocks before each test
@@ -152,6 +167,8 @@ describe('PositionTracker', () => {
         }
       })
     });
+
+    vi.mocked(useBtcBlockConfirmations).mockReturnValue(6);
   });
 
   it('renders loading state correctly', () => {
@@ -161,7 +178,7 @@ describe('PositionTracker', () => {
       error: null,
     });
 
-    render(<PositionTracker {...mockProps} />);
+    render(<PositionTracker {...mockProps} />, { wrapper });
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByTestId('skeleton')).toBeInTheDocument();
   });
@@ -173,12 +190,12 @@ describe('PositionTracker', () => {
       error: new Error('Test error'),
     });
 
-    render(<PositionTracker {...mockProps} />);
+    render(<PositionTracker {...mockProps} />, { wrapper });
     expect(screen.getByText(/error/i)).toBeInTheDocument();
   });
 
   it('renders transaction steps when position data is available', () => {
-    render(<PositionTracker {...mockProps} />);
+    render(<PositionTracker {...mockProps} />, { wrapper });
     
     // Check for step titles
     expect(screen.getByText('Initiating transaction')).toBeInTheDocument();
@@ -213,7 +230,7 @@ describe('PositionTracker', () => {
       error: null,
     });
 
-    render(<PositionTracker {...mockProps} />);
+    render(<PositionTracker {...mockProps} />, { wrapper });
     expect(screen.getByText(/Funds \(BTC\) are in your wallet now/i)).toBeInTheDocument();
   });
 }); 
