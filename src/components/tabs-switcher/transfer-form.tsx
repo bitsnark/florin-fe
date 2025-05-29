@@ -145,7 +145,7 @@ export function TransferForm({
           >
             Bitcoin receiving address
             <InfoTooltip
-              message="Enter the Bitcoin address where you want to receive your BTC."
+              message="Enter the P2WPKH Bitcoin address where you want to receive your BTC."
               position="top"
             />
           </Label>

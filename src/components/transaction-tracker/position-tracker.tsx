@@ -11,6 +11,8 @@ import { useMemo } from 'react';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 import { PositionStatus } from '@/types';
 import { POSITION_STATUS_MAP } from '../history-table/transaction-history-adapter';
+import { env } from '@/config/env';
+import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -41,17 +43,30 @@ export function PositionTracker({
     return usdValue.toFixed(2);
   }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
+  const maxConfirmations =
+    Number(fiatAmount) > env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT
+      ? env.VITE_EVM_CONFIRMATIONS_HIGH
+      : env.VITE_EVM_CONFIRMATIONS_LOW;
   const confirmations = useTxConfirmations({
     isActive: open,
     maxConfirmations: maxConfirmations,
     transactionHash: txHash,
   });
+
   const status = POSITION_STATUS_MAP[evmPosition?.status || 1];
   const isPositionCompleted = status === PositionStatus.Closed;
   const displayConfirmations = isPositionCompleted
     ? maxConfirmations
     : confirmations;
+
+  const targetConfirmations = useBtcBlockConfirmations({
+    isActive: isPositionCompleted,
+    blockNumber: position?.targetBlockNumber,
+  });
+
+  const displayTargetConfirmations = isPositionCompleted
+    ? env.VITE_BTC_CONFIRMATIONS
+    : targetConfirmations;
 
   return (
     <BaseTransactionTracker
@@ -92,9 +107,12 @@ export function PositionTracker({
           >
             {isPositionCompleted && (
               <BtcCompletionCard
+                confirmations={displayTargetConfirmations}
                 amount={amount}
                 recipientAddress={evmPosition?.positionId || ''}
-                reservationTx={position?.targetTxhash || position?.targetBlockHash || ''}
+                reservationTx={
+                  position?.targetTxhash || position?.targetBlockHash || ''
+                }
                 type="position"
               />
             )}

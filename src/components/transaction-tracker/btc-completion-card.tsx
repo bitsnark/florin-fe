@@ -16,7 +16,7 @@ export function BtcCompletionCard({
   amount,
   recipientAddress,
   reservationTx,
-  confirmations = 20,
+  confirmations = 1,
   type = 'position',
 }: BtcCompletionCardProps) {
   const logoSrc = type === 'position' ? bitcoinLogo : ethLogo;
