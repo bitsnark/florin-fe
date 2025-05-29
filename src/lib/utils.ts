@@ -49,13 +49,13 @@ export function isValidBitcoinAddress(address: string | undefined): boolean {
   if (!address) return false;
 
   // P2WPKH (Bech32/SegWit) addresses
-  // Mainnet: starts with bc1
-  // Testnet: starts with tb1qc
-  const p2wpkhRegex = /^(bc1[a-z0-9]{39,59}|tb1qc[a-z0-9]{37,57})$/;
+  // Mainnet: starts with bc1q
+  // Testnet: starts with tb1q
+  const p2wpkhRegex = /^(bc1q[a-z0-9]{38,59}|tb1q[a-z0-9]{38,59})$/;
 
-  // Check if address matches P2WPKH format
   return p2wpkhRegex.test(address);
 }
+
 
 /**
  * Converts a Bitcoin address to a bytes32 value
