@@ -64,11 +64,52 @@ yarn preview
 The application uses environment variables for configuration. Create a `.env` file in the root directory with the following variables:
 
 ```env
+# WalletConnect project ID for wallet connection functionality
 VITE_WALLETCONNECT_PROJECT_ID=""
+
+# RPC URL for connecting to the Ethereum network
 VITE_RPC_URL=""
-VITE_API_BASE_URL=""
+
+# Base URL for the Florin API endpoints
+VITE_API_BASE_URL="https://florin.bitcoinos.build"
+
+# Number of hours until a transaction expires
 VITE_EXPIRATION_HOURS=24
+
+# Minimum amount allowed for transactions (in BTC)
+VITE_MIN_AMOUNT="0.0004"
+
+# Maximum amount allowed for transactions (in BTC)
+VITE_MAX_AMOUNT="3"
+
+# Number of confirmations required for low-value related to VITE_EVM_CONFIRMATIONS_USD_AMOUNT EVM transactions
+VITE_EVM_CONFIRMATIONS_LOW=1
+
+# Number of confirmations required for high-value EVM transactions
+VITE_EVM_CONFIRMATIONS_HIGH=10
+
+# USD amount threshold that determines when to use high confirmations
+VITE_EVM_CONFIRMATIONS_USD_AMOUNT=100
+
+# Number of confirmations required for Bitcoin transactions
+VITE_BTC_CONFIRMATIONS=6
+
+# Default position id for reservation
+VITE_DEFAULT_POSITION_ID=
 ```
+
+## Contract Addresses Configuration
+The application uses different contract addresses for different networks. These addresses are configured in `src/constants/contracts.ts`. To modify the contract addresses:
+
+1. Navigate to `src/constants/contracts.ts`
+2. Update the addresses in the `CONTRACTS_ADDRESS` object for the desired network:
+   - `ammExchange`: AMM Exchange contract address
+   - `marketMakerProxy`: Market Maker Proxy contract address
+   - `florinForwarder`: Florin Forwarder contract address
+   - `erc20BitSnark`: ERC20 BitSnark token contract address
+   - `contractRegistry`: Contract Registry address
+
+The file supports multiple networks, Sepolia testnet (chain ID: 11155111) and local development (chain ID: 31337).
 
 ## Main Scripts
 - `npm run dev` - Start development server
