@@ -97,15 +97,9 @@ export class FlorinApiService {
     maxAmount: number;
     minAmount: number;
   }> {
-    //const response = await fetch(`${API_BASE_URL}/positions/max-min-amount`);
-    /*  if (!response.ok) {
-      throw new Error(`Failed to fetch max amount: ${response.statusText}`);
-    } */
-    // const data = await response.json();
-
     return {
-      maxAmount: 3,
-      minAmount: 0.0004,
+      maxAmount: env.VITE_MAX_AMOUNT,
+      minAmount: env.VITE_MIN_AMOUNT,
     };
   }
 
