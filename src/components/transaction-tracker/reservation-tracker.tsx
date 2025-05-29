@@ -13,6 +13,7 @@ import { Address, formatUnits } from 'viem';
 import { useReservation } from '@/hooks/queries/useReservation';
 import { RESERVATION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
+import { env } from '@/config/env';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -36,7 +37,7 @@ export function ReservationTracker({
 
   const {
     evmReservation,
-   // isLoading: isEVMReservationLoading,
+    // isLoading: isEVMReservationLoading,
     error: isEVMReservationError,
   } = useEVMReservationPolling({
     reservationId: id || '',
@@ -52,8 +53,10 @@ export function ReservationTracker({
     return usdValue.toFixed(2);
   }, [amount, bitcoinPrice?.bitcoin?.usd]);
 
-  
-  const maxConfirmations = Number(fiatAmount) > 1000 ? 20 : 6;
+  const maxConfirmations =
+    Number(fiatAmount) > env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT
+      ? env.VITE_EVM_CONFIRMATIONS_HIGH
+      : env.VITE_EVM_CONFIRMATIONS_LOW;
   const confirmations = useTxConfirmations({
     isActive: open,
     maxConfirmations: maxConfirmations,
@@ -151,7 +154,7 @@ export function ReservationTracker({
                   txid: reservation?.originTxhash,
                   confirmations: btcConfirmations,
                   fiatAmount: fiatAmount,
-                  maxConfirmations: maxConfirmations,
+                  maxConfirmations: env.VITE_BTC_CONFIRMATIONS,
                 }}
                 isStepThree={true}
               />

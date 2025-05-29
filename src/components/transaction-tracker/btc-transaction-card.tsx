@@ -6,6 +6,7 @@ import BtcLogo from '@/assets/bitcoin-logo.png';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 import { InfoField } from './info-field';
+import { env } from '@/config/env';
 
 export interface BtcTransactionCardProps {
   data: {
@@ -22,7 +23,7 @@ export interface BtcTransactionCardProps {
 
 const isHighAmount = (amount: string) => {
   const amountNumber = parseFloat(amount);
-  return amountNumber >= 100;
+  return amountNumber >= env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT;
 };
 
 export function BtcTransactionCard({
@@ -47,7 +48,7 @@ export function BtcTransactionCard({
       return (
         <div className="flex items-center justify-center gap-1">
           <span className="text-white text-[12px] font-medium">
-            {data.confirmations}
+            {Math.min(Number(data?.confirmations) || 0, Number(data.maxConfirmations) || 0)}
           </span>
           <CheckCircledIcon className="text-green-600 w-4 h-4" />
         </div>
@@ -108,7 +109,7 @@ export function BtcTransactionCard({
         label="Confirmations"
         value={
           <span className="text-white text-[12px] font-medium">
-            {data.confirmations}
+            {renderConfirmations()}
           </span>
         }
       />
