@@ -42,6 +42,7 @@ jobs:
           VITE_EVM_CONFIRMATIONS_HIGH: ${{ secrets.VITE_EVM_CONFIRMATIONS_HIGH }}
           VITE_EVM_CONFIRMATIONS_USD_AMOUNT: ${{ secrets.VITE_EVM_CONFIRMATIONS_USD_AMOUNT }}
           VITE_BTC_CONFIRMATIONS: ${{ secrets.VITE_BTC_CONFIRMATIONS }}
+          VITE_DEFAULT_POSITION_ID: ${{ secrets.VITE_DEFAULT_POSITION_ID }}
       - name: Deploy to Netlify
         run: |
           DEPLOY_COMMAND="netlify deploy \
