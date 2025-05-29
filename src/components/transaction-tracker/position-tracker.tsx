@@ -12,6 +12,7 @@ import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 import { PositionStatus } from '@/types';
 import { POSITION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 import { env } from '@/config/env';
+import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -51,11 +52,21 @@ export function PositionTracker({
     maxConfirmations: maxConfirmations,
     transactionHash: txHash,
   });
+
   const status = POSITION_STATUS_MAP[evmPosition?.status || 1];
   const isPositionCompleted = status === PositionStatus.Closed;
   const displayConfirmations = isPositionCompleted
     ? maxConfirmations
     : confirmations;
+
+  const targetConfirmations = useBtcBlockConfirmations({
+    isActive: isPositionCompleted,
+    blockNumber: position?.targetBlockNumber,
+  });
+
+  const displayTargetConfirmations = isPositionCompleted
+    ? env.VITE_BTC_CONFIRMATIONS
+    : targetConfirmations;
 
   return (
     <BaseTransactionTracker
@@ -96,6 +107,7 @@ export function PositionTracker({
           >
             {isPositionCompleted && (
               <BtcCompletionCard
+                confirmations={displayTargetConfirmations}
                 amount={amount}
                 recipientAddress={evmPosition?.positionId || ''}
                 reservationTx={
