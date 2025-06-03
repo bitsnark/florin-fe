@@ -154,6 +154,11 @@ export function TransferForm({
             placeholder="Paste your Bitcoin receiving address"
             value={bitcoinAddress || ''}
             onChange={(e) => setBitcoinAddress(e.target.value as Address)}
+            errorMessage={
+              bitcoinAddress && !bitcoinAddressValid
+                ? 'Invalid Bitcoin address'
+                : undefined
+            }
             className={cn(
               bitcoinAddress &&
                 !bitcoinAddressValid &&

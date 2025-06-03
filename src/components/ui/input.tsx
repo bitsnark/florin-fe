@@ -5,9 +5,10 @@ import { cn } from '@/lib/utils';
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
+  errorMessage?: string;
 }
 
-function Input({ className, type, icon, ...props }: InputProps) {
+function Input({ className, type, icon, errorMessage, ...props }: InputProps) {
   return (
     <div className="relative w-full max-w-[408px]">
       <input
@@ -30,6 +31,11 @@ function Input({ className, type, icon, ...props }: InputProps) {
         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
           {icon}
         </div>
+      )}
+      {errorMessage && (
+        <span className="font-inter font-normal text-[11px] sm:text-[12px] leading-[100%] tracking-[0%] text-right text-red-500 mt-1 block">
+          {errorMessage}
+        </span>
       )}
     </div>
   );

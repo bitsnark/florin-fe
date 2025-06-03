@@ -125,7 +125,7 @@ export const AmountInput = ({
               disabled={readOnly}
             />
             <span className="font-inter font-normal text-[10px] sm:text-[12px] leading-[100%] tracking-[0%] text-right align-middle text-text-secondary">
-              ${calculateUsdValue}
+              ${Number(calculateUsdValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             {errorMessage && !readOnly && (
               <span className="font-inter font-normal text-[11px] sm:text-[12px] leading-[100%] tracking-[0%] text-right text-red-500 mt-1">
