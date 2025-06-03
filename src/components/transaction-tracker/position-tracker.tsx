@@ -7,7 +7,7 @@ import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMPositionPolling } from '@/hooks/useEVMPositionPolling';
 import { useChainId } from 'wagmi';
 import { formatUnits } from 'viem';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
 import { PositionStatus } from '@/types';
 import { POSITION_STATUS_MAP } from '../history-table/transaction-history-adapter';
@@ -27,14 +27,18 @@ export function PositionTracker({
   id,
   txHash,
 }: PositionTrackerProps) {
-  const { data: position } = usePosition(id, {});
+  const [shouldPoll, setShouldPoll] = useState(open);
+  const { data: position } = usePosition(id, {
+    refetchInterval: shouldPoll ? 5000 : undefined,
+  });
   const chainId = useChainId();
+  const { data: bitcoinPrice } = useBitcoinPrice();
+
   const { evmPosition, isLoading, error } = useEVMPositionPolling({
     positionId: id || '',
     chainId: chainId || 0,
-    isActive: open,
+    isActive: shouldPoll,
   });
-  const { data: bitcoinPrice } = useBitcoinPrice();
 
   const amount = formatUnits(evmPosition?.originalAmount || 0n, 8);
   const fiatAmount = useMemo(() => {
@@ -55,6 +59,12 @@ export function PositionTracker({
 
   const status = POSITION_STATUS_MAP[evmPosition?.status || 1];
   const isPositionCompleted = status === PositionStatus.Closed;
+
+  useEffect(() => {
+    const should = open && !isPositionCompleted;
+    setShouldPoll(should);
+  }, [isPositionCompleted, open]);
+
   const displayConfirmations = isPositionCompleted
     ? maxConfirmations
     : confirmations;
@@ -68,6 +78,7 @@ export function PositionTracker({
     ? env.VITE_BTC_CONFIRMATIONS
     : targetConfirmations;
 
+  console.log('evmPosition', evmPosition);
   return (
     <BaseTransactionTracker
       open={open}

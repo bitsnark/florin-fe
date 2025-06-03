@@ -5,7 +5,7 @@ import { BtcSendStep } from './btc-send-step';
 import { EthCompletionCard } from './eth-completion-card';
 import { BaseTransactionTracker } from './base-transaction-tracker';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMReservationPolling } from '@/hooks/useEVMReservationPolling';
 import { useChainId } from 'wagmi';
@@ -28,8 +28,9 @@ export function ReservationTracker({
   id,
   txHash,
 }: ReservationTrackerProps) {
+  const [shouldPoll, setShouldPoll] = useState(open);
   const { data } = useReservation(id, {
-    refetchInterval: 5000,
+    refetchInterval: shouldPoll ? 5000 : undefined,
   });
   const { data: bitcoinPrice } = useBitcoinPrice();
   const chainId = useChainId();
@@ -37,12 +38,11 @@ export function ReservationTracker({
 
   const {
     evmReservation,
-    // isLoading: isEVMReservationLoading,
     error: isEVMReservationError,
   } = useEVMReservationPolling({
     reservationId: id || '',
     chainId: chainId || 0,
-    isActive: open,
+    isActive: shouldPoll,
   });
 
   const amount = formatUnits(evmReservation?.tokenAmount || 0n, 8);
@@ -70,6 +70,12 @@ export function ReservationTracker({
 
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
   const bridgingCompleted = status === ReservationStatus.Settled;
+
+  useEffect(() => {
+    const should = open && !bridgingCompleted;
+    setShouldPoll(should);
+  }, [bridgingCompleted, open]);
+
   const maxHeightClass = !bridgingCompleted
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';

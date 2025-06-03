@@ -12,6 +12,7 @@ export function usePosition(positionId: string | undefined, {
     queryKey: ['position', positionId],
     queryFn: () => FlorinApiService.getPositionById(positionId),
     enabled: !!positionId,
-    refetchInterval : refetchInterval || undefined
+    refetchInterval: refetchInterval || undefined,
+    placeholderData: (previousData) => previousData,
   });
 }
