@@ -82,13 +82,11 @@ VITE_MIN_AMOUNT="0.0004"
 # Maximum amount allowed for transactions (in BTC)
 VITE_MAX_AMOUNT="3"
 
-# Number of confirmations required for low-value related to VITE_EVM_CONFIRMATIONS_USD_AMOUNT EVM transactions
-VITE_EVM_CONFIRMATIONS_LOW=1
+# Number of confirmations required for EVM transactions to be completed
+VITE_EVM_CONFIRMATIONS=10
 
-# Number of confirmations required for high-value EVM transactions
-VITE_EVM_CONFIRMATIONS_HIGH=10
+# USD amount threshold that determines if the ui shows up the second step immediately or if wait for VITE_EVM_CONFIRMATIONS confirmations
 
-# USD amount threshold that determines when to use high confirmations
 VITE_EVM_CONFIRMATIONS_USD_AMOUNT=100
 
 # Number of confirmations required for Bitcoin transactions

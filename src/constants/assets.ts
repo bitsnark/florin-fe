@@ -25,5 +25,5 @@ export const CURRENCY_SYMBOLS = {
 
 export const NETWORK_NAMES = {
   bitcoin: 'Bitcoin',
-  ethereum: 'Ethereum Network',
+  ethereum: 'Ethereum',
 }; 

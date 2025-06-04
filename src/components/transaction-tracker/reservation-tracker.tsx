@@ -5,7 +5,7 @@ import { BtcSendStep } from './btc-send-step';
 import { EthCompletionCard } from './eth-completion-card';
 import { BaseTransactionTracker } from './base-transaction-tracker';
 import { useBitcoinPrice } from '@/hooks/useBitcoinPrice';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTxConfirmations } from '@/hooks/useTxConfirmations';
 import { useEVMReservationPolling } from '@/hooks/useEVMReservationPolling';
 import { useChainId } from 'wagmi';
@@ -28,22 +28,20 @@ export function ReservationTracker({
   id,
   txHash,
 }: ReservationTrackerProps) {
+  const [shouldPoll, setShouldPoll] = useState(open);
   const { data } = useReservation(id, {
-    refetchInterval: 5000,
+    refetchInterval: shouldPoll ? 5000 : undefined,
   });
   const { data: bitcoinPrice } = useBitcoinPrice();
   const chainId = useChainId();
   const reservation = data?.data;
 
-  const {
-    evmReservation,
-    // isLoading: isEVMReservationLoading,
-    error: isEVMReservationError,
-  } = useEVMReservationPolling({
-    reservationId: id || '',
-    chainId: chainId || 0,
-    isActive: open,
-  });
+  const { evmReservation, error: isEVMReservationError } =
+    useEVMReservationPolling({
+      reservationId: id || '',
+      chainId: chainId || 0,
+      isActive: shouldPoll,
+    });
 
   const amount = formatUnits(evmReservation?.tokenAmount || 0n, 8);
 
@@ -53,10 +51,8 @@ export function ReservationTracker({
     return usdValue.toFixed(2);
   }, [amount, bitcoinPrice?.bitcoin?.usd]);
 
-  const maxConfirmations =
-    Number(fiatAmount) > env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT
-      ? env.VITE_EVM_CONFIRMATIONS_HIGH
-      : env.VITE_EVM_CONFIRMATIONS_LOW;
+  const maxConfirmations = Number(env.VITE_EVM_CONFIRMATIONS);
+
   const confirmations = useTxConfirmations({
     isActive: open,
     maxConfirmations: maxConfirmations,
@@ -70,6 +66,15 @@ export function ReservationTracker({
 
   const status = RESERVATION_STATUS_MAP[evmReservation?.status || 0];
   const bridgingCompleted = status === ReservationStatus.Settled;
+  const btcReadyToSend =
+    Number(fiatAmount) < env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT ||
+    confirmations >= maxConfirmations;
+
+  useEffect(() => {
+    const should = open && !bridgingCompleted;
+    setShouldPoll(should);
+  }, [bridgingCompleted, open]);
+
   const maxHeightClass = !bridgingCompleted
     ? 'max-h-[90vh] md:h-[813px]'
     : 'max-h-[90vh]';
@@ -114,8 +119,7 @@ export function ReservationTracker({
           <BtcSendStep
             amount={amount}
             isSent={bridgingCompleted}
-            confirmations={confirmations}
-            maxConfirmations={maxConfirmations}
+            isReadyToSend={btcReadyToSend}
             recipientAddress={evmReservation.bitcoinAddress}
             state={status}
             reservation={{

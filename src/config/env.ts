@@ -20,11 +20,8 @@ const envSchema = z.object({
   VITE_MAX_AMOUNT: z.string().transform((val) => Number(val)).refine((val) => val > 0, {
     message: 'VITE_MAX_AMOUNT must be greater than 0',
   }),
-  VITE_EVM_CONFIRMATIONS_LOW: z.string().transform((val) => Number(val)).refine((val) => val > 0, {
-    message: 'VITE_EVM_CONFIRMATIONS_LOW must be greater than 0',
-  }),
-  VITE_EVM_CONFIRMATIONS_HIGH: z.string().transform((val) => Number(val)).refine((val) => val > 0, {
-    message: 'VITE_EVM_CONFIRMATIONS_HIGH must be greater than 0',
+  VITE_EVM_CONFIRMATIONS: z.string().transform((val) => Number(val)).refine((val) => val > 0, {
+    message: 'VITE_EVM_CONFIRMATIONS must be greater than 0',
   }),
   VITE_EVM_CONFIRMATIONS_USD_AMOUNT: z.string().transform((val) => Number(val)).refine((val) => val > 0, {
     message: 'VITE_EVM_CONFIRMATIONS_USD_AMOUNT must be greater than 0',
