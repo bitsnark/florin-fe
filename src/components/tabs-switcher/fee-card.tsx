@@ -11,7 +11,7 @@ interface FeeCardProps {
 
 export function FeeCard({ toCurrency, isAnimating, amount, gasFee }: FeeCardProps) {
   const amountNumber = parseFloat(amount) || 0;
-  const receiveAmount = Math.max(0, amountNumber - gasFee).toFixed(6);
+  const receiveAmount = Math.max(0, amountNumber).toFixed(6);
 
   return (
     <Card

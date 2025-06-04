@@ -53,6 +53,16 @@ export const useAmountInput = ({
       return;
     }
 
+    // Prevent multiple leading zeros
+    if (value.startsWith('00')) {
+      return;
+    }
+
+    // Allow only one decimal point
+    if ((value.match(/\./g) || []).length > 1) {
+      return;
+    }
+
     if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
       return;
     }

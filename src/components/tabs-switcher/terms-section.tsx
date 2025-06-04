@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/utils';
+import { Link } from '@tanstack/react-router';
 
 interface TermsSectionProps {
   termsAccepted: boolean;
@@ -58,15 +59,13 @@ export function TermsSection({
               <label htmlFor="terms" className="cursor-pointer">
                 I agree to
               </label>{' '}
-              <a
-                href="https://app-florin.netlify.app/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/terms"
                 className="text-[#FFAA2E] hover:underline mx-1"
                 onClick={(e) => e.stopPropagation()}
               >
                 Terms & Conditions
-              </a>{' '}
+              </Link>{' '}
               <label htmlFor="terms" className="cursor-pointer">
                 and understand the risks
               </label>

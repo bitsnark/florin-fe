@@ -126,6 +126,7 @@ describe('PositionTracker', () => {
       } as EVMPosition,
       isLoading: false,
       error: null,
+      refetch: vi.fn(),
     });
 
     vi.mocked(useChainId).mockReturnValue(1);
@@ -176,6 +177,7 @@ describe('PositionTracker', () => {
       evmPosition: undefined,
       isLoading: true,
       error: null,
+      refetch: vi.fn(),
     });
 
     render(<PositionTracker {...mockProps} />, { wrapper });
@@ -188,6 +190,7 @@ describe('PositionTracker', () => {
       evmPosition: undefined,
       isLoading: false,
       error: new Error('Test error'),
+      refetch: vi.fn(),
     });
 
     render(<PositionTracker {...mockProps} />, { wrapper });
@@ -228,6 +231,7 @@ describe('PositionTracker', () => {
       } as EVMPosition,
       isLoading: false,
       error: null,
+      refetch: vi.fn(),
     });
 
     render(<PositionTracker {...mockProps} />, { wrapper });
