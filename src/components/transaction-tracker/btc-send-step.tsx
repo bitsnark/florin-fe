@@ -3,7 +3,7 @@ import { TransactionStep } from './transaction-step';
 import { WarningMessage } from './warning-message';
 import { AddressReveal } from './address-reveal';
 import { WarningIcon } from './warning-icon';
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ReservationStatus, Reservation } from '@/types';
 import { useTimer } from './timer-logic';
 import {
@@ -18,25 +18,22 @@ interface BtcSendStepProps {
   amount: string;
   recipientAddress?: string;
   isSent: boolean;
-  confirmations: number;
   state: ReservationStatus;
   reservation: Reservation;
   fiatAmount: string;
-  maxConfirmations: number;
+  isReadyToSend: boolean;
 }
 
 export function BtcSendStep({
   amount,
   recipientAddress,
   isSent,
-  confirmations,
   state,
   reservation,
   fiatAmount,
-  maxConfirmations,
+  isReadyToSend,
 }: BtcSendStepProps) {
   const warningMessage = 'You can use any bitcoin wallet to send funds.';
-  const [isReadyToSend, setIsReadyToSend] = useState(false);
   const blockTimestamp = reservation.blockTimestamp
     ? reservation.blockTimestamp * 1000
     : 0;
@@ -63,15 +60,9 @@ export function BtcSendStep({
 
   const descriptionMessage = isSent
     ? 'You initiated transaction in your wallet to send BTC.'
-    : parseFloat(fiatAmount) > 100
-      ? 'Your Bitcoin transaction has been detected. You need to send BTC from your bitcoin wallet to a specified address. If your transaction is $100+ in BTC, you must to wait for at least 6 confirmations before sending BTC. Make sure to send BTC within 12 hours.'
-      : 'Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address. Make sure to send BTC within 12 hours.';
-
-  useEffect(() => {
-    if (confirmations >= maxConfirmations) {
-      setIsReadyToSend(true);
-    }
-  }, [confirmations, maxConfirmations]);
+    : parseFloat(fiatAmount) > env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT
+      ? `Your Bitcoin transaction has been detected. You need to send BTC from your bitcoin wallet to a specified address. If your transaction is ${env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT}+ in BTC, you must to wait for at least ${env.VITE_EVM_CONFIRMATIONS} confirmations before sending BTC. Make sure to send BTC within ${env.VITE_EXPIRATION_HOURS} hours.`
+      : `Your Bitcoin transaction has been detected. You can send BTC from your bitcoin wallet to a specified address. Make sure to send BTC within ${env.VITE_EXPIRATION_HOURS} hours.`;
 
   const stepStatus =
     reservation.state !== ReservationStatus.Expired &&

@@ -47,10 +47,8 @@ export function PositionTracker({
     return usdValue.toFixed(2);
   }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  const maxConfirmations =
-    Number(fiatAmount) > env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT
-      ? env.VITE_EVM_CONFIRMATIONS_HIGH
-      : env.VITE_EVM_CONFIRMATIONS_LOW;
+  const maxConfirmations = Number(env.VITE_EVM_CONFIRMATIONS);
+
   const confirmations = useTxConfirmations({
     isActive: open,
     maxConfirmations: maxConfirmations,
@@ -78,7 +76,6 @@ export function PositionTracker({
     ? env.VITE_BTC_CONFIRMATIONS
     : targetConfirmations;
 
-  console.log('evmPosition', evmPosition);
   return (
     <BaseTransactionTracker
       open={open}
