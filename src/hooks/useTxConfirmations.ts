@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import { ContractManager } from "@/services/ContractManager";
 import { useEffect, useRef, useState } from "react";
 
@@ -9,7 +10,7 @@ interface UseTxConfirmationsProps {
 
 export function useTxConfirmations({
   isActive,
-  maxConfirmations = 20,
+  maxConfirmations = env.VITE_EVM_CONFIRMATIONS,
   transactionHash,
 }: UseTxConfirmationsProps) {
   const [confirmations, setConfirmations] = useState(0);
