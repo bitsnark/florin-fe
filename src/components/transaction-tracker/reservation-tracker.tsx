@@ -70,6 +70,12 @@ export function ReservationTracker({
     Number(fiatAmount) < env.VITE_EVM_CONFIRMATIONS_USD_AMOUNT ||
     confirmations >= maxConfirmations;
 
+  const targetConfirmations = useTxConfirmations({
+    isActive: open && bridgingCompleted,
+    maxConfirmations: maxConfirmations,
+    transactionHash: reservation?.targetTxhash,
+  });
+
   useEffect(() => {
     const should = open && !bridgingCompleted;
     setShouldPoll(should);
@@ -176,6 +182,7 @@ export function ReservationTracker({
             {bridgingCompleted && (
               <EthCompletionCard
                 amount={amount}
+                confirmations={targetConfirmations}
                 recipientAddress={evmReservation.bitcoinAddress || ''}
                 reservationTx={
                   reservation?.targetTxhash ||
