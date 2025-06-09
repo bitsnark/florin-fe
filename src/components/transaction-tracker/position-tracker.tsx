@@ -47,11 +47,8 @@ export function PositionTracker({
     return usdValue.toFixed(2);
   }, [evmPosition?.originalAmount, bitcoinPrice?.bitcoin?.usd]);
 
-  const maxConfirmations = Number(env.VITE_EVM_CONFIRMATIONS);
-
   const confirmations = useTxConfirmations({
     isActive: open,
-    maxConfirmations: maxConfirmations,
     transactionHash: txHash,
   });
 
@@ -63,18 +60,13 @@ export function PositionTracker({
     setShouldPoll(should);
   }, [isPositionCompleted, open]);
 
-  const displayConfirmations = isPositionCompleted
-    ? maxConfirmations
-    : confirmations;
-
+  
   const targetConfirmations = useBtcBlockConfirmations({
     isActive: isPositionCompleted,
     blockNumber: position?.targetBlockNumber,
   });
 
-  const displayTargetConfirmations = isPositionCompleted
-    ? env.VITE_BTC_CONFIRMATIONS
-    : targetConfirmations;
+  const displayTargetConfirmations = targetConfirmations;
 
   return (
     <BaseTransactionTracker
@@ -98,9 +90,9 @@ export function PositionTracker({
                 amount: amount,
                 recipientAddress: evmPosition.ownerAddress,
                 reservationTx: position?.registrationTxhash || '',
-                confirmations: displayConfirmations,
+                confirmations: confirmations,
                 fiatAmount: fiatAmount,
-                maxConfirmations: maxConfirmations,
+                maxConfirmations: Number(env.VITE_EVM_CONFIRMATIONS),
               }}
             />
           </TransactionStep>

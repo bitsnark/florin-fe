@@ -3,6 +3,7 @@ import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 import bitcoinLogo from '@/assets/bitcoin-logo.png';
 import ethLogo from '@/assets/eth-logo.png';
+import { formatConfirmations } from '@/utils/format';
 
 export interface BtcCompletionCardProps {
   amount: string;
@@ -62,7 +63,7 @@ export function BtcCompletionCard({
         <span className="text-[#888888] text-[13px]">Confirmations</span>
         <div className="flex items-center gap-2">
           <span className="text-white text-[13px] font-medium">
-            {confirmations}
+            {formatConfirmations(confirmations || 0)}
           </span>
           <CheckCircledIcon className="w-4 h-4 text-green-500" />
         </div>
