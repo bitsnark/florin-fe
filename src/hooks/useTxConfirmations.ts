@@ -1,16 +1,14 @@
-import { env } from "@/config/env";
-import { ContractManager } from "@/services/ContractManager";
-import { useEffect, useRef, useState } from "react";
+
+import { ContractManager } from '@/services/ContractManager';
+import { useEffect, useRef, useState } from 'react';
 
 interface UseTxConfirmationsProps {
   isActive: boolean;
-  maxConfirmations?: number;
   transactionHash?: string;
 }
 
 export function useTxConfirmations({
   isActive,
-  maxConfirmations = env.VITE_EVM_CONFIRMATIONS,
   transactionHash,
 }: UseTxConfirmationsProps) {
   const [confirmations, setConfirmations] = useState(0);
@@ -29,20 +27,15 @@ export function useTxConfirmations({
     const checkConfirmations = async () => {
       try {
         const contractManager = await ContractManager.getInstance();
-        const receipt = await contractManager.publicClient.getTransactionReceipt({
-          hash: transactionHash as `0x${string}`,
-        });
+        const receipt =
+          await contractManager.publicClient.getTransactionReceipt({
+            hash: transactionHash as `0x${string}`,
+          });
         if (receipt) {
-          const currentBlock = await contractManager.publicClient.getBlockNumber();
+          const currentBlock =
+            await contractManager.publicClient.getBlockNumber();
           const confirmations = Number(currentBlock - receipt.blockNumber);
-          setConfirmations(Math.min(confirmations, maxConfirmations));
-
-          if (confirmations >= maxConfirmations) {
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current);
-              intervalRef.current = null;
-            }
-          }
+          setConfirmations(confirmations);
         }
       } catch (error) {
         console.error('Error checking confirmations:', error);
@@ -59,7 +52,7 @@ export function useTxConfirmations({
         intervalRef.current = null;
       }
     };
-  }, [isActive, transactionHash, maxConfirmations]);
+  }, [isActive, transactionHash]);
 
   return confirmations;
 }

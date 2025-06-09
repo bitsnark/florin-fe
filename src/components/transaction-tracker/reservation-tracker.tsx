@@ -55,7 +55,6 @@ export function ReservationTracker({
 
   const confirmations = useTxConfirmations({
     isActive: open,
-    maxConfirmations: maxConfirmations,
     transactionHash: txHash,
   });
 
@@ -72,7 +71,6 @@ export function ReservationTracker({
 
   const targetConfirmations = useTxConfirmations({
     isActive: open && bridgingCompleted,
-    maxConfirmations: maxConfirmations,
     transactionHash: reservation?.targetTxhash,
   });
 

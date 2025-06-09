@@ -1,9 +1,9 @@
-import React from 'react';
 import { Card } from '@/components/ui/card';
 import { RefreshCw } from 'lucide-react';
 import EthLogo from '@/assets/eth-logo.png';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { getExplorerUrl, truncateAddress } from '@/lib/utils';
+import { formatConfirmations } from '@/utils/format';
 import { InfoField } from './info-field';
 
 export interface EthTransactionCardProps {
@@ -13,8 +13,8 @@ export interface EthTransactionCardProps {
     recipientAddress?: string;
     reservationTx?: string;
     txid?: string;
-    confirmations?: number | React.ReactNode;
-    maxConfirmations?: number;
+    confirmations: number;
+    maxConfirmations: number;
   };
   isStepThree?: boolean;
 }
@@ -26,9 +26,9 @@ export function EthTransactionCard({
   const renderConfirmations = () => (
     <div className="flex items-center justify-center gap-1">
       <span className="text-white text-[12px] font-medium">
-        {data.confirmations}
+        {formatConfirmations(data.confirmations || 0)}
       </span>
-      {data.confirmations === data.maxConfirmations ? (
+      {data.confirmations && Number(data.confirmations) >= data.maxConfirmations ? (
         <CheckCircledIcon className="text-green-600 w-4 h-4" />
       ) : (
         <RefreshCw className="text-foreground w-4 h-4 animate-[spin_2s_linear_infinite]" />
