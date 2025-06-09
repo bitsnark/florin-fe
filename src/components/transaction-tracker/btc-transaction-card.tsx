@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card } from '@/components/ui/card';
 import { RefreshCw } from 'lucide-react';
 import EthLogo from '@/assets/eth-logo.png';
@@ -6,6 +5,7 @@ import BtcLogo from '@/assets/bitcoin-logo.png';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { getExplorerUrl, truncateAddress } from '@/lib/utils';
 import { InfoField } from './info-field';
+import { formatConfirmations } from '@/utils/format';
 
 export interface BtcTransactionCardProps {
   data: {
@@ -14,7 +14,7 @@ export interface BtcTransactionCardProps {
     recipientAddress?: string;
     reservationTx?: string;
     txid?: string;
-    confirmations?: number | React.ReactNode;
+    confirmations?: number;
     maxConfirmations?: number;
   };
   isStepThree?: boolean;
@@ -28,7 +28,7 @@ export function BtcTransactionCard({
       return (
         <div className="flex items-center justify-center gap-1">
           <span className="text-white text-[12px] font-medium">
-            {data.confirmations}
+            {formatConfirmations(data.confirmations || 0)}
           </span>
           {Number(data?.confirmations) >= Number(data?.maxConfirmations) ? (
             <CheckCircledIcon className="text-green-600 w-4 h-4" />
