@@ -94,7 +94,17 @@ VITE_BTC_CONFIRMATIONS=6
 
 # Default position id for reservation
 VITE_DEFAULT_POSITION_ID=
+
+# Netlify site id 
+NETLIFY_SITE_ID
+
+# Personal auth token
+NETLIFY_AUTH_TOKEN
 ```
+
+### How to obtain these variables from Netlify
+- **NETLIFY_SITE_ID:** Go to your site in the Netlify dashboard, then navigate to Site settings > General > Site details. The Site ID (API ID) will be listed there.
+- **NETLIFY_AUTH_TOKEN:** Go to https://app.netlify.com/user/applications and create a new Personal access token. Copy and use this token as your NETLIFY_AUTH_TOKEN.
 
 ## Contract Addresses Configuration
 The application uses different contract addresses for different networks. These addresses are configured in `src/constants/contracts.ts`. To modify the contract addresses:
@@ -130,12 +140,8 @@ npm run test
 # Run tests with coverage
 npm run test:coverage
 ```
-
 ## Deployment
-The project is deployed using github actions and netlify. Set the followings actions variables in order to correctly deploy to netlify: 
-
-NETLIFY_SITE_ID
-NETLIFY_AUTH_TOKEN
+The project is deployed using github actions and netlify. All the previously mentioned env variables must be added to the actions secrets on github.
 
 ### Continuous deployment trigger
 On every new commit to `develop` (netflify preview) and `main` (netlify production)
@@ -148,3 +154,4 @@ On every new commit to `develop` (netflify preview) and `main` (netlify producti
 
 ## License
 [Add your license information here]
+
