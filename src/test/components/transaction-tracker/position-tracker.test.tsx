@@ -19,6 +19,9 @@ vi.mock('wagmi');
 vi.mock('@/hooks/useBitcoinPrice');
 vi.mock('@/hooks/useBtcBlockConfirmations');
 
+const asPositionQueryResult = (result: unknown) => result as ReturnType<typeof usePosition>;
+const asBitcoinPriceQueryResult = (result: unknown) => result as ReturnType<typeof useBitcoinPrice>;
+
 describe('PositionTracker', () => {
   const mockProps = {
     open: true,
@@ -44,7 +47,7 @@ describe('PositionTracker', () => {
     vi.clearAllMocks();
 
     // Setup default mock implementations
-    vi.mocked(usePosition).mockReturnValue({
+    vi.mocked(usePosition).mockReturnValue(asPositionQueryResult({
       data: {
         positionId: 'test-position-id',
         chainId: 1,
@@ -86,6 +89,7 @@ describe('PositionTracker', () => {
       isFetchedAfterMount: true,
       isPaused: false,
       fetchStatus: 'idle',
+      isEnabled: true,
       promise: Promise.resolve({
         positionId: 'test-position-id',
         chainId: 1,
@@ -104,7 +108,7 @@ describe('PositionTracker', () => {
         hash: '0x123...',
         contractRegistrationTxHash: '0x456...'
       })
-    });
+    }));
 
     vi.mocked(useTxConfirmations).mockReturnValue(3);
 
@@ -131,7 +135,7 @@ describe('PositionTracker', () => {
 
     vi.mocked(useChainId).mockReturnValue(1);
 
-    vi.mocked(useBitcoinPrice).mockReturnValue({
+    vi.mocked(useBitcoinPrice).mockReturnValue(asBitcoinPriceQueryResult({
       data: {
         bitcoin: {
           usd: 50000,
@@ -161,13 +165,14 @@ describe('PositionTracker', () => {
       errorUpdateCount: 0,
       isFetched: true,
       isFetchedAfterMount: true,
+      isEnabled: true,
       promise: Promise.resolve({
         bitcoin: {
           usd: 50000,
           usd_24h_change: 0
         }
       })
-    });
+    }));
 
     vi.mocked(useBtcBlockConfirmations).mockReturnValue(6);
   });

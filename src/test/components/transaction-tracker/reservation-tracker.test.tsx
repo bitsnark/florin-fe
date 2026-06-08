@@ -25,6 +25,9 @@ vi.mock('@/components/history-table/transaction-history-adapter', () => ({
   }
 }));
 
+const asReservationQueryResult = (result: unknown) => result as ReturnType<typeof useReservation>;
+const asBitcoinPriceQueryResult = (result: unknown) => result as ReturnType<typeof useBitcoinPrice>;
+
 describe('ReservationTracker', () => {
   const mockProps = {
     open: true,
@@ -38,7 +41,7 @@ describe('ReservationTracker', () => {
     vi.clearAllMocks();
 
     // Setup default mock implementations
-    vi.mocked(useReservation).mockReturnValue({
+    vi.mocked(useReservation).mockReturnValue(asReservationQueryResult({
       data: {
         data: {
           reservationId: 'test-reservation-id',
@@ -81,6 +84,7 @@ describe('ReservationTracker', () => {
       isFetchedAfterMount: true,
       isPaused: false,
       fetchStatus: 'idle',
+      isEnabled: true,
       promise: Promise.resolve({
         data: {
           reservationId: 'test-reservation-id',
@@ -100,7 +104,7 @@ describe('ReservationTracker', () => {
         },
         blockCount: 0
       })
-    });
+    }));
 
     vi.mocked(useTxConfirmations).mockReturnValue(3);
 
@@ -121,7 +125,7 @@ describe('ReservationTracker', () => {
 
     vi.mocked(useChainId).mockReturnValue(1);
 
-    vi.mocked(useBitcoinPrice).mockReturnValue({
+    vi.mocked(useBitcoinPrice).mockReturnValue(asBitcoinPriceQueryResult({
       data: {
         bitcoin: {
           usd: 50000,
@@ -151,13 +155,14 @@ describe('ReservationTracker', () => {
       errorUpdateCount: 0,
       isFetched: true,
       isFetchedAfterMount: true,
+      isEnabled: true,
       promise: Promise.resolve({
         bitcoin: {
           usd: 50000,
           usd_24h_change: 0
         }
       })
-    });
+    }));
 
     vi.mocked(useBtcBlockConfirmations).mockReturnValue(3);
   });
@@ -214,7 +219,7 @@ describe('ReservationTracker', () => {
 
   it('shows BTC transaction card when Bitcoin transaction is detected', () => {
     // Mock the reservation data to include targetBlockHash and targetBlockNumber
-    vi.mocked(useReservation).mockReturnValue({
+    vi.mocked(useReservation).mockReturnValue(asReservationQueryResult({
       data: {
         data: {
           reservationId: 'test-reservation-id',
@@ -258,6 +263,7 @@ describe('ReservationTracker', () => {
       isFetchedAfterMount: true,
       isPaused: false,
       fetchStatus: 'idle',
+      isEnabled: true,
       promise: Promise.resolve({
         data: {
           reservationId: 'test-reservation-id',
@@ -278,7 +284,7 @@ describe('ReservationTracker', () => {
         },
         blockCount: 0
       })
-    });
+    }));
 
     render(<ReservationTracker {...mockProps} />);
     
@@ -297,7 +303,7 @@ describe('ReservationTracker', () => {
 
   it('shows expiration message when reservation expires', () => {
     // Mock the reservation data with Expired state
-    vi.mocked(useReservation).mockReturnValue({
+    vi.mocked(useReservation).mockReturnValue(asReservationQueryResult({
       data: {
         data: {
           reservationId: 'test-reservation-id',
@@ -340,6 +346,7 @@ describe('ReservationTracker', () => {
       isFetchedAfterMount: true,
       isPaused: false,
       fetchStatus: 'idle',
+      isEnabled: true,
       promise: Promise.resolve({
         data: {
           reservationId: 'test-reservation-id',
@@ -359,7 +366,7 @@ describe('ReservationTracker', () => {
         },
         blockCount: 0
       })
-    });
+    }));
 
     vi.mocked(useEVMReservationPolling).mockReturnValue({
       evmReservation: {
