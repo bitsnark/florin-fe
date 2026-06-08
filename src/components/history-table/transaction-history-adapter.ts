@@ -5,6 +5,7 @@ import {
   ReservationStatus,
 } from '@/types';
 import { formatUnits } from 'viem';
+import { ZKLTC_DECIMALS } from '@/constants';
 
 export type TransactionType = 'position' | 'reservation';
 export type ChainType = 'bitcoin' | 'ethereum';
@@ -100,9 +101,9 @@ export function transactionHistoryAdapter(
     state: state,
     registrationFinality:
       item.registrationFinality === 'FINAL' ? Finality.FINAL : Finality.UNKNOWN,
-    amount: formatUnits(originalAmountToUse, 8) || '0',
-    originalAmount: formatUnits(originalAmountToUse, 8) || '0',
-    receivedAmount: formatUnits(originalAmountToUse, 8) || '0',
+    amount: formatUnits(originalAmountToUse, ZKLTC_DECIMALS) || '0',
+    originalAmount: formatUnits(originalAmountToUse, ZKLTC_DECIMALS) || '0',
+    receivedAmount: formatUnits(originalAmountToUse, ZKLTC_DECIMALS) || '0',
     blockNumber: item.registrationBlockNumber,
     blockHash: item.registrationBlockHash,
     createdAt: createdAtDate.toISOString(), // Not available in new API, using current time

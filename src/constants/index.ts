@@ -2,6 +2,7 @@ import { env } from "@/config/env";
 import { PositionStatus, ReservationStatus } from "@/types";
 
 export const DEFAULT_POSITION_ID = env.VITE_DEFAULT_POSITION_ID;
+export const ZKLTC_DECIMALS = 18;
 export const ETHERSCAN_URL = 'https://sepolia.etherscan.io';
 export const BITCOIN_TESTNET_URL = 'https://mempool.space/testnet4';
 

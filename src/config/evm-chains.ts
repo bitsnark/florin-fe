@@ -48,6 +48,15 @@ export const baseSepolia = createChain(
   'https://sepolia.basescan.org/api'
 );
 
+export const litVM = createChain(
+  ChainId.LitVM,
+  'Liteforge',
+  'zkLTC',
+  'https://liteforge.rpc.caldera.xyz/http',
+  'https://liteforge.explorer.caldera.xyz',
+  'https://liteforge.explorer.caldera.xyz/api'
+);
+
 export const localhost = defineChain({
   id: 31337,
   name: 'Hardhat',
@@ -59,7 +68,7 @@ export const localhost = defineChain({
   },
 });
 
-export const supportedChains = [sepolia, baseSepolia] as const;
+export const supportedChains = [sepolia, baseSepolia, litVM] as const;
 
 export const AIRDROP_API_MAP: Record<number, string> = {
   [ChainId.Sepolia]: 'https://sepolia.airdroper.bitcoinos.build',

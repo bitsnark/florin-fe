@@ -13,6 +13,7 @@ import { PositionStatus } from '@/types';
 import { POSITION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 import { env } from '@/config/env';
 import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
+import { ZKLTC_DECIMALS } from '@/constants';
 
 interface PositionTrackerProps {
   open: boolean;
@@ -40,7 +41,7 @@ export function PositionTracker({
     isActive: shouldPoll,
   });
 
-  const amount = formatUnits(evmPosition?.originalAmount || 0n, 8);
+  const amount = formatUnits(evmPosition?.originalAmount || 0n, ZKLTC_DECIMALS);
   const fiatAmount = useMemo(() => {
     if (!evmPosition?.originalAmount || !bitcoinPrice?.bitcoin?.usd) return '0';
     const usdValue = Number(amount) * bitcoinPrice.bitcoin.usd;

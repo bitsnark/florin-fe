@@ -42,6 +42,7 @@ jobs:
           VITE_EVM_CONFIRMATIONS_USD_AMOUNT: ${{ secrets.VITE_EVM_CONFIRMATIONS_USD_AMOUNT }}
           VITE_BTC_CONFIRMATIONS: ${{ secrets.VITE_BTC_CONFIRMATIONS }}
           VITE_DEFAULT_POSITION_ID: ${{ secrets.VITE_DEFAULT_POSITION_ID }}
+          VITE_RELAYER_URL: https://rpc.holyrail.com
       - name: Deploy to Netlify
         run: |
           DEPLOY_COMMAND="netlify deploy \

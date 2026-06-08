@@ -48,12 +48,10 @@ export function stringifyWithBigInt(obj: any): string {
 export function isValidBitcoinAddress(address: string | undefined): boolean {
   if (!address) return false;
 
-  // P2WPKH (Bech32/SegWit) addresses
-  // Mainnet: starts with bc1q
-  // Testnet: starts with tb1q
-  const p2wpkhRegex = /^(bc1q[a-z0-9]{38,59}|tb1q[a-z0-9]{38,59})$/;
+  // P2WPKH/P2TR Bech32 addresses for BTC and LTC test/main networks.
+  const p2wRegex = /^(bc1[qp][a-z0-9]{38,87}|tb1[qp][a-z0-9]{38,87}|ltc1[qp][a-z0-9]{38,87}|tltc1[qp][a-z0-9]{38,87})$/;
 
-  return p2wpkhRegex.test(address);
+  return p2wRegex.test(address);
 }
 
 

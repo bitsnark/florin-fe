@@ -106,12 +106,12 @@ describe('ReservationTracker', () => {
 
     vi.mocked(useEVMReservationPolling).mockReturnValue({
       evmReservation: {
-        tokenAmount: 100000000n, // 1 BTC in satoshis
+        tokenAmount: 1000000000000000000n, // 1 zkLTC with 18 decimals
         reservationId: '0xabc...',
         status: 1,
         ownerAddress: '0xowner...',
         bitcoinAddress: 'bc1...',
-        depositAmount: 100000000n,
+        depositAmount: 1000000000000000000n,
         createdAtBlock: 123n,
         positionId: '0xpos...'
       },
@@ -387,4 +387,4 @@ describe('ReservationTracker', () => {
     const btcCards = screen.getAllByTestId('btc-amount');
     expect(btcCards).toHaveLength(1); // Should only show the initial card
   });
-}); 
+});

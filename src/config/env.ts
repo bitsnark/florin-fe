@@ -32,6 +32,7 @@ const envSchema = z.object({
   VITE_DEFAULT_POSITION_ID: z.string().min(1, {
     message: 'VITE_DEFAULT_POSITION_ID is required',
   }),
+  VITE_RELAYER_URL: z.string().url().optional(),
 });
 
 const parsed = envSchema.safeParse(import.meta.env);

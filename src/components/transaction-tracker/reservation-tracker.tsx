@@ -14,6 +14,7 @@ import { useReservation } from '@/hooks/queries/useReservation';
 import { RESERVATION_STATUS_MAP } from '../history-table/transaction-history-adapter';
 import { useBtcBlockConfirmations } from '@/hooks/useBtcBlockConfirmations';
 import { env } from '@/config/env';
+import { ZKLTC_DECIMALS } from '@/constants';
 
 interface ReservationTrackerProps {
   open: boolean;
@@ -43,7 +44,7 @@ export function ReservationTracker({
       isActive: shouldPoll,
     });
 
-  const amount = formatUnits(evmReservation?.tokenAmount || 0n, 8);
+  const amount = formatUnits(evmReservation?.tokenAmount || 0n, ZKLTC_DECIMALS);
 
   const fiatAmount = useMemo(() => {
     if (!amount || !bitcoinPrice?.bitcoin?.usd) return '0';

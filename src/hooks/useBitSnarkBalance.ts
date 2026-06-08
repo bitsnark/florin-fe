@@ -4,6 +4,7 @@ import { ContractManager } from '@/services/ContractManager';
 import { CMError } from '@/lib/errors';
 import { Address, formatUnits } from 'viem';
 import { CONTRACTS_ADDRESS } from '@/constants/contracts';
+import { ZKLTC_DECIMALS } from '@/constants';
 
 export const useBitSnarkBalance = () => {
   const { address } = useAccount();
@@ -57,11 +58,11 @@ export const useBitSnarkBalance = () => {
     }
   }, [fetchBalance, chainId, address]);
 
-  const xbtcAmount = balance ? formatUnits(balance, 8) : '0';
+  const xbtcAmount = balance ? formatUnits(balance, ZKLTC_DECIMALS) : '0';
   return {
     balance: xbtcAmount,
     isLoading,
     error,
     refetch: fetchBalance,
   };
-}; 
+};

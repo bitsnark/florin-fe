@@ -9,12 +9,15 @@ import { Network, Currency } from './types';
 import { useChainId } from 'wagmi';
 import { Address, parseEther, parseUnits } from 'viem';
 import { useExchange } from '@/hooks/useExchange';
-import { Position, Reservation } from '@/types';
+import { Reservation } from '@/types';
+import { CONTRACTS_ADDRESS } from '@/constants/contracts';
+import { ZKLTC_DECIMALS } from '@/constants';
 import { useMaxMinBtc } from '@/hooks/queries/useMaxMinBtc';
 import { useBitSnarkBalance } from '@/hooks/useBitSnarkBalance';
 import { useAccount } from 'wagmi';
 import { useSupportedChains } from '@/hooks/useSupportedChains';
 import { useToast } from '@/hooks/useToast';
+import { ChainId } from '@/types/chains';
 
 interface TransferTabProps {
   onTransactionCreated: (
@@ -45,8 +48,8 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
   const [estimatedGasFee, setEstimatedGasFee] = useState<number>(0);
   const { isSupported } = useSupportedChains();
   const {
-    openPosition,
     reservePosition,
+    swapLiteforge,
     loading,
     error,
     estimateOpenPositionGas,
@@ -58,7 +61,7 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
   const minBtc = data?.minAmount || 0;
   const { balance: xbtcAmount } = useBitSnarkBalance();
   const isWalletConnected = !!address;
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
 
   const updateGasEstimate = async () => {
     if (
@@ -137,31 +140,44 @@ export function TransferTab({ onTransactionCreated }: TransferTabProps) {
 
   const handleBridgeFunds = async () => {
     const normalizedAmount = fromAmount.replace(',', '.');
-    const parsedAmount = parseUnits(normalizedAmount, 8);
-    let transaction: Position | Reservation | undefined;
+    const parsedAmount = parseUnits(normalizedAmount, ZKLTC_DECIMALS);
+    let transaction: Reservation | undefined;
     if (fromNetwork === 'bitcoin') {
+      if (chainId !== ChainId.Sepolia) {
+        setError('Switch to Sepolia to sign the gasless Liteforge reservation');
+        return;
+      }
+      const contracts = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ];
+      if (!contracts.liteforgeDepositor) {
+        setError('LiteforgeDepositor is not configured for Sepolia');
+        return;
+      }
       transaction = await reservePosition({
         tokenAmount: parsedAmount,
-        evmReceivingAddress: address!,
+        evmReceivingAddress: contracts.liteforgeDepositor as Address,
         chainId,
         owner: address!,
       });
-    } else {
-      transaction = await openPosition({
+    } else if (chainId === ChainId.LitVM) {
+      const swap = await swapLiteforge({
         tokenAmount: parsedAmount,
-        exchangeRate: 1,
-        bitcoinAddresses: bitcoinAddress! as Address,
-        deadline: Math.floor(Date.now() / 1000) + 3600,
-        owner: address!,
+        bitcoinAddress: bitcoinAddress!,
         chainId,
       });
+      if (swap) {
+        showSuccess(`Liteforge swap submitted: ${swap.hash}`);
+      }
+      return;
+    } else {
+      setError('Switch to Liteforge to swap zkLTC back to Litecoin');
+      return;
     }
     if (transaction) {
       onTransactionCreated(
-        fromNetwork === 'ethereum' ? 'position' : 'reservation',
-        fromNetwork === 'ethereum'
-          ? (transaction as Position)?.positionId
-          : (transaction as Reservation)?.reservationId,
+        'reservation',
+        transaction.reservationId,
         transaction.hash
       );
     }

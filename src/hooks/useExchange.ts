@@ -15,6 +15,7 @@ import { ContractManager } from '@/services/ContractManager';
 import { bech32ToBytes32, bytes32ToBech32Taproot } from '@/lib/utils';
 import { DEFAULT_POSITION_ID } from '@/constants';
 import { AMMEXCHANGE_ABI } from '@/constants/abis';
+import { env } from '@/config/env';
 
 export const useExchange = () => {
   const [loading, setLoading] = useState(false);
@@ -202,21 +203,26 @@ export const useExchange = () => {
       setError(null);
 
       const contractManager = await ContractManager.getInstance();
-      const tokenAddress = CONTRACTS_ADDRESS[
+      const contracts = CONTRACTS_ADDRESS[
         chainId as keyof typeof CONTRACTS_ADDRESS
-      ].erc20BitSnark as Address;
+      ];
+      const tokenAddress = contracts.erc20BitSnark as Address;
 
       const positionId = DEFAULT_POSITION_ID;
-      const contractAddress = CONTRACTS_ADDRESS[
-        chainId as keyof typeof CONTRACTS_ADDRESS
-      ].ammExchange as Address;
+      const contractAddress = contracts.ammExchange as Address;
 
-      const { hash, wait } = await contractManager.writeContract(
+      const relayUrl = env.VITE_RELAYER_URL;
+      if (!relayUrl || !contracts.florinForwarder) {
+        throw new Error('Gasless Liteforge reservation is not configured');
+      }
+
+      const { hash, wait } = await contractManager.relayContract(
         'AMMExchange',
         'reservePosition',
         [positionId, evmReceivingAddress, tokenAmount],
         contractAddress,
-        { value: 0n }
+        contracts.florinForwarder as Address,
+        relayUrl
       );
       const receipt = await wait();
 
@@ -254,6 +260,45 @@ export const useExchange = () => {
       setLoading(false);
       setError((error as Error).message);
       console.log('reservePosition error', error);
+    }
+  };
+
+  const swapLiteforge = async ({
+    tokenAmount,
+    bitcoinAddress,
+    chainId,
+  }: {
+    tokenAmount: bigint;
+    bitcoinAddress: string;
+    chainId: number;
+  }) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const contractManager = await ContractManager.getInstance();
+      const contractAddress = CONTRACTS_ADDRESS[
+        chainId as keyof typeof CONTRACTS_ADDRESS
+      ].liteforgeSwap as Address;
+      if (!contractAddress) {
+        throw new Error('LiteforgeSwap is not configured for the selected chain');
+      }
+
+      const ltcAddress = bech32ToBytes32(bitcoinAddress);
+      const { hash, wait } = await contractManager.writeContract(
+        'LiteforgeSwap',
+        'swap',
+        [ltcAddress],
+        contractAddress,
+        { value: tokenAmount }
+      );
+      await wait();
+      setLoading(false);
+      return { hash };
+    } catch (error) {
+      setLoading(false);
+      setError((error as Error).message);
+      console.log('swapLiteforge error', error);
     }
   };
 
@@ -327,6 +372,7 @@ export const useExchange = () => {
     error,
     openPosition,
     reservePosition,
+    swapLiteforge,
     getPosition,
     getReservation,
     estimateOpenPositionGas,

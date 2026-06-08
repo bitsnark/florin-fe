@@ -2247,3 +2247,50 @@ export const FORWARDER_ABI = [
     type: 'function',
   },
 ];
+
+export const LITEFORGE_SWAP_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'ltcAddress',
+        type: 'bytes32',
+      },
+    ],
+    name: 'swap',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'ltcAddress',
+        type: 'bytes32',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'messageNum',
+        type: 'uint256',
+      },
+    ],
+    name: 'SwapInitiated',
+    type: 'event',
+  },
+];

@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { CrossCircledIcon } from '@radix-ui/react-icons';
+import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
 const MAX_ERROR_LENGTH = 100;
 
@@ -16,6 +16,11 @@ export const useToast = () => {
       description: message.length > MAX_ERROR_LENGTH ? message : undefined,
     });
   };
+  const showSuccess = (message: string) => {
+    toast.success(message, {
+      icon: <CheckCircledIcon className="h-4 w-4" />,
+    });
+  };
 
-  return { showError };
-}; 
+  return { showError, showSuccess };
+};

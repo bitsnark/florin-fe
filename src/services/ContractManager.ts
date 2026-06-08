@@ -8,9 +8,15 @@ import {
   PublicClient,
   WalletClient,
   custom,
+  encodeFunctionData,
 } from 'viem';
 import { getConnectorClient } from '@wagmi/core';
-import { AMMEXCHANGE_ABI, ERC20_BITSNARK_ABI } from '@/constants/abis';
+import {
+  AMMEXCHANGE_ABI,
+  ERC20_BITSNARK_ABI,
+  FORWARDER_ABI,
+  LITEFORGE_SWAP_ABI,
+} from '@/constants/abis';
 import { CMError, ContractError, parseContractError } from '@/lib/errors';
 import { TransactionResponse } from '@/types';
 import { Address } from 'viem';
@@ -28,6 +34,11 @@ export class ContractManager {
   private contracts: Map<string, { abi: any[] }> = new Map();
 
   private constructor() {}
+
+  private getRpcUrl(chain: { id: number; rpcUrls?: { default?: { http?: readonly string[] } } }) {
+    if (chain.id === 11155111) return env.VITE_RPC_URL;
+    return chain.rpcUrls?.default?.http?.[0] || env.VITE_RPC_URL;
+  }
 
   private async waitForConnectorInitialization(maxAttempts = 10): Promise<boolean> {
     for (let i = 0; i < maxAttempts; i++) {
@@ -52,7 +63,10 @@ export class ContractManager {
   }
 
   public static async getInstance(): Promise<ContractManager> {
-    if (this.instance) return this.instance;
+    if (this.instance) {
+      await this.instance.refreshWalletClient();
+      return this.instance;
+    }
 
     if (this.initializing) {
       console.log('ContractManager is already initializing, waiting...');
@@ -84,7 +98,7 @@ export class ContractManager {
 
       instance.publicClient = createPublicClient({
         chain: connectorClient.chain,
-        transport: http(env.VITE_RPC_URL),
+        transport: http(instance.getRpcUrl(connectorClient.chain)),
       });
 
       if (connectorClient?.account) {
@@ -102,6 +116,8 @@ export class ContractManager {
 
       instance.registerContract('AMMExchange', AMMEXCHANGE_ABI);
       instance.registerContract('ERC20BitSnark', ERC20_BITSNARK_ABI);
+      instance.registerContract('FlorinForwarder', FORWARDER_ABI);
+      instance.registerContract('LiteforgeSwap', LITEFORGE_SWAP_ABI);
       this.instance = instance;
     } catch (error) {
       console.error('Error initializing ContractManager:', error);
@@ -148,6 +164,10 @@ export class ContractManager {
     try {
       const connectorClient = await getConnectorClient(wagmiConfig);
       if (connectorClient?.account && connectorClient?.chain) {
+        this.publicClient = createPublicClient({
+          chain: connectorClient.chain,
+          transport: http(this.getRpcUrl(connectorClient.chain)),
+        });
         this.walletClient = createWalletClient({
           account: connectorClient.account,
           chain: connectorClient.chain,
@@ -232,6 +252,121 @@ export class ContractManager {
         `Failed to write to contract ${contractName}: ${parsed}`
       );
     }
+  }
+
+  public async relayContract(
+    contractName: string,
+    method: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    args: any[] = [],
+    address: Address,
+    forwarderAddress: Address,
+    relayerUrl: string
+  ): Promise<TransactionResponse> {
+    if (!this.walletClient?.account) {
+      throw new CMError('Wallet client is required to sign relayed operations');
+    }
+    if (!this.walletClient.chain?.id) {
+      throw new CMError('Wallet chain is required to sign relayed operations');
+    }
+
+    const abi = this.getABI(contractName);
+    const data = encodeFunctionData({
+      abi,
+      functionName: method,
+      args,
+    });
+    const from = this.walletClient.account.address;
+    const nonce = await this.readContract(
+      'FlorinForwarder',
+      'nonces',
+      [from],
+      forwarderAddress
+    );
+    const forwarderNonce = BigInt(nonce as unknown as string | number | bigint);
+    let gas = 1000000n;
+    try {
+      const estimatedGas = await this.publicClient.estimateContractGas({
+        address,
+        abi,
+        functionName: method,
+        args,
+        account: from,
+        value: 0n,
+      });
+      gas = (estimatedGas * 12n) / 10n;
+    } catch (error) {
+      console.warn('Relayed gas estimate failed, using fallback gas', error);
+    }
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+    const message = {
+      from,
+      to: address,
+      value: 0n,
+      gas,
+      nonce: forwarderNonce,
+      deadline,
+      data,
+    };
+    const signature = await this.signTypedData({
+      domain: {
+        name: 'FlorinForwarder',
+        version: '1',
+        chainId: this.walletClient.chain.id,
+        verifyingContract: forwarderAddress,
+      },
+      types: {
+        ForwardRequest: [
+          { name: 'from', type: 'address' },
+          { name: 'to', type: 'address' },
+          { name: 'value', type: 'uint256' },
+          { name: 'gas', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint48' },
+          { name: 'data', type: 'bytes' },
+        ],
+      },
+      primaryType: 'ForwardRequest',
+      message,
+    });
+    const response = await fetch(`${relayerUrl.replace(/\/$/, '')}/relay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from,
+        to: address,
+        value: '0',
+        gas: gas.toString(),
+        deadline: deadline.toString(),
+        data,
+        signature,
+      }),
+    });
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new CMError(payload?.message || payload?.error || 'Relayer request failed');
+    }
+    const hash = payload.txHash as `0x${string}`;
+
+    return {
+      hash,
+      wait: async () => {
+        const receipt = await this.publicClient.waitForTransactionReceipt({
+          hash,
+          confirmations: 1,
+        });
+        const logs = receipt.logs
+          .map((log) => {
+            try {
+              return decodeEventLog({ abi, ...log });
+            } catch {
+              return null;
+            }
+          })
+          .filter(Boolean);
+        return { receipt, logs };
+      },
+    };
   }
 
   // TODO: Fix this type once we have the correct type for the contract
