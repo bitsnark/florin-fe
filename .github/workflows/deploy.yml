@@ -34,7 +34,7 @@ jobs:
         env:
           VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
           VITE_RPC_URL: ${{ secrets.VITE_RPC_URL }}
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ github.ref == 'refs/heads/develop' && 'https://box2.remake.money/florin-api' || secrets.VITE_API_BASE_URL }}
           VITE_EXPIRATION_HOURS: ${{ secrets.VITE_EXPIRATION_HOURS }}
           VITE_MIN_AMOUNT: ${{ secrets.VITE_MIN_AMOUNT }}
           VITE_MAX_AMOUNT: ${{ secrets.VITE_MAX_AMOUNT }}

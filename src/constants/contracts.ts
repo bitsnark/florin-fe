@@ -4,7 +4,7 @@ export const CONTRACTS_ADDRESS = {
   [sepolia.id]: {
     ammExchange: '0x15EF38c3e42150e8B0156C22f27f93B26804e3bd',
     marketMakerProxy: '0xF1298765683B8fC68DE71429319FE162b939Ef51',
-    florinForwarder: '0xa9f24c03A309bF72086CF7496771eFa02C3b99D9',
+    florinForwarder: '0xf55aabd3b31bbdc0fcd126844553a1f86b73889e',
     erc20BitSnark: '0xaE9190aEca45F50dCDa0483c0223E191E6811ad2',
     contractRegistry: '0x204652c13363cc43a7bC87B23b13870A0DB20a03',
     liteforgeDepositor: '0x4C16c6cd9DC8e21F1EaF52F11167199CF3C8F934',
